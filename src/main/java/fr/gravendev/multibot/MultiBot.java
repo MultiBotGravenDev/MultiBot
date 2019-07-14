@@ -19,7 +19,7 @@ public class MultiBot {
 
     private final Configuration configuration = new Serializer<Configuration>().deserialize(Configuration.CONFIGURATION_FILE, Configuration.class);
     private JDA jda;
-    private final CommandManager commandManager = new CommandManager();
+    private final CommandManager commandManager = new CommandManager(configuration.getPrefix());
 
     private MultiBot() {
 
@@ -37,7 +37,7 @@ public class MultiBot {
 
     private void buildJDA() throws LoginException {
         JDABuilder builder = new JDABuilder(configuration.getToken())
-                .addEventListener(new MultiBotListener());
+                .addEventListener(new MultiBotListener(this.commandManager));
         jda = builder.build();
         LOGGER.info("Bot connected");
     }

@@ -10,8 +10,10 @@ import java.util.Optional;
 public class CommandManager {
 
     private final List<CommandExecutor> commandExecutors;
+    private final char prefix;
 
-    public CommandManager() {
+    public CommandManager(char prefix) {
+        this.prefix = prefix;
         commandExecutors = Arrays.asList(
                 new AboutCommandExecutor()
         );
@@ -20,6 +22,8 @@ public class CommandManager {
     public boolean executeCommand(Message message) {
 
         String contentDisplay = message.getContentDisplay();
+
+        if (contentDisplay.charAt(0) != prefix) return false;
 
         String firstWord = contentDisplay.contains(" ")
                 ? contentDisplay.substring(1, contentDisplay.indexOf(" "))
