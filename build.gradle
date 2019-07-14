@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
 group 'fr.gravendev'
@@ -11,7 +12,7 @@ sourceCompatibility = 1.8
 jar {
     manifest {
         attributes(
-                'Main-Class': 'fr.lukam.feryabot.FeryaBot'
+                'Main-Class': 'fr.gravendev.multibot.MultiBot'
         )
     }
 }
@@ -22,7 +23,7 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-archivesBaseName = 'MultiBot.jar'
+archivesBaseName = 'MultiBot'
 
 repositories {
     mavenCentral()
