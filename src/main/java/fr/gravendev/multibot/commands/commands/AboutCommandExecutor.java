@@ -27,10 +27,12 @@ public class AboutCommandExecutor implements ChannelCommandExecutor {
 
         if (isAuthorizedChannel(message.getChannel()))
         message.getChannel().sendMessage("Le MultiBot a été développé par les piliers de la commu.").queue();
+
     }
 
     @Override
     public boolean isAuthorizedChannel(MessageChannel channel) {
         return "_commandes".equalsIgnoreCase(channel.getName());
     }
+
 }

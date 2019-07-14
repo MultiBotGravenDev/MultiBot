@@ -41,12 +41,12 @@ public class CommandManager {
 
             CommandExecutor commandExecutor = optionalCommandExecutor.get();
             ChannelType commandChannelType = commandExecutor.getChannelType();
-            if(commandChannelType != ChannelType.ALL && !commandChannelType.isEqualsTo(message.getChannelType())) {
-                return false;
+
+            if(commandChannelType == ChannelType.ALL || commandChannelType.isEqualsTo(message.getChannelType())) {
+                commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length));
+                return true;
             }
 
-            commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length));
-            return true;
         }
 
         return false;
