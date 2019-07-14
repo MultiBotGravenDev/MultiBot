@@ -1,17 +1,19 @@
 package fr.gravendev.multibot.commands;
 
+import fr.gravendev.multibot.commands.commands.AboutCommandExecutor;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class CommandManager {
 
-    private final List<Command> commands;
+    private final List<CommandExecutor> commandExecutors;
 
     public CommandManager() {
-        commands = Arrays.asList(
-
+        commandExecutors = Arrays.asList(
+                new AboutCommandExecutor()
         );
     }
 
@@ -23,11 +25,17 @@ public class CommandManager {
                 ? contentDisplay.substring(1, contentDisplay.indexOf(" "))
                 : contentDisplay.substring(1);
 
-        return this.commands.stream()
-                .filter(command -> command.getCommand().equalsIgnoreCase(firstWord))
-                .findAny()
-                .map(command -> command.execute(message))
-                .orElse(false);
+        Optional<CommandExecutor> optionalCommandExecutor = this.commandExecutors.stream()
+                .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(firstWord))
+                .findAny();
+
+        if (optionalCommandExecutor.isPresent()) {
+            optionalCommandExecutor.get().execute(message);
+            return true;
+        } else {
+            return false;
+        }
+
 
     }
 
