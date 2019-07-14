@@ -2,10 +2,10 @@ package fr.gravendev.multibot.commands;
 
 import net.dv8tion.jda.core.entities.Message;
 
-public interface Command {
+public interface CommandExecutor {
 
     String getCommand();
 
-    boolean execute(Message message);
+    void execute(Message message);
 
 }
