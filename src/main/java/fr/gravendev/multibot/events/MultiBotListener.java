@@ -11,10 +11,10 @@ import java.util.List;
 
 public class MultiBotListener implements EventListener {
 
-    private final List<Listener> EVENTS;
+    private final List<Listener> events;
 
     public MultiBotListener() {
-        EVENTS = Arrays.asList(
+        events = Arrays.asList(
                 new MessageReceivedListener(),
                 new EmoteAddedListener(),
                 new EmoteRemovedListener()
@@ -24,7 +24,7 @@ public class MultiBotListener implements EventListener {
     @Override
     public void onEvent(Event event) {
 
-        EVENTS.stream()
+        events.stream()
                 .filter(listener -> listener.getEventClass().equals(event.getClass()))
                 .findAny()
                 .ifPresent(listener -> listener.executeListener(event));

@@ -6,6 +6,10 @@ public class Configuration {
 
     public static final File CONFIGURATION_FILE = new File("configuration.json");
 
-    public String token;
+    private String token;
+
+    public String getToken() {
+        return this.token;
+    }
 
 }
