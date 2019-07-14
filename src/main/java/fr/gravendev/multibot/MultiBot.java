@@ -1,5 +1,6 @@
 package fr.gravendev.multibot;
 
+import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.events.MultiBotListener;
 import fr.gravendev.multibot.json.Configuration;
 import fr.gravendev.multibot.json.FileWriter;
@@ -16,9 +17,9 @@ public class MultiBot {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiBot.class);
 
-    private final Configuration CONFIGURATION = new Serializer<Configuration>().deserialize(Configuration.CONFIGURATION_FILE, Configuration.class);
-
+    private final Configuration configuration = new Serializer<Configuration>().deserialize(Configuration.CONFIGURATION_FILE, Configuration.class);
     private JDA jda;
+    private final CommandManager commandManager = new CommandManager();
 
     private MultiBot() {
 
@@ -35,15 +36,14 @@ public class MultiBot {
     }
 
     private void buildJDA() throws LoginException {
-        JDABuilder builder = new JDABuilder(CONFIGURATION.token)
+        JDABuilder builder = new JDABuilder(configuration.getToken())
                 .addEventListener(new MultiBotListener());
         jda = builder.build();
-
         LOGGER.info("Bot connected");
     }
 
     private void stop() {
-        String configurationJson = new Serializer<Configuration>().serialize(CONFIGURATION);
+        String configurationJson = new Serializer<Configuration>().serialize(configuration);
         FileWriter.writeFile(Configuration.CONFIGURATION_FILE, configurationJson);
         jda.shutdown();
         LOGGER.info("Bot disconnected");
