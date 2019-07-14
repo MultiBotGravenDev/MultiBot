@@ -2,6 +2,7 @@ package fr.gravendev.multibot.commands;
 
 import fr.gravendev.multibot.commands.commands.AboutCommandExecutor;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.User;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,26 +22,34 @@ public class CommandManager {
 
     public boolean executeCommand(Message message) {
 
-        String contentDisplay = message.getContentDisplay();
+        User user = message.getAuthor();
 
-        if (contentDisplay.charAt(0) != prefix) return false;
+        String content = message.getContentRaw();
+        if(user.isBot() || content.length() <= 1) return false;
 
-        String firstWord = contentDisplay.contains(" ")
-                ? contentDisplay.substring(1, contentDisplay.indexOf(" "))
-                : contentDisplay.substring(1);
+        char prefix = content.charAt(0);
+        if(prefix != this.prefix) return false;
+
+        String command = content.substring(1);
+        String[] args = command.split(" +");
 
         Optional<CommandExecutor> optionalCommandExecutor = this.commandExecutors.stream()
-                .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(firstWord))
+                .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
                 .findAny();
 
         if (optionalCommandExecutor.isPresent()) {
-            optionalCommandExecutor.get().execute(message);
+
+            CommandExecutor commandExecutor = optionalCommandExecutor.get();
+            ChannelType commandChannelType = commandExecutor.getChannelType();
+            if(commandChannelType != ChannelType.ALL && !commandChannelType.isEqualsTo(message.getChannelType())) {
+                return false;
+            }
+
+            commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length));
             return true;
-        } else {
-            return false;
         }
 
-
+        return false;
     }
 
 }

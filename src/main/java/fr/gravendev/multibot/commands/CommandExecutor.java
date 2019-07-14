@@ -6,6 +6,10 @@ public interface CommandExecutor {
 
     String getCommand();
 
-    void execute(Message message);
+    String getDescription();
+
+    ChannelType getChannelType();
+
+    void execute(Message message, String[] args);
 
 }
