@@ -1,5 +1,8 @@
 package fr.gravendev.multibot.events;
 
+import fr.gravendev.multibot.events.listeners.EmoteAddedListener;
+import fr.gravendev.multibot.events.listeners.EmoteRemovedListener;
+import fr.gravendev.multibot.events.listeners.MessageReceivedListener;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.EventListener;
 
@@ -12,7 +15,9 @@ public class MultiBotListener implements EventListener {
 
     public MultiBotListener() {
         EVENTS = Arrays.asList(
-
+                new MessageReceivedListener(),
+                new EmoteAddedListener(),
+                new EmoteRemovedListener()
         );
     }
 
