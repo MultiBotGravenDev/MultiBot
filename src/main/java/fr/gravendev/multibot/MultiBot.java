@@ -1,6 +1,7 @@
 package fr.gravendev.multibot;
 
 import fr.gravendev.multibot.commands.CommandManager;
+import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.events.MultiBotListener;
 import fr.gravendev.multibot.json.Configuration;
 import fr.gravendev.multibot.json.FileWriter;
@@ -11,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class MultiBot {
@@ -21,7 +24,11 @@ public class MultiBot {
     private JDA jda;
     private final CommandManager commandManager = new CommandManager(configuration.getPrefix());
 
+    private final DatabaseConnection databaseConnection;
+
     private MultiBot() {
+
+        databaseConnection = new DatabaseConnection("root", "password", "multibot");
 
         try {
             buildJDA();
@@ -48,6 +55,10 @@ public class MultiBot {
         jda.shutdown();
         LOGGER.info("Bot disconnected");
         System.exit(0);
+    }
+
+    public Connection getConnection() throws SQLException {
+        return databaseConnection.getConnection();
     }
 
     public static void main(String[] args) {
