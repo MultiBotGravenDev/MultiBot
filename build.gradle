@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+}
+
+group 'fr.gravendev'
+version '1.0-SNAPSHOT'
+def jdaVersion = '3.8.3_460'
+
+sourceCompatibility = 1.8
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'fr.lukam.feryabot.FeryaBot'
+        )
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+archivesBaseName = 'MultiBot.jar'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation 'org.slf4j:slf4j-simple:1.7.25'
+    implementation "net.dv8tion:JDA:$jdaVersion"
+    implementation 'com.google.code.gson:gson:2.8.5'
+}
+
