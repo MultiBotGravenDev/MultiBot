@@ -20,18 +20,29 @@ public class MultiBot {
 
     private JDA jda;
 
-    private MultiBot() throws LoginException {
+    private MultiBot() {
 
-        JDABuilder builder = new JDABuilder(CONFIGURATION.token);
-        jda = builder.build();
-
-        LOGGER.info("Bot connected");
-
-        jda.addEventListener(new MultiBotListener());
+        try {
+            buildJDA();
+        } catch (LoginException e) {
+            e.printStackTrace();
+        }
 
         Scanner scanner = new Scanner(System.in);
         while (!scanner.nextLine().equalsIgnoreCase("stop")) {}
 
+        stop();
+    }
+
+    private void buildJDA() throws LoginException {
+        JDABuilder builder = new JDABuilder(CONFIGURATION.token)
+                .addEventListener(new MultiBotListener());
+        jda = builder.build();
+
+        LOGGER.info("Bot connected");
+    }
+
+    private void stop() {
         String configurationJson = new Serializer<Configuration>().serialize(CONFIGURATION);
         FileWriter.writeFile(Configuration.CONFIGURATION_FILE, configurationJson);
         jda.shutdown();
@@ -40,11 +51,7 @@ public class MultiBot {
     }
 
     public static void main(String[] args) {
-        try {
-            new MultiBot();
-        }catch (LoginException ex) {
-            ex.printStackTrace();
-        }
+        new MultiBot();
     }
 
 }
