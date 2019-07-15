@@ -3,10 +3,7 @@ package fr.gravendev.multibot.database.dao;
 import fr.gravendev.multibot.data.WelcomeMessageData;
 import fr.gravendev.multibot.database.DAO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class WelcomeMessageDAO extends DAO<WelcomeMessageData> {
 
@@ -16,12 +13,29 @@ public class WelcomeMessageDAO extends DAO<WelcomeMessageData> {
 
     @Override
     public boolean save(WelcomeMessageData obj) {
-        return false;
+        return true;
     }
 
     @Override
     public WelcomeMessageData get(String value) {
-        return null;
+
+        WelcomeMessageData welcomeMessageData = null;
+
+        try {
+            PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM welcome_messages WHERE id = ?");
+            statement.setInt(1, Integer.valueOf(value));
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                welcomeMessageData = new WelcomeMessageData(resultSet.getString("text"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return welcomeMessageData;
     }
 
     @Override
