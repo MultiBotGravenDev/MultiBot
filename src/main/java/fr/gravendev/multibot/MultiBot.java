@@ -30,21 +30,21 @@ public class MultiBot {
         }
 
         Scanner scanner = new Scanner(System.in);
-        while (!scanner.nextLine().equalsIgnoreCase("stop")) {}
+        while (!scanner.nextLine().equalsIgnoreCase("stop")) {
+            LOGGER.info("write \"stop\" to stop the bot");
+        }
 
         stop();
     }
 
     private void buildJDA() throws LoginException {
-        JDABuilder builder = new JDABuilder(configuration.getToken())
-                .addEventListener(new MultiBotListener(this.commandManager));
-        jda = builder.build();
+        this.jda = new JDABuilder(configuration.getToken())
+                .addEventListener(new MultiBotListener(this.commandManager))
+                .build();
         LOGGER.info("Bot connected");
     }
 
     private void stop() {
-        String configurationJson = new Serializer<Configuration>().serialize(configuration);
-        FileWriter.writeFile(Configuration.CONFIGURATION_FILE, configurationJson);
         jda.shutdown();
         LOGGER.info("Bot disconnected");
         System.exit(0);
