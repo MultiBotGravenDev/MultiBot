@@ -14,7 +14,7 @@ public class ExperienceDAO extends DAO<ExperienceData> {
 
     @Override
     public boolean save(ExperienceData data) {
-        try (PreparedStatement statement = this.getConnection().prepareStatement(
+        try (PreparedStatement statement = this.connection.prepareStatement(
                "INSERT INTO experience(`discord_id`, `experience`, `level`, `messages_count`, `last_message`) " +
                        "VALUES (?, ?, ?, ?, NOW()) ON DUPLICATE KEY UPDATE " +
                     "experience = VALUES(experience), level = VALUES(level), messages_count = VALUES(messages_count), last_message = VALUES(last_message)")) {
@@ -36,7 +36,7 @@ public class ExperienceDAO extends DAO<ExperienceData> {
     @Override
     public ExperienceData get(String discordID) {
         ExperienceData data = null;
-        try (PreparedStatement statement = this.getConnection().prepareStatement("SELECT * FROM experience WHERE discord_id = ?")) {
+        try (PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM experience WHERE discord_id = ?")) {
             statement.setString(1, discordID);
 
             ResultSet resultSet = statement.executeQuery();
