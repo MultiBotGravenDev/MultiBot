@@ -5,13 +5,12 @@ import fr.gravendev.multibot.data.ExperienceData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
 import fr.gravendev.multibot.events.Listener;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
@@ -33,6 +32,8 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
     public void executeListener(MessageReceivedEvent event) {
 
         if (commandManager.executeCommand(event.getMessage())) return;
+        if (event.getAuthor().isBot()) return;
+        if (event.getChannel().getType() == ChannelType.PRIVATE) return;
 
         try {
             Connection connection = databaseConnection.getConnection();
