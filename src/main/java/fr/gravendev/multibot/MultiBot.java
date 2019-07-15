@@ -49,7 +49,7 @@ public class MultiBot {
 
     private void buildJDA() throws LoginException {
         this.jda = new JDABuilder(configuration.getToken())
-                .addEventListener(new MultiBotListener(this.commandManager))
+                .addEventListener(new MultiBotListener(this.commandManager, databaseConnection))
                 .build();
         LOGGER.info("Bot connected");
     }

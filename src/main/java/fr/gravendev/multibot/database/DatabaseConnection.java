@@ -15,6 +15,11 @@ public class DatabaseConnection {
         dataSource.setJdbcUrl("jdbc:mysql://"+host+":3306/"+database);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
+        dataSource.addDataSourceProperty("autoReconnect",true);
+        dataSource.addDataSourceProperty("tcpKeepAlive", true);
+        dataSource.setMaximumPoolSize(100);
+        dataSource.setMinimumIdle(0);
+        dataSource.setIdleTimeout(1);
     }
 
     public Connection getConnection() throws SQLException {

@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.events;
 
 import fr.gravendev.multibot.commands.CommandManager;
+import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.events.listeners.EmoteAddedListener;
 import fr.gravendev.multibot.events.listeners.EmoteRemovedListener;
 import fr.gravendev.multibot.events.listeners.MessageReceivedListener;
@@ -14,9 +15,9 @@ public class MultiBotListener implements EventListener {
 
     private final List<Listener> events;
 
-    public MultiBotListener(CommandManager commandManager) {
+    public MultiBotListener(CommandManager commandManager, DatabaseConnection databaseConnection) {
         events = Arrays.asList(
-                new MessageReceivedListener(commandManager),
+                new MessageReceivedListener(commandManager, databaseConnection),
                 new EmoteAddedListener(),
                 new EmoteRemovedListener()
         );
