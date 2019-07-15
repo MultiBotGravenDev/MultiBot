@@ -1,15 +1,29 @@
 package fr.gravendev.multibot.commands;
 
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.PrivateChannel;
 
-public interface CommandExecutor {
+import java.util.List;
 
-    String getCommand();
+public abstract class CommandExecutor {
 
-    String getDescription();
+    public abstract String getCommand();
 
-    ChannelType getChannelType();
+    public abstract String getDescription();
 
-    void execute(Message message, String[] args);
+    public abstract ChannelType getChannelType();
+
+    public abstract void execute(Message message, String[] args);
+
+    public abstract List<String> getAuthorizedChannelsNames();
+
+    boolean isAuthorizedChannel(MessageChannel channel) {
+        if (getChannelType() != ChannelType.PRIVATE) {
+            return getAuthorizedChannelsNames().contains(channel.getName()) || channel instanceof PrivateChannel;
+        } else {
+            return getChannelType().isEqualsTo(channel.getType());
+        }
+    }
 
 }
