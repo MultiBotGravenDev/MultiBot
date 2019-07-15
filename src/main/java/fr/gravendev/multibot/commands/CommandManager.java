@@ -2,6 +2,7 @@ package fr.gravendev.multibot.commands;
 
 import fr.gravendev.multibot.commands.commands.AboutCommand;
 import fr.gravendev.multibot.commands.commands.WelcomeMessageCommand;
+import fr.gravendev.multibot.database.DatabaseConnection;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 
@@ -14,11 +15,11 @@ public class CommandManager {
     private final List<CommandExecutor> commandExecutors;
     private final char prefix;
 
-    public CommandManager(char prefix) {
+    public CommandManager(char prefix, DatabaseConnection databaseConnection) {
         this.prefix = prefix;
         commandExecutors = Arrays.asList(
                 new AboutCommand(),
-                new WelcomeMessageCommand()
+                new WelcomeMessageCommand(databaseConnection)
         );
     }
 

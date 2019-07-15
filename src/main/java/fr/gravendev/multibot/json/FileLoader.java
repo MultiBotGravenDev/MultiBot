@@ -21,7 +21,7 @@ public class FileLoader {
             String line;
 
             while ((line = reader.readLine()) != null) {
-                text.append(line);
+                text.append(line).append("\n");
             }
 
             reader.close();
