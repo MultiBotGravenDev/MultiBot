@@ -20,11 +20,12 @@ public class MultiBot {
     private final Configuration configuration;
     private JDA jda;
     private final CommandManager commandManager;
+    private final DatabaseConnection databaseConnection;
 
     private MultiBot() {
 
         this.configuration = new Serializer<Configuration>().deserialize(Configuration.CONFIGURATION_FILE, Configuration.class);
-        DatabaseConnection databaseConnection = new DatabaseConnection(configuration.getHost(), configuration.getUsername(), configuration.getPassword(), configuration.getDatabase());
+        databaseConnection = new DatabaseConnection(configuration.getHost(), configuration.getUsername(), configuration.getPassword(), configuration.getDatabase());
         this.commandManager = new CommandManager(this.configuration.getPrefix(), databaseConnection);
 
         try {
