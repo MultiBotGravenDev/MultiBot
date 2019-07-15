@@ -16,9 +16,7 @@ public enum ChannelType {
     }
 
     public boolean isEqualsTo(net.dv8tion.jda.core.entities.ChannelType targetType) {
-        System.out.println(getChannelType());
-        System.out.println(targetType);
-        return this.getChannelType() == targetType;
+        return this == ChannelType.ALL || this.getChannelType() == targetType;
     }
 
 }

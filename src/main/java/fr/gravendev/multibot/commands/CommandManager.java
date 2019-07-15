@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.commands;
 
-import fr.gravendev.multibot.commands.commands.AboutCommandExecutor;
+import fr.gravendev.multibot.commands.commands.AboutCommand;
+import fr.gravendev.multibot.commands.commands.WelcomeMessageCommand;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 
@@ -16,7 +17,8 @@ public class CommandManager {
     public CommandManager(char prefix) {
         this.prefix = prefix;
         commandExecutors = Arrays.asList(
-                new AboutCommandExecutor()
+                new AboutCommand(),
+                new WelcomeMessageCommand()
         );
     }
 
@@ -25,10 +27,10 @@ public class CommandManager {
         User user = message.getAuthor();
 
         String content = message.getContentRaw();
-        if(user.isBot() || content.length() <= 1) return false;
+        if (user.isBot() || content.length() <= 1) return false;
 
         char prefix = content.charAt(0);
-        if(prefix != this.prefix) return false;
+        if (prefix != this.prefix) return false;
 
         String command = content.substring(1);
         String[] args = command.split(" +");
@@ -40,13 +42,14 @@ public class CommandManager {
         if (optionalCommandExecutor.isPresent()) {
 
             CommandExecutor commandExecutor = optionalCommandExecutor.get();
-            ChannelType commandChannelType = commandExecutor.getChannelType();
-            if(commandChannelType != ChannelType.ALL && !commandChannelType.isEqualsTo(message.getChannelType())) {
-                return false;
+
+            if (commandExecutor.isAuthorizedChannel(message.getChannel())) {
+
+                commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length));
+                return true;
+
             }
 
-            commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length));
-            return true;
         }
 
         return false;
