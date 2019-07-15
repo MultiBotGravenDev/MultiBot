@@ -5,6 +5,7 @@ import fr.gravendev.multibot.data.ExperienceData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
 import fr.gravendev.multibot.events.Listener;
+import fr.gravendev.multibot.quizz.QuizManager;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -18,7 +19,7 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
     private final CommandManager commandManager;
     private final DatabaseConnection databaseConnection;
 
-    public MessageReceivedListener(CommandManager commandManager, DatabaseConnection databaseConnection) {
+    public MessageReceivedListener(CommandManager commandManager, DatabaseConnection databaseConnection, QuizManager quizManager) {
         this.databaseConnection = databaseConnection;
         this.commandManager = commandManager;
     }
