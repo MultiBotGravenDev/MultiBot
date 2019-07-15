@@ -2,7 +2,7 @@ package fr.gravendev.multibot.commands.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.CommandExecutor;
-import fr.gravendev.multibot.data.WelcomeMessageData;
+import fr.gravendev.multibot.data.MessageData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
 import net.dv8tion.jda.core.MessageBuilder;
