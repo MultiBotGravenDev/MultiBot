@@ -20,7 +20,7 @@ public class MultiBotListener implements EventListener {
         events = Arrays.asList(
                 new MessageReceivedListener(commandManager, databaseConnection, quizManager),
                 new EmoteAddedListener(quizManager),
-                new EmoteRemovedListener()
+                new EmoteRemovedListener(quizManager)
         );
     }
 
