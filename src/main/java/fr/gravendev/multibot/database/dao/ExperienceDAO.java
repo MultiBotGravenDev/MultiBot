@@ -3,10 +3,8 @@ package fr.gravendev.multibot.database.dao;
 import fr.gravendev.multibot.data.ExperienceData;
 import fr.gravendev.multibot.database.DAO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Date;
 
 public class ExperienceDAO extends DAO<ExperienceData> {
 
@@ -15,35 +13,16 @@ public class ExperienceDAO extends DAO<ExperienceData> {
     }
 
     @Override
-    public boolean create(ExperienceData data) {
+    public boolean save(ExperienceData data) {
         try (PreparedStatement statement = this.getConnection().prepareStatement(
-                "INSERT INTO experience (discord_id, experience, level, message, last_message) VALUES (?, ?, ?, ?, ?)")) {
+               "INSERT INTO experience(`discord_id`, `experience`, `level`, `messages_count`, `last_message`) " +
+                       "VALUES (?, ?, ?, ?, NOW()) ON DUPLICATE KEY UPDATE " +
+                    "experience = experience + VALUES(experience), level = level + VALUES(level), messages_count = messages_count + VALUES(messages_count), last_message = VALUES(last_message)")) {
 
             statement.setString(1, data.getDiscordID());
             statement.setInt(2, data.getExperiences());
             statement.setInt(3, data.getLevels());
             statement.setInt(4, data.getMessages());
-            statement.setLong(5, data.getLastMessage());
-
-            statement.executeUpdate();
-
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public boolean update(ExperienceData data) {
-        try (PreparedStatement statement = this.getConnection().prepareStatement(
-                "UPDATE clients SET experience = ?, level = ?, message = ?, last_message = ? WHERE discord_id = ?;")){
-
-            statement.setInt(1, data.getExperiences());
-            statement.setInt(2, data.getLevels());
-            statement.setInt(3, data.getMessages());
-            statement.setLong(4, data.getLastMessage());
-            statement.setString(5, data.getDiscordID());
 
             statement.executeUpdate();
 
@@ -63,12 +42,10 @@ public class ExperienceDAO extends DAO<ExperienceData> {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-
                 int experience = resultSet.getInt("experience");
                 int level = resultSet.getInt("level");
-                int message = resultSet.getInt("message");
-                long lastMessage = resultSet.getLong("last_message");
-
+                int message = resultSet.getInt("messages_count");
+                Date lastMessage = resultSet.getTimestamp("last_message");
                 data = new ExperienceData(discordID, experience, level, message, lastMessage);
             }
         } catch (SQLException e) {

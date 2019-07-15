@@ -10,11 +10,9 @@ public abstract class DAO<T> {
         this.connection = connection;
     }
 
-    public abstract boolean create(T obj);
+    public abstract boolean save(T obj);
 
-    public abstract boolean update(T obj);
-
-    public abstract T get(String discordID);
+    public abstract T get(String value);
 
     public abstract void delete(T obj);
 

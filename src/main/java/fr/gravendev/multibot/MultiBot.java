@@ -1,7 +1,9 @@
 package fr.gravendev.multibot;
 
 import fr.gravendev.multibot.commands.CommandManager;
+import fr.gravendev.multibot.data.ExperienceData;
 import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.ExperienceDAO;
 import fr.gravendev.multibot.events.MultiBotListener;
 import fr.gravendev.multibot.json.Configuration;
 import fr.gravendev.multibot.json.FileWriter;
@@ -28,7 +30,7 @@ public class MultiBot {
 
     private MultiBot() {
 
-        databaseConnection = new DatabaseConnection("root", "password", "multibot");
+        databaseConnection = new DatabaseConnection("51.77.251.36", "multibot", "password", "multibot");
 
         try {
             buildJDA();
