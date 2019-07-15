@@ -30,8 +30,9 @@ public class MultiBot {
 
     private MultiBot() {
 
-        databaseConnection = new DatabaseConnection("51.77.251.36", "multibot", "password", "multibot");
-
+        databaseConnection = new DatabaseConnection(
+                configuration.getHost(), configuration.getUsername(), configuration.getPassword(), configuration.getDatabase());
+        
         try {
             buildJDA();
         } catch (LoginException e) {

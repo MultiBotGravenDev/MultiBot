@@ -1,4 +1,8 @@
 {
   "token": "NTcyMzk2ODAyMDA4MTU0MTEy.XMbsHA.mnrIYYVrPvzXK6vFsqiPMiNobPA",
-  "prefix": "!"
+  "prefix": "!",
+  "host": "51.77.251.36",
+  "username": "multibot",
+  "password": "password",
+  "database": "multibot"
 }
