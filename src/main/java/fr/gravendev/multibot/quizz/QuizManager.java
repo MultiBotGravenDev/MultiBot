@@ -30,7 +30,7 @@ public class QuizManager {
 
     }
 
-    private void send(User user) {
+    public void send(User user) {
         if (!this.quizs.get(user.getIdLong()).send()) {
             this.quizs.remove(user.getIdLong());
         }
@@ -40,4 +40,11 @@ public class QuizManager {
         this.quizs.remove(user.getIdLong());
     }
 
+    public boolean isWaitingFor(User user) {
+        return this.quizs.containsKey(user.getIdLong());
+    }
+
+    public void registerResponse(User user, String contentDisplay) {
+        this.quizs.get(user.getIdLong()).registerResponse(contentDisplay);
+    }
 }

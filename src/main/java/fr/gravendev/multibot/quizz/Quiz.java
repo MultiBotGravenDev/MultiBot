@@ -6,12 +6,15 @@ import fr.gravendev.multibot.database.dao.QuizMessageDAO;
 import net.dv8tion.jda.core.entities.User;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 class Quiz {
 
     private final DatabaseConnection databaseConnection;
     private final User user;
     private int questionIndex;
+    private final Map<Integer, String> responses = new HashMap<>();
 
     Quiz(DatabaseConnection databaseConnection, User user) {
         this.databaseConnection = databaseConnection;
@@ -46,4 +49,7 @@ class Quiz {
 
     }
 
+    public void registerResponse(String contentDisplay) {
+        this.responses.put(this.questionIndex, contentDisplay);
+    }
 }
