@@ -61,8 +61,6 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
                 experienceDAO.save(experienceData);
             }
 
-            System.out.println(experienceData.toString());
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
