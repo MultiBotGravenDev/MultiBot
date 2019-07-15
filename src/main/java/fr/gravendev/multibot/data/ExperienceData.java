@@ -1,12 +1,14 @@
 package fr.gravendev.multibot.data;
 
+import java.util.Date;
+
 public class ExperienceData {
 
     private final String discordID;
     private int experience, level, message;
-    private long lastMessage;
+    private Date lastMessage;
 
-    public ExperienceData(String discordID, int experience, int level, int message, long lastMessage) {
+    public ExperienceData(String discordID, int experience, int level, int message, Date lastMessage) {
         this.discordID = discordID;
         this.experience = experience;
         this.level = level;
@@ -19,7 +21,7 @@ public class ExperienceData {
         this.experience = 0;
         this.level = 0;
         this.message = 0;
-        this.lastMessage = 0;
+        this.lastMessage = new Date(0);
     }
 
     public String getDiscordID() {
@@ -38,7 +40,7 @@ public class ExperienceData {
         return message;
     }
 
-    public long getLastMessage() {
+    public Date getLastMessage() {
         return lastMessage;
     }
 
@@ -46,7 +48,7 @@ public class ExperienceData {
         this.experience = experiences;
     }
 
-    public void setLastMessage(long lastMessage) {
+    public void setLastMessage(Date lastMessage) {
         this.lastMessage = lastMessage;
     }
 
