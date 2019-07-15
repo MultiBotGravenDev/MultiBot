@@ -48,15 +48,31 @@ public class ExperienceData {
         this.experience = experiences;
     }
 
-    public void setLastMessage(Date lastMessage) {
-        this.lastMessage = lastMessage;
-    }
-
     public void setLevels(int levels) {
         this.level = levels;
     }
 
     public void setMessages(int messages) {
         this.message = messages;
+    }
+
+    public void addMessage() {
+        message++;
+    }
+
+    public void addLevel() {
+        level++;
+    }
+    public void addExperience(int experience) {
+        this.experience += experience;
+    }
+
+    public void removeExperience(int experience) {
+        this.experience -= experience;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %s / Experience: %s / Level: %s / Message: %s / LastMessage: %s", discordID, experience, level, message, lastMessage);
     }
 }

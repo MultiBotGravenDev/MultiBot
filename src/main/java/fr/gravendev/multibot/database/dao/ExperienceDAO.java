@@ -17,7 +17,7 @@ public class ExperienceDAO extends DAO<ExperienceData> {
         try (PreparedStatement statement = this.getConnection().prepareStatement(
                "INSERT INTO experience(`discord_id`, `experience`, `level`, `messages_count`, `last_message`) " +
                        "VALUES (?, ?, ?, ?, NOW()) ON DUPLICATE KEY UPDATE " +
-                    "experience = experience + VALUES(experience), level = level + VALUES(level), messages_count = messages_count + VALUES(messages_count), last_message = VALUES(last_message)")) {
+                    "experience = VALUES(experience), level = VALUES(level), messages_count = VALUES(messages_count), last_message = VALUES(last_message)")) {
 
             statement.setString(1, data.getDiscordID());
             statement.setInt(2, data.getExperiences());
