@@ -18,15 +18,26 @@ public class QuizManager {
     }
 
     public void createQuiz(User user) {
-        this.quizs.put(user.getIdLong(), new Quiz(this.databaseConnection));
+        this.quizs.put(user.getIdLong(), new Quiz(this.databaseConnection, user));
 
         try {
             String startMessage = new QuizMessageDAO(this.databaseConnection.getConnection()).get(1 + "").message;
             user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(startMessage).queue());
+            send(user);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void send(User user) {
+        if (!this.quizs.get(user.getIdLong()).send()) {
+            this.quizs.remove(user.getIdLong());
+        }
+    }
+
+    public void removeQuiz(User user) {
+        this.quizs.remove(user.getIdLong());
     }
 
 }
