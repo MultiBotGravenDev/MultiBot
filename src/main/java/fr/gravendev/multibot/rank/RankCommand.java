@@ -1,11 +1,11 @@
-package fr.gravendev.multibot.commands.commands;
+package fr.gravendev.multibot.rank;
 
 import fr.gravendev.multibot.commands.ChannelType;
-import fr.gravendev.multibot.commands.CommandExecutor;
-import fr.gravendev.multibot.data.ExperienceData;
+import fr.gravendev.multibot.commands.commands.CommandExecutor;
+import fr.gravendev.multibot.database.data.ExperienceData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
-import fr.gravendev.multibot.images.ImageBuilder;
+import fr.gravendev.multibot.rank.ImageBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;

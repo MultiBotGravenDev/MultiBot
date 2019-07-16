@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.images;
+package fr.gravendev.multibot.rank;
 
 import net.coobird.thumbnailator.Thumbnails;
 

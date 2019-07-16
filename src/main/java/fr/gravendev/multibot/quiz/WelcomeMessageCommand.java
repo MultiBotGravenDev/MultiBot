@@ -1,8 +1,8 @@
-package fr.gravendev.multibot.commands.commands;
+package fr.gravendev.multibot.quiz;
 
 import fr.gravendev.multibot.commands.ChannelType;
-import fr.gravendev.multibot.commands.CommandExecutor;
-import fr.gravendev.multibot.data.MessageData;
+import fr.gravendev.multibot.commands.commands.CommandExecutor;
+import fr.gravendev.multibot.database.data.MessageData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
 import fr.gravendev.multibot.utils.GuildUtils;
@@ -43,7 +43,7 @@ public class WelcomeMessageCommand implements CommandExecutor {
 
     @Override
     public boolean isAuthorizedMember(Member member) {
-        return GuildUtils.hasRole(member, "pilier de la commu");
+        return GuildUtils.hasRole(member, "Pilier de la Commu");
     }
 
     public void execute(Message message, String[] args) {

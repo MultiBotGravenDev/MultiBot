@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.database.dao;
 
-import fr.gravendev.multibot.data.ExperienceData;
-import fr.gravendev.multibot.database.DAO;
+import fr.gravendev.multibot.database.data.ExperienceData;
 
 import java.sql.*;
 import java.util.Date;

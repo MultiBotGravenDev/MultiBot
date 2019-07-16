@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.events.listeners;
 
 import fr.gravendev.multibot.commands.CommandManager;
-import fr.gravendev.multibot.data.ExperienceData;
+import fr.gravendev.multibot.database.data.ExperienceData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
 import fr.gravendev.multibot.events.Listener;
