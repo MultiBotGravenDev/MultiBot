@@ -37,11 +37,11 @@ public class CandidsExecutor implements EmoteAddedExecutor {
                 String validationMessage = member.getAsMention() + "\n\n";
 
                 if (event.getReactionEmote().getName().equals("\u2705")) {
-                    validationMessage += "accepté ";
+                    validationMessage += ":white_check_mark: accepté ";
                     Guild guild = message.getGuild();
                     guild.getController().addRolesToMember(member, guild.getRoleById(memberRoleId)).queue();
                 } else {
-                    validationMessage += "refusé ";
+                    validationMessage += ":x: refusé ";
                 }
 
                 validationMessage += "par " + event.getMember().getAsMention();
