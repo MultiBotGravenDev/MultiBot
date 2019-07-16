@@ -33,21 +33,26 @@ public class CandidsExecutor implements EmoteAddedExecutor {
 
             event.getChannel().getMessageById(event.getMessageIdLong()).queue(message -> {
 
-                if (message.getMentionedMembers().size() != 1) return;
-
-                String validationMessage;
                 Member member = message.getMentionedMembers().get(0);
+                String validationMessage = member.getAsMention() + "\n\n";
 
                 if (event.getReactionEmote().getName().equals("\u2705")) {
-                    validationMessage = "accepté ";
+                    validationMessage += "accepté ";
                     Guild guild = message.getGuild();
                     guild.getController().addRolesToMember(member, guild.getRoleById(memberRoleId)).queue();
                 } else {
-                    validationMessage = "refusé ";
+                    validationMessage += "refusé ";
                 }
 
+                validationMessage += "par " + event.getMember().getAsMention();
+
+                message.getReactions().forEach(messageReaction -> {
+                    messageReaction.removeReaction().queue();
+                    messageReaction.removeReaction(event.getUser()).queue();
+                });
+
                 message.editMessage(new MessageBuilder(message)
-                        .setContent(member.getAsMention() + "\n\n" + validationMessage + "par " + event.getMember().getAsMention())
+                        .setContent(validationMessage)
                         .build()).queue();
 
             });

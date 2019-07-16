@@ -57,9 +57,7 @@ public class QuizManager {
                     .setAuthor(user.getName(), user.getAvatarUrl(), user.getAvatarUrl());
 
             while (quiz.nextAnswer()) {
-
                 embedBuilder.addField(quiz.getCurrentAnswer());
-
             }
 
             messageBuilder.setEmbed(embedBuilder.build())
