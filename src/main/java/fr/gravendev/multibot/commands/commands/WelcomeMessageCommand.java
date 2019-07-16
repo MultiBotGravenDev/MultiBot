@@ -5,7 +5,9 @@ import fr.gravendev.multibot.commands.CommandExecutor;
 import fr.gravendev.multibot.data.MessageData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
+import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.sql.SQLException;
@@ -37,6 +39,11 @@ public class WelcomeMessageCommand extends CommandExecutor {
 
     public List<String> getAuthorizedChannelsNames() {
         return Collections.singletonList("lisez-ce-salon");
+    }
+
+    @Override
+    public boolean isAuthorizedMember(Member member) {
+        return GuildUtils.hasRole(member, "pilier de la commu");
     }
 
     public void execute(Message message, String[] args) {

@@ -88,6 +88,11 @@ public class RankCommand extends CommandExecutor {
         return Collections.singletonList("_commandes");
     }
 
+    @Override
+    public boolean isAuthorizedMember(Member member) {
+        return true;
+    }
+
     private int levelToExp(int level) {
         return (5 * level) * 2 + (50 * level + 100);
     }
