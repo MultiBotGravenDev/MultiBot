@@ -5,13 +5,15 @@ import fr.gravendev.multibot.commands.CommandExecutor;
 import fr.gravendev.multibot.data.WelcomeMessageData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Queue;
+import java.util.stream.Collectors;
 
 public class WelcomeMessageCommand extends CommandExecutor {
 
@@ -39,15 +41,27 @@ public class WelcomeMessageCommand extends CommandExecutor {
 
     public void execute(Message message, String[] args) {
 
+        message.getChannel().getHistoryBefore(message, 100).queue(history -> history.getRetrievedHistory().forEach(message1 -> message1.delete().queue()));
+
         try {
 
-            List<String> sentences = loadSentences();
+            WelcomeMessageDAO welcomeMessageDAO = new WelcomeMessageDAO(this.databaseConnection.getConnection());
+            WelcomeMessageData messageData;
 
-            for (int i = 0; i < sentences.size() - 1; i++) {
-                message.getChannel().sendMessage(sentences.get(i)).queue();
+            MessageBuilder messageBuilder = new MessageBuilder();
+
+            for (int i = 1; (messageData = welcomeMessageDAO.get(i + "")) != null; ++i) {
+                messageBuilder.append(messageData.message);
             }
 
-            message.getChannel().sendMessage(sentences.get(sentences.size() - 1)).queue(sentMessage -> sentMessage.addReaction("\u2705").queue());
+            Queue<Message> queue = messageBuilder.buildAll(MessageBuilder.SplitPolicy.NEWLINE);
+            List<Message> messages = Arrays.stream(queue.toArray(new Message[]{})).collect(Collectors.toList());
+
+            for (int i = 0; i < messages.size() - 1; i++) {
+                message.getChannel().sendMessage(messages.get(i)).queue();
+            }
+
+            message.getChannel().sendMessage(messages.get(messages.size() - 1)).queue(sentMessage -> sentMessage.addReaction("\u2705").queue());
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,18 +70,4 @@ public class WelcomeMessageCommand extends CommandExecutor {
         message.delete().queue();
 
     }
-
-    private List<String> loadSentences() throws SQLException {
-        List<String> sentences = new ArrayList<>();
-
-        WelcomeMessageDAO welcomeMessageDAO = new WelcomeMessageDAO(this.databaseConnection.getConnection());
-        WelcomeMessageData welcomeMessageData;
-
-        for (int i = 1; (welcomeMessageData = welcomeMessageDAO.get(i + "")) != null; ++i) {
-            sentences.add(welcomeMessageData.message);
-        }
-
-        return sentences;
-    }
-
 }
