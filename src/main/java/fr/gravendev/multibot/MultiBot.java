@@ -5,7 +5,7 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.events.MultiBotListener;
 import fr.gravendev.multibot.json.Configuration;
 import fr.gravendev.multibot.json.Serializer;
-import fr.gravendev.multibot.quizz.QuizManager;
+import fr.gravendev.multibot.quiz.QuizManager;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import org.slf4j.Logger;

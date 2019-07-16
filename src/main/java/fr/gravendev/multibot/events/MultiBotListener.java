@@ -5,7 +5,7 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.events.listeners.EmoteAddedListener;
 import fr.gravendev.multibot.events.listeners.EmoteRemovedListener;
 import fr.gravendev.multibot.events.listeners.MessageReceivedListener;
-import fr.gravendev.multibot.quizz.QuizManager;
+import fr.gravendev.multibot.quiz.QuizManager;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.EventListener;
 
