@@ -36,6 +36,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.3.1'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
+    implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
 
 }
 
