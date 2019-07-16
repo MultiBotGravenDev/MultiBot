@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-public class RankCommand extends CommandExecutor {
+public class RankCommand implements CommandExecutor {
 
     private DatabaseConnection databaseConnection;
 

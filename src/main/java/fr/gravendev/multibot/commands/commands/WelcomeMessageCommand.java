@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
-public class WelcomeMessageCommand extends CommandExecutor {
+public class WelcomeMessageCommand implements CommandExecutor {
 
     private final DatabaseConnection databaseConnection;
 
