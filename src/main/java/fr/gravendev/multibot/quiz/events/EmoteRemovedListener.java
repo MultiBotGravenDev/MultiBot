@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.events.listeners;
+package fr.gravendev.multibot.quiz.events;
 
 import fr.gravendev.multibot.events.Listener;
 import fr.gravendev.multibot.quiz.QuizManager;
@@ -21,6 +21,8 @@ public class EmoteRemovedListener implements Listener<MessageReactionRemoveEvent
 
     @Override
     public void executeListener(MessageReactionRemoveEvent event) {
+
+        if (event.getUser().isBot()) return;
 
         Member member = event.getMember();
 

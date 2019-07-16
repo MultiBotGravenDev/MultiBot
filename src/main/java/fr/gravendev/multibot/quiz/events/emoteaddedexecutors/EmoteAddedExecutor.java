@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.quiz;
+package fr.gravendev.multibot.quiz.events.emoteaddedexecutors;
 
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 

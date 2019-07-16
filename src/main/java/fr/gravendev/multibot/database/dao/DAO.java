@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.database;
+package fr.gravendev.multibot.database.dao;
 
 import java.sql.Connection;
 

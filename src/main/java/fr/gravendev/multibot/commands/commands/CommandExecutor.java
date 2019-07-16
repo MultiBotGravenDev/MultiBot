@@ -1,5 +1,6 @@
-package fr.gravendev.multibot.commands;
+package fr.gravendev.multibot.commands.commands;
 
+import fr.gravendev.multibot.commands.ChannelType;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;

@@ -1,9 +1,11 @@
-package fr.gravendev.multibot.quiz;
+package fr.gravendev.multibot.quiz.events;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.events.Listener;
-import fr.gravendev.multibot.quiz.emoteaddedexecutors.CandidsExecutor;
-import fr.gravendev.multibot.quiz.emoteaddedexecutors.ReadThisSaloonExecutor;
+import fr.gravendev.multibot.quiz.QuizManager;
+import fr.gravendev.multibot.quiz.events.emoteaddedexecutors.CandidsExecutor;
+import fr.gravendev.multibot.quiz.events.emoteaddedexecutors.EmoteAddedExecutor;
+import fr.gravendev.multibot.quiz.events.emoteaddedexecutors.ReadThisSaloonExecutor;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
 import java.util.Arrays;
