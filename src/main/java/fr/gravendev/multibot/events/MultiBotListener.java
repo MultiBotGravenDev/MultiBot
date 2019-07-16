@@ -5,6 +5,7 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.events.listeners.EmoteAddedListener;
 import fr.gravendev.multibot.events.listeners.EmoteRemovedListener;
 import fr.gravendev.multibot.events.listeners.MessageReceivedListener;
+import fr.gravendev.multibot.quiz.QuizManager;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.EventListener;
 
@@ -15,11 +16,11 @@ public class MultiBotListener implements EventListener {
 
     private final List<Listener> events;
 
-    public MultiBotListener(CommandManager commandManager, DatabaseConnection databaseConnection) {
+    public MultiBotListener(CommandManager commandManager, DatabaseConnection databaseConnection, QuizManager quizManager) {
         events = Arrays.asList(
-                new MessageReceivedListener(commandManager, databaseConnection),
-                new EmoteAddedListener(),
-                new EmoteRemovedListener()
+                new MessageReceivedListener(commandManager, databaseConnection, quizManager),
+                new EmoteAddedListener(quizManager, databaseConnection),
+                new EmoteRemovedListener(quizManager)
         );
     }
 

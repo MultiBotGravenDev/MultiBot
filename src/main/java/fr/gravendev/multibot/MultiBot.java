@@ -5,6 +5,7 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.events.MultiBotListener;
 import fr.gravendev.multibot.json.Configuration;
 import fr.gravendev.multibot.json.Serializer;
+import fr.gravendev.multibot.quiz.QuizManager;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import org.slf4j.Logger;
@@ -18,16 +19,20 @@ public class MultiBot {
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiBot.class);
 
     private final Configuration configuration;
-    private JDA jda;
     private final CommandManager commandManager;
     private final DatabaseConnection databaseConnection;
+    private final QuizManager quizManager;
+
+    private JDA jda;
 
     private MultiBot() {
-
         this.configuration = new Serializer<Configuration>().deserialize(Configuration.CONFIGURATION_FILE, Configuration.class);
-        databaseConnection = new DatabaseConnection(configuration.getHost(), configuration.getUsername(), configuration.getPassword(), configuration.getDatabase());
+        this.databaseConnection = new DatabaseConnection(configuration.getHost(), configuration.getUsername(), configuration.getPassword(), configuration.getDatabase());
         this.commandManager = new CommandManager(this.configuration.getPrefix(), databaseConnection);
+        this.quizManager = new QuizManager(databaseConnection);
+    }
 
+    private void start() {
         try {
             buildJDA();
         } catch (LoginException e) {
@@ -44,7 +49,7 @@ public class MultiBot {
 
     private void buildJDA() throws LoginException {
         this.jda = new JDABuilder(configuration.getToken())
-                .addEventListener(new MultiBotListener(this.commandManager, databaseConnection))
+                .addEventListener(new MultiBotListener(this.commandManager, this.databaseConnection, this.quizManager))
                 .build();
         LOGGER.info("Bot connected");
     }
@@ -56,7 +61,7 @@ public class MultiBot {
     }
 
     public static void main(String[] args) {
-        new MultiBot();
+        new MultiBot().start();
     }
 
 }
