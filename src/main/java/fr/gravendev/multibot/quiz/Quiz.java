@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.quiz;
 
-import fr.gravendev.multibot.data.MessageData;
+import fr.gravendev.multibot.database.data.MessageData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.QuizMessageDAO;
 import net.dv8tion.jda.core.entities.MessageEmbed;

@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.json;
+package fr.gravendev.multibot.utils.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

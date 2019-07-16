@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.json;
+package fr.gravendev.multibot.utils.json;
 
 import java.io.File;
 

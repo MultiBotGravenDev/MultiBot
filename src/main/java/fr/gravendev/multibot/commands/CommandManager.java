@@ -1,9 +1,9 @@
 package fr.gravendev.multibot.commands;
 
 import fr.gravendev.multibot.commands.commands.AboutCommand;
-import fr.gravendev.multibot.commands.commands.RankCommand;
-import fr.gravendev.multibot.commands.commands.RolesCommand;
-import fr.gravendev.multibot.commands.commands.WelcomeMessageCommand;
+import fr.gravendev.multibot.commands.commands.CommandExecutor;
+import fr.gravendev.multibot.rank.RankCommand;
+import fr.gravendev.multibot.quiz.WelcomeMessageCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -21,17 +21,19 @@ public class CommandManager {
         commandExecutors = Arrays.asList(
                 new AboutCommand(),
                 new WelcomeMessageCommand(databaseConnection),
-                new RankCommand(databaseConnection),
-                new RolesCommand(databaseConnection)
+                new RankCommand(databaseConnection)
+//                new RolesCommand(databaseConnection)
         );
     }
 
-    public boolean executeCommand(Message message) {
+    void executeCommand(Message message) {
 
         String content = message.getContentRaw();
 
+        if (content.length() == 0) return;
+
         char prefix = content.charAt(0);
-        if (prefix != this.prefix) return false;
+        if (prefix != this.prefix) return;
 
         String command = content.substring(1);
         String[] args = command.split(" +");
@@ -47,13 +49,11 @@ public class CommandManager {
             if (commandExecutor.isAuthorizedChannel(message.getChannel()) && commandExecutor.isAuthorizedMember(message.getMember())) {
 
                 commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length));
-                return true;
 
             }
 
         }
 
-        return false;
     }
 
 }

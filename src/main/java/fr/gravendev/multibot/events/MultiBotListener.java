@@ -2,9 +2,8 @@ package fr.gravendev.multibot.events;
 
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.events.listeners.EmoteAddedListener;
-import fr.gravendev.multibot.events.listeners.EmoteRemovedListener;
-import fr.gravendev.multibot.events.listeners.MessageReceivedListener;
+import fr.gravendev.multibot.quiz.events.EmoteAddedListener;
+import fr.gravendev.multibot.quiz.events.EmoteRemovedListener;
 import fr.gravendev.multibot.quiz.QuizManager;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.EventListener;
@@ -18,7 +17,9 @@ public class MultiBotListener implements EventListener {
 
     public MultiBotListener(CommandManager commandManager, DatabaseConnection databaseConnection, QuizManager quizManager) {
         events = Arrays.asList(
-                new MessageReceivedListener(commandManager, databaseConnection, quizManager),
+                new fr.gravendev.multibot.quiz.events.MessageReceivedListener(quizManager),
+                new fr.gravendev.multibot.commands.MessageReceivedListener(commandManager),
+                new fr.gravendev.multibot.rank.MessageReceivedListener(databaseConnection),
                 new EmoteAddedListener(quizManager, databaseConnection),
                 new EmoteRemovedListener(quizManager)
         );
@@ -29,8 +30,7 @@ public class MultiBotListener implements EventListener {
 
         events.stream()
                 .filter(listener -> listener.getEventClass().equals(event.getClass()))
-                .findAny()
-                .ifPresent(listener -> listener.executeListener(event));
+                .forEach(listener -> listener.executeListener(event));
 
     }
 

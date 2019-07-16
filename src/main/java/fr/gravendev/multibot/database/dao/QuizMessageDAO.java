@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.database.dao;
 
-import fr.gravendev.multibot.data.MessageData;
-import fr.gravendev.multibot.database.DAO;
+import fr.gravendev.multibot.database.data.MessageData;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

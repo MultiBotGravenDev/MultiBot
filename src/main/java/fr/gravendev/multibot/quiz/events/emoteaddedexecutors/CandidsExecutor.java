@@ -1,8 +1,8 @@
-package fr.gravendev.multibot.events.listeners.emoteaddedexecutors;
+package fr.gravendev.multibot.quiz.emoteaddedexecutors;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
-import fr.gravendev.multibot.events.listeners.EmoteAddedExecutor;
+import fr.gravendev.multibot.quiz.EmoteAddedExecutor;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
