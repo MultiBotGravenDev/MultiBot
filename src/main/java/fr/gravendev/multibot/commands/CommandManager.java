@@ -2,6 +2,7 @@ package fr.gravendev.multibot.commands;
 
 import fr.gravendev.multibot.commands.commands.AboutCommand;
 import fr.gravendev.multibot.commands.commands.RankCommand;
+import fr.gravendev.multibot.commands.commands.RolesCommand;
 import fr.gravendev.multibot.commands.commands.WelcomeMessageCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import net.dv8tion.jda.core.entities.Message;
@@ -21,7 +22,8 @@ public class CommandManager {
         commandExecutors = Arrays.asList(
                 new AboutCommand(),
                 new WelcomeMessageCommand(databaseConnection),
-                new RankCommand(databaseConnection)
+                new RankCommand(databaseConnection),
+                new RolesCommand(databaseConnection)
         );
     }
 

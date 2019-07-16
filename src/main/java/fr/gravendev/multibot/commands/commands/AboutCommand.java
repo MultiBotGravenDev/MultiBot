@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.entities.Message;
 import java.util.Collections;
 import java.util.List;
 
-public class AboutCommand extends CommandExecutor {
+public class AboutCommand implements CommandExecutor {
 
     public String getCommand() {
         return "about";

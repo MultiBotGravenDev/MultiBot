@@ -7,21 +7,21 @@ import net.dv8tion.jda.core.entities.PrivateChannel;
 
 import java.util.List;
 
-public abstract class CommandExecutor {
+public  interface CommandExecutor {
 
-    public abstract String getCommand();
+    String getCommand();
 
-    public abstract String getDescription();
+    String getDescription();
 
-    public abstract ChannelType getChannelType();
+    ChannelType getChannelType();
 
-    public abstract void execute(Message message, String[] args);
+    void execute(Message message, String[] args);
 
-    public abstract List<String> getAuthorizedChannelsNames();
+    List<String> getAuthorizedChannelsNames();
 
-    public abstract boolean isAuthorizedMember(Member member);
+    boolean isAuthorizedMember(Member member);
 
-    boolean isAuthorizedChannel(MessageChannel channel) {
+    default boolean isAuthorizedChannel(MessageChannel channel) {
         if (getChannelType() != ChannelType.PRIVATE) {
             return getAuthorizedChannelsNames().contains(channel.getName()) || channel instanceof PrivateChannel;
         } else {
