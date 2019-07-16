@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.quizz;
+package fr.gravendev.multibot.quiz;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.QuizMessageDAO;
@@ -21,7 +21,7 @@ public class QuizManager {
         this.quizs.put(user.getIdLong(), new Quiz(this.databaseConnection, user));
 
         try {
-            String startMessage = new QuizMessageDAO(this.databaseConnection.getConnection()).get(1 + "").message;
+            String startMessage = new QuizMessageDAO(this.databaseConnection.getConnection()).get("start").message;
             user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(startMessage).queue());
             send(user);
         } catch (SQLException e) {

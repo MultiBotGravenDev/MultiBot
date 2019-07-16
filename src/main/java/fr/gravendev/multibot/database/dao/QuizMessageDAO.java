@@ -25,7 +25,7 @@ public class QuizMessageDAO extends DAO<MessageData> {
 
         try {
             PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM quiz_messages WHERE id = ?");
-            statement.setInt(1, Integer.valueOf(value));
+            statement.setString(1, value);
 
             ResultSet resultSet = statement.executeQuery();
 

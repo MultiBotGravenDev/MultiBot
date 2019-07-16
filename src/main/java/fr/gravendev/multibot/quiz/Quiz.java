@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.quizz;
+package fr.gravendev.multibot.quiz;
 
 import fr.gravendev.multibot.data.MessageData;
 import fr.gravendev.multibot.database.DatabaseConnection;
@@ -19,7 +19,7 @@ class Quiz {
     Quiz(DatabaseConnection databaseConnection, User user) {
         this.databaseConnection = databaseConnection;
         this.user = user;
-        this.questionIndex = 3;
+        this.questionIndex = 1;
     }
 
     boolean send() {
@@ -35,7 +35,7 @@ class Quiz {
 
             } else {
 
-                this.user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(quizMessageDAO.get(2 + "").message).queue());
+                this.user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(quizMessageDAO.get("stop").message).queue());
                 return false;
 
             }
@@ -49,7 +49,8 @@ class Quiz {
 
     }
 
-    public void registerResponse(String contentDisplay) {
+    void registerResponse(String contentDisplay) {
         this.responses.put(this.questionIndex, contentDisplay);
     }
+
 }
