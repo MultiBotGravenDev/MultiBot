@@ -6,7 +6,6 @@ import fr.gravendev.multibot.commands.commands.RolesCommand;
 import fr.gravendev.multibot.commands.commands.WelcomeMessageCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.User;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,10 +28,7 @@ public class CommandManager {
 
     public boolean executeCommand(Message message) {
 
-        User user = message.getAuthor();
-
         String content = message.getContentRaw();
-        if (user.isBot() || content.length() <= 1) return false;
 
         char prefix = content.charAt(0);
         if (prefix != this.prefix) return false;
@@ -48,7 +44,7 @@ public class CommandManager {
 
             CommandExecutor commandExecutor = optionalCommandExecutor.get();
 
-            if (commandExecutor.isAuthorizedChannel(message.getChannel())) {
+            if (commandExecutor.isAuthorizedChannel(message.getChannel()) && commandExecutor.isAuthorizedMember(message.getMember())) {
 
                 commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length));
                 return true;
