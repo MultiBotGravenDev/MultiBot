@@ -1,6 +1,5 @@
-package fr.gravendev.multibot.quiz.emoteaddedexecutors;
+package fr.gravendev.multibot.quiz.events.emoteaddedexecutors;
 
-import fr.gravendev.multibot.quiz.EmoteAddedExecutor;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.core.entities.Member;

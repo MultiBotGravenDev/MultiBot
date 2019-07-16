@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.data;
+package fr.gravendev.multibot.database.data;
 
 public class GuildIdsData {
 
