@@ -14,19 +14,21 @@ class Quiz {
     private final DatabaseConnection databaseConnection;
     private final User user;
     private int questionIndex;
+    private int answerIndex;
     private final Map<Integer, String> responses = new HashMap<>();
 
     Quiz(DatabaseConnection databaseConnection, User user) {
         this.databaseConnection = databaseConnection;
         this.user = user;
         this.questionIndex = 1;
+        this.answerIndex = 0;
     }
 
     boolean send() {
 
         try {
             QuizMessageDAO quizMessageDAO = new QuizMessageDAO(this.databaseConnection.getConnection());
-            MessageData messageData = quizMessageDAO.get(this.questionIndex++ + "");
+            MessageData messageData = quizMessageDAO.get(this.questionIndex + "");
 
             if (messageData != null) {
 
@@ -50,7 +52,25 @@ class Quiz {
     }
 
     void registerResponse(String contentDisplay) {
-        this.responses.put(this.questionIndex, contentDisplay);
+        this.responses.put(this.questionIndex++, contentDisplay);
     }
 
+    boolean nextAnswer() {
+        ++this.answerIndex;
+        return this.responses.get(this.answerIndex) != null;
+    }
+
+    String getCurrentAnswer() {
+        try {
+            return new StringBuilder()
+                    .append(">")
+                    .append(new QuizMessageDAO(this.databaseConnection.getConnection()).get(this.answerIndex + "").message)
+                    .append("\n")
+                    .append(this.responses.get(this.answerIndex))
+                    .toString();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return " ";
+    }
 }

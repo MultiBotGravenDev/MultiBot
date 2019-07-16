@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.quiz;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.QuizMessageDAO;
 import net.dv8tion.jda.core.entities.User;
 
@@ -31,9 +32,30 @@ public class QuizManager {
     }
 
     public void send(User user) {
-        if (!this.quizs.get(user.getIdLong()).send()) {
-            this.quizs.remove(user.getIdLong());
+        long userId = user.getIdLong();
+        if (!this.quizs.get(userId).send()) {
+            sendResponses(user, this.quizs.get(userId));
+            this.quizs.remove(userId);
         }
+    }
+
+    private void sendResponses(User user, Quiz quiz) {
+
+        try {
+            GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection.getConnection());
+            long guildId = guildIdDAO.get("guild").id;
+            long candidsChannelId = guildIdDAO.get("candids").id;
+
+            while (quiz.nextAnswer()) {
+
+                user.getJDA().getGuildById(guildId).getTextChannelById(candidsChannelId).sendMessage(quiz.getCurrentAnswer()).queue();
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void removeQuiz(User user) {
