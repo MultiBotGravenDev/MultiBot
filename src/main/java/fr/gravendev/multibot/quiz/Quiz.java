@@ -3,6 +3,7 @@ package fr.gravendev.multibot.quiz;
 import fr.gravendev.multibot.data.MessageData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.QuizMessageDAO;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.User;
 
 import java.sql.SQLException;
@@ -60,17 +61,15 @@ class Quiz {
         return this.responses.get(this.answerIndex) != null;
     }
 
-    String getCurrentAnswer() {
+    MessageEmbed.Field getCurrentAnswer() {
         try {
-            return new StringBuilder()
-                    .append(">")
-                    .append(new QuizMessageDAO(this.databaseConnection.getConnection()).get(this.answerIndex + "").message)
-                    .append("\n")
-                    .append(this.responses.get(this.answerIndex))
-                    .toString();
+            return new MessageEmbed.Field(
+                    new QuizMessageDAO(this.databaseConnection.getConnection()).get(this.answerIndex + "").message,
+                    this.responses.get(this.answerIndex),
+                    false);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return " ";
+        return new MessageEmbed.Field("", "", false);
     }
 }
