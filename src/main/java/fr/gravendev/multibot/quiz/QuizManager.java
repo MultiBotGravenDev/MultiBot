@@ -63,7 +63,10 @@ public class QuizManager {
             }
 
             messageBuilder.setEmbed(embedBuilder.build())
-                    .sendTo(user.getJDA().getGuildById(guildId).getTextChannelById(candidsChannelId)).queue();
+                    .sendTo(user.getJDA().getGuildById(guildId).getTextChannelById(candidsChannelId)).queue(message -> {
+                        message.addReaction("\u2705").queue();
+                        message.addReaction("\u274C").queue();
+            });
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,4 +85,5 @@ public class QuizManager {
     public void registerResponse(User user, String contentDisplay) {
         this.quizs.get(user.getIdLong()).registerResponse(contentDisplay);
     }
+
 }

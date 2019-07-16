@@ -46,7 +46,7 @@ public class WelcomeMessageCommand extends CommandExecutor {
         try {
 
             WelcomeMessageDAO welcomeMessageDAO = new WelcomeMessageDAO(this.databaseConnection.getConnection());
-            WelcomeMessageData messageData;
+            MessageData messageData;
 
             MessageBuilder messageBuilder = new MessageBuilder();
 
