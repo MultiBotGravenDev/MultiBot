@@ -10,6 +10,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RoleCommand implements CommandExecutor {
 
@@ -39,7 +40,13 @@ public class RoleCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
-        if (args.length == 0) return;
+        if (args.length == 0) {
+            message.getChannel().sendMessage("commane inconnue. "
+                    + "!roles ["
+                    + this.argumentExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining("/"))
+                    + "]").queue();
+            return;
+        }
 
         this.argumentExecutors.stream()
                 .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
