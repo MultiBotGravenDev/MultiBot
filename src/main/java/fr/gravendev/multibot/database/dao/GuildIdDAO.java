@@ -14,11 +14,6 @@ public class GuildIdDAO extends DAO<GuildIdsData> {
     }
 
     @Override
-    public boolean save(GuildIdsData obj) {
-        return true;
-    }
-
-    @Override
     public GuildIdsData get(String value) {
         GuildIdsData guildIdsData = null;
 
@@ -37,11 +32,6 @@ public class GuildIdDAO extends DAO<GuildIdsData> {
         }
 
         return guildIdsData;
-    }
-
-    @Override
-    public void delete(GuildIdsData obj) {
-
     }
 
 }

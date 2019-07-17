@@ -4,16 +4,18 @@ import java.sql.Connection;
 
 public abstract class DAO<T> {
 
-    protected final Connection connection;
+    final Connection connection;
 
-    public DAO(Connection connection) {
+    DAO(Connection connection) {
         this.connection = connection;
     }
 
-    public abstract boolean save(T obj);
+    public boolean save(T obj) {
+        return true;
+    }
 
     public abstract T get(String value);
 
-    public abstract void delete(T obj);
+    public void delete(T obj) {}
 
 }

@@ -11,11 +11,6 @@ public class WelcomeMessageDAO extends DAO<MessageData> {
     }
 
     @Override
-    public boolean save(MessageData obj) {
-        return true;
-    }
-
-    @Override
     public MessageData get(String value) {
 
         MessageData messageData = null;
@@ -35,11 +30,6 @@ public class WelcomeMessageDAO extends DAO<MessageData> {
         }
 
         return messageData;
-    }
-
-    @Override
-    public void delete(MessageData obj) {
-
     }
 
 }

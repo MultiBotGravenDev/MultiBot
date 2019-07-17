@@ -6,21 +6,30 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public  interface CommandExecutor {
 
     String getCommand();
 
-    String getDescription();
+    default String getDescription() {
+        return "";
+    }
 
-    ChannelType getChannelType();
+    default ChannelType getChannelType() {
+        return ChannelType.ALL;
+    }
 
     void execute(Message message, String[] args);
 
-    List<String> getAuthorizedChannelsNames();
+    default List<String> getAuthorizedChannelsNames() {
+        return new ArrayList<>();
+    }
 
-    boolean isAuthorizedMember(Member member);
+    default boolean isAuthorizedMember(Member member) {
+        return true;
+    }
 
     default boolean isAuthorizedChannel(MessageChannel channel) {
         if (getChannelType() != ChannelType.PRIVATE) {

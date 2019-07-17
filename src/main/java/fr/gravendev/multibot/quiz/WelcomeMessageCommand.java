@@ -5,8 +5,8 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.data.MessageData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
-import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -25,27 +25,32 @@ public class WelcomeMessageCommand implements CommandExecutor {
         this.databaseConnection = databaseConnection;
     }
 
+    @Override
     public String getCommand() {
         return "welcome";
     }
 
+    @Override
     public String getDescription() {
         return "envoie le message de bienvenue et la réaction pour recevoir le formulaire";
     }
 
+    @Override
     public ChannelType getChannelType() {
         return ChannelType.GUILD;
     }
 
+    @Override
     public List<String> getAuthorizedChannelsNames() {
         return Collections.singletonList("lisez-ce-salon");
     }
 
     @Override
     public boolean isAuthorizedMember(Member member) {
-        return GuildUtils.hasRole(member, "Pilier de la Commu");
+        return member.hasPermission(Permission.ADMINISTRATOR);
     }
 
+    @Override
     public void execute(Message message, String[] args) {
 
         message.getChannel().getHistoryBefore(message, 100).queue(history -> history.getRetrievedHistory().forEach(message1 -> message1.delete().queue()));
@@ -77,4 +82,5 @@ public class WelcomeMessageCommand implements CommandExecutor {
         message.delete().queue();
 
     }
+
 }
