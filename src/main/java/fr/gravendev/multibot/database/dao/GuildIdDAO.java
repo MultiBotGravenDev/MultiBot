@@ -14,6 +14,25 @@ public class GuildIdDAO extends DAO<GuildIdsData> {
     }
 
     @Override
+    public boolean save(GuildIdsData guildIdsData) {
+
+        try {
+            PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT INTO guild_id VALUES(?, ?) ON DUPLICATE KEY UPDATE id = ?");
+            preparedStatement.setString(1, guildIdsData.name);
+            preparedStatement.setString(2, guildIdsData.id + "");
+            preparedStatement.setString(3, guildIdsData.id + "");
+
+            preparedStatement.execute();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
     public GuildIdsData get(String value) {
         GuildIdsData guildIdsData = null;
 
@@ -24,7 +43,9 @@ public class GuildIdDAO extends DAO<GuildIdsData> {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                guildIdsData = new GuildIdsData(resultSet.getLong("id"));
+                String name = resultSet.getString("name");
+                long id = Long.parseLong(resultSet.getString("id"));
+                guildIdsData = new GuildIdsData(name, id);
             }
 
         } catch (SQLException e) {

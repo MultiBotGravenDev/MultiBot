@@ -14,7 +14,7 @@ public class ListCommand implements CommandExecutor {
 
     private final DatabaseConnection databaseConnection;
 
-    public ListCommand(DatabaseConnection databaseConnection) {
+    ListCommand(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
 

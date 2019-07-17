@@ -13,7 +13,7 @@ public class HereCommand implements CommandExecutor {
 
     private final DatabaseConnection databaseConnection;
 
-    public HereCommand(DatabaseConnection databaseConnection) {
+    HereCommand(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
 

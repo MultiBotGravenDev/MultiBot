@@ -15,7 +15,7 @@ public class AddCommand implements CommandExecutor {
 
     private final DatabaseConnection databaseConnection;
 
-    public AddCommand(DatabaseConnection databaseConnection) {
+    AddCommand(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
 

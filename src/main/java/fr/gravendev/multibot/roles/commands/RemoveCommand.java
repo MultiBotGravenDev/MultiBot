@@ -13,7 +13,7 @@ public class RemoveCommand implements CommandExecutor {
 
     private final DatabaseConnection databaseConnection;
 
-    public RemoveCommand(DatabaseConnection databaseConnection) {
+    RemoveCommand(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
 

@@ -4,9 +4,9 @@ import fr.gravendev.multibot.commands.commands.AboutCommand;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.commands.commands.UserinfoCommand;
 import fr.gravendev.multibot.rank.RankCommand;
-import fr.gravendev.multibot.quiz.WelcomeMessageCommand;
+import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.roles.RoleCommand;
+import fr.gravendev.multibot.roles.commands.RoleCommand;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class CommandManager {
         this.prefix = prefix;
         commandExecutors = Arrays.asList(
                 new AboutCommand(),
-                new WelcomeMessageCommand(databaseConnection),
+                new QuizCommand(databaseConnection),
                 new RankCommand(databaseConnection),
                 new RoleCommand(databaseConnection),
                 new UserinfoCommand()
