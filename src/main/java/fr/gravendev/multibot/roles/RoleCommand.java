@@ -4,6 +4,9 @@ import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.roles.commands.AddCommand;
+import fr.gravendev.multibot.roles.commands.HereCommand;
+import fr.gravendev.multibot.roles.commands.ListCommand;
+import fr.gravendev.multibot.roles.commands.RemoveCommand;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -18,7 +21,10 @@ public class RoleCommand implements CommandExecutor {
 
     public RoleCommand(DatabaseConnection databaseConnection) {
         this.argumentExecutors = Arrays.asList(
-                new AddCommand(databaseConnection)
+                new AddCommand(databaseConnection),
+                new RemoveCommand(databaseConnection),
+                new ListCommand(databaseConnection),
+                new HereCommand(databaseConnection)
         );
     }
 
@@ -57,7 +63,7 @@ public class RoleCommand implements CommandExecutor {
 
     @Override
     public List<String> getAuthorizedChannelsNames() {
-        return Arrays.asList("lisez-ce-salon", "piliers");
+        return Arrays.asList("rôle-langage", "piliers");
     }
 
     @Override

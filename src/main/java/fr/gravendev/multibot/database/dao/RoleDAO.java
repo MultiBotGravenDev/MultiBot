@@ -19,8 +19,8 @@ public class RoleDAO extends DAO<RoleData> {
 
         try {
             PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT INTO roles VALUES(?, ?)");
-            preparedStatement.setLong(1, obj.roleId);
-            preparedStatement.setLong(2, obj.emoteId);
+            preparedStatement.setString(1, obj.roleId);
+            preparedStatement.setString(2, obj.emoteId);
 
             preparedStatement.execute();
             return true;
@@ -38,14 +38,15 @@ public class RoleDAO extends DAO<RoleData> {
         RoleData roleData = null;
 
         try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement("SELECT * FROM roles WHERE role_id = ?");
-            preparedStatement.setLong(1, Long.valueOf(value));
+            PreparedStatement preparedStatement = this.connection.prepareStatement("SELECT * FROM roles WHERE role_id = ? OR emote_id = ?");
+            preparedStatement.setString(1, value);
+            preparedStatement.setString(2, value);
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                long roleId = resultSet.getLong("role_id");
-                long emoteID = resultSet.getLong("emote_id");
+                String roleId = resultSet.getString("role_id");
+                String emoteID = resultSet.getString("emote_id");
                 roleData = new RoleData(roleId, emoteID);
             }
 
@@ -54,6 +55,21 @@ public class RoleDAO extends DAO<RoleData> {
         }
 
         return roleData;
+    }
+
+    @Override
+    public void delete(RoleData roleData) {
+
+        try {
+            PreparedStatement preparedStatement = this.connection.prepareStatement("DELETE FROM roles WHERE role_id = ?");
+            preparedStatement.setString(1, roleData.roleId + "");
+
+            preparedStatement.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
