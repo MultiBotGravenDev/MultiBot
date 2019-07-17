@@ -11,7 +11,6 @@ import net.dv8tion.jda.core.entities.Message;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class CommandManager {
 
@@ -33,29 +32,15 @@ public class CommandManager {
 
         String content = message.getContentRaw();
 
-        if (content.length() == 0) return;
+        if (content.length() == 0 || content.charAt(0) != this.prefix) return;
 
-        char prefix = content.charAt(0);
-        if (prefix != this.prefix) return;
+        String[] args = content.substring(1).split(" +");
 
-        String command = content.substring(1);
-        String[] args = command.split(" +");
-
-        Optional<CommandExecutor> optionalCommandExecutor = this.commandExecutors.stream()
+        this.commandExecutors.stream()
                 .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
-                .findAny();
-
-        if (optionalCommandExecutor.isPresent()) {
-
-            CommandExecutor commandExecutor = optionalCommandExecutor.get();
-
-            if (commandExecutor.isAuthorizedChannel(message.getChannel()) && commandExecutor.isAuthorizedMember(message.getMember())) {
-
-                commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length));
-
-            }
-
-        }
+                .filter(commandExecutor -> commandExecutor.canExecute(message))
+                .findAny()
+                .ifPresent(commandExecutor -> commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length)));
 
     }
 
