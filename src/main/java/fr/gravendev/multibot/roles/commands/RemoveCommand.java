@@ -3,25 +3,23 @@ package fr.gravendev.multibot.roles.commands;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.RoleDAO;
-import fr.gravendev.multibot.database.data.RoleData;
-import net.dv8tion.jda.core.entities.Emote;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class AddCommand implements CommandExecutor {
+public class RemoveCommand implements CommandExecutor {
 
     private final DatabaseConnection databaseConnection;
 
-    public AddCommand(DatabaseConnection databaseConnection) {
+    public RemoveCommand(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
 
     @Override
     public String getCommand() {
-        return "add";
+        return "remove";
     }
 
     @Override
@@ -29,8 +27,7 @@ public class AddCommand implements CommandExecutor {
 
         List<Role> mentionedRoles = message.getMentionedRoles();
 
-        if (args.length != 2) return;
-        if (!args[0].matches("[0-9]+")) return;
+        if (args.length != 1) return;
         if (mentionedRoles.size() != 1) return;
 
         try {
@@ -38,22 +35,14 @@ public class AddCommand implements CommandExecutor {
 
             Role mentionedRole = mentionedRoles.get(0);
 
-            if (roleDAO.get(mentionedRole.getId()) == null) {
+            if (roleDAO.get(mentionedRole.getId()) != null) {
 
-                Emote emote = message.getGuild().getEmoteById(args[0]);
-
-                if (emote == null) {
-                    message.getChannel().sendMessage("Cet emote n'existe pas").queue();
-                    return;
-                }
-
-                roleDAO.save(new RoleData(mentionedRole.getId(), args[0]));
+                roleDAO.delete(roleDAO.get(mentionedRole.getId()));
                 message.getChannel().sendMessage("Le role "
                         + mentionedRole.getAsMention()
-                        + " a bien été ajouté à la liste des rôles avec la réaction "
-                        + emote.getAsMention()).queue();
+                        + " a bien été supprimé à la liste des rôles").queue();
             } else {
-                message.getChannel().sendMessage("Ce role existe déjà").queue();
+                message.getChannel().sendMessage("Ce role n'existe pas").queue();
             }
 
         } catch (SQLException e) {
