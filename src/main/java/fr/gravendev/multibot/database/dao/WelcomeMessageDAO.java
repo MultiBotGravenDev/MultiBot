@@ -22,7 +22,9 @@ public class WelcomeMessageDAO extends DAO<MessageData> {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                messageData = new MessageData(resultSet.getString("text"));
+                String id = resultSet.getString("id");
+                String text = resultSet.getString("text");
+                messageData = new MessageData(id, text);
             }
 
         } catch (SQLException e) {

@@ -7,6 +7,8 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public class HereCommand implements CommandExecutor {
@@ -20,6 +22,11 @@ public class HereCommand implements CommandExecutor {
     @Override
     public String getCommand() {
         return "here";
+    }
+
+    @Override
+    public List<String> getAuthorizedChannelsNames() {
+        return Collections.singletonList("rôle-langage");
     }
 
     @Override

@@ -7,6 +7,7 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 public class RemoveCommand implements CommandExecutor {
@@ -20,6 +21,11 @@ public class RemoveCommand implements CommandExecutor {
     @Override
     public String getCommand() {
         return "remove";
+    }
+
+    @Override
+    public List<String> getAuthorizedChannelsNames() {
+        return Arrays.asList("rôle-langage", "piliers");
     }
 
     @Override

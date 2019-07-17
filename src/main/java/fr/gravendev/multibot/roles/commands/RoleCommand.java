@@ -53,6 +53,7 @@ public class RoleCommand implements CommandExecutor {
 
         this.argumentExecutors.stream()
                 .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
+                .filter(commandExecutor -> commandExecutor.canExecute(message))
                 .findAny()
                 .ifPresent(commandExecutor -> commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length)));
 
