@@ -2,6 +2,7 @@ package fr.gravendev.multibot.commands;
 
 import fr.gravendev.multibot.commands.commands.AboutCommand;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
+import fr.gravendev.multibot.commands.commands.UserinfoCommand;
 import fr.gravendev.multibot.rank.RankCommand;
 import fr.gravendev.multibot.quiz.WelcomeMessageCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
@@ -23,7 +24,8 @@ public class CommandManager {
                 new AboutCommand(),
                 new WelcomeMessageCommand(databaseConnection),
                 new RankCommand(databaseConnection),
-                new RoleCommand(databaseConnection)
+                new RoleCommand(databaseConnection),
+                new UserinfoCommand()
         );
     }
 
