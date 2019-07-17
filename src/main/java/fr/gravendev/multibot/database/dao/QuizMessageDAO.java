@@ -14,11 +14,6 @@ public class QuizMessageDAO extends DAO<MessageData> {
     }
 
     @Override
-    public boolean save(MessageData obj) {
-        return true;
-    }
-
-    @Override
     public MessageData get(String value) {
         MessageData messageData = null;
 
@@ -37,11 +32,6 @@ public class QuizMessageDAO extends DAO<MessageData> {
         }
 
         return messageData;
-    }
-
-    @Override
-    public void delete(MessageData obj) {
-
     }
 
 }

@@ -53,6 +53,4 @@ public class ExperienceDAO extends DAO<ExperienceData> {
         return data;
     }
 
-    @Override
-    public void delete(ExperienceData obj) {}
 }
