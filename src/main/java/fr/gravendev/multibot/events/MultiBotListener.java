@@ -2,6 +2,7 @@ package fr.gravendev.multibot.events;
 
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.logs.MessageReceivedListener;
 import fr.gravendev.multibot.quiz.events.EmoteAddedListener;
 import fr.gravendev.multibot.quiz.events.EmoteRemovedListener;
 import fr.gravendev.multibot.quiz.QuizManager;
@@ -20,6 +21,7 @@ public class MultiBotListener implements EventListener {
                 new fr.gravendev.multibot.quiz.events.MessageReceivedListener(quizManager),
                 new fr.gravendev.multibot.commands.MessageReceivedListener(commandManager),
                 new fr.gravendev.multibot.rank.MessageReceivedListener(databaseConnection),
+                new fr.gravendev.multibot.logs.MessageReceivedListener(databaseConnection),
                 new EmoteAddedListener(quizManager, databaseConnection),
                 new EmoteRemovedListener(quizManager)
         );

@@ -1,0 +1,82 @@
+package fr.gravendev.multibot.logs;
+
+import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.GuildIdDAO;
+import fr.gravendev.multibot.database.dao.LogsDAO;
+import fr.gravendev.multibot.database.data.GuildIdsData;
+import fr.gravendev.multibot.events.Listener;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+
+import java.awt.*;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
+
+    private final DatabaseConnection databaseConnection;
+
+    public MessageReceivedListener(DatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
+    }
+
+    @Override
+    public Class<MessageReceivedEvent> getEventClass() {
+        return MessageReceivedEvent.class;
+    }
+
+    @Override
+    public void executeListener(MessageReceivedEvent event) {
+        Message message = event.getMessage();
+        MessageChannel channel = message.getChannel();
+        User user = message.getAuthor();
+        if(user.isBot()) return;
+
+        if(channel.getName().startsWith("présentation-")) {
+            try {
+                LogsDAO logsDAO = new LogsDAO(databaseConnection.getConnection());
+                MessageData messageData = new MessageData(message);
+                logsDAO.save(messageData);
+
+                GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection.getConnection());
+                GuildIdsData logs = guildIdDAO.get("logs");
+
+                EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.ORANGE)
+                        .setAuthor(user.getName(),user.getAvatarUrl())
+                        .setDescription("Projet envoyé dans <#"+channel.getId()+">")
+                        .addField("Aller au message: ", "[Lien]("+message.getJumpUrl()+")", false)
+                        .setFooter("User ID: "+user.getId(), user.getAvatarUrl());
+
+                TextChannel logsChannel = message.getGuild().getTextChannelById(logs.id);
+                logsChannel.sendMessage(embedBuilder.build()).queue();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        List<Role> mentionedRoles = message.getMentionedRoles();
+        if(mentionedRoles.size() > 0) {
+            try {
+
+                GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection.getConnection());
+                GuildIdsData logs = guildIdDAO.get("logs");
+
+                EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.MAGENTA)
+                        .setAuthor(user.getName(),user.getAvatarUrl())
+                        .setDescription("Rôle mentionné dans <#"+channel.getId()+">")
+                        .addField("Rôle mentionné: ", mentionedRoles.stream().map(Role::getName).collect(Collectors.joining(", ")), false)
+                        .addField("Aller au message: ", "[Lien]("+message.getJumpUrl()+")", false)
+                        .setFooter("User ID: "+user.getId(), user.getAvatarUrl());
+
+                TextChannel logsChannel = message.getGuild().getTextChannelById(logs.id);
+                logsChannel.sendMessage(embedBuilder.build()).queue();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+}
