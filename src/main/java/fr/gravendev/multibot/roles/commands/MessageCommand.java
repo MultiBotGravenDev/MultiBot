@@ -12,7 +12,7 @@ public class MessageCommand implements CommandExecutor {
     
     private final DatabaseConnection databaseConnection;
 
-    public MessageCommand(DatabaseConnection databaseConnection) {
+    MessageCommand(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
 

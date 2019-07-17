@@ -1,9 +1,8 @@
-package fr.gravendev.multibot.roles;
+package fr.gravendev.multibot.quiz.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.roles.commands.*;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -12,28 +11,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RoleCommand implements CommandExecutor {
+public class QuizCommand implements CommandExecutor {
 
     private final List<CommandExecutor> argumentExecutors;
 
-    public RoleCommand(DatabaseConnection databaseConnection) {
+    public QuizCommand(DatabaseConnection databaseConnection) {
         this.argumentExecutors = Arrays.asList(
-                new AddCommand(databaseConnection),
-                new RemoveCommand(databaseConnection),
-                new ListCommand(databaseConnection),
                 new HereCommand(databaseConnection),
-                new MessageCommand(databaseConnection)
+                new ResponsesCommand(databaseConnection)
         );
     }
 
     @Override
     public String getCommand() {
-        return "roles";
+        return "quiz";
     }
 
     @Override
     public String getDescription() {
-        return "";
+        return "envoie le message de bienvenue et la réaction pour recevoir le formulaire";
     }
 
     @Override
@@ -42,11 +38,21 @@ public class RoleCommand implements CommandExecutor {
     }
 
     @Override
+    public List<String> getAuthorizedChannelsNames() {
+        return Arrays.asList("lisez-ce-salon", "piliers");
+    }
+
+    @Override
+    public boolean isAuthorizedMember(Member member) {
+        return member.hasPermission(Permission.ADMINISTRATOR);
+    }
+
+    @Override
     public void execute(Message message, String[] args) {
 
         if (args.length == 0) {
-            message.getChannel().sendMessage("commane inconnue. "
-                    + "!roles ["
+            message.getChannel().sendMessage("commande inconnue. "
+                    + "!quiz ["
                     + this.argumentExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining("/"))
                     + "]").queue();
             return;
@@ -57,16 +63,6 @@ public class RoleCommand implements CommandExecutor {
                 .findAny()
                 .ifPresent(commandExecutor -> commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length)));
 
-    }
-
-    @Override
-    public List<String> getAuthorizedChannelsNames() {
-        return Arrays.asList("rôle-langage", "piliers");
-    }
-
-    @Override
-    public boolean isAuthorizedMember(Member member) {
-        return member.hasPermission(Permission.ADMINISTRATOR);
     }
 
 }
