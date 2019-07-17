@@ -39,4 +39,8 @@ public  interface CommandExecutor {
         }
     }
 
+    default boolean canExecute(Message message) {
+        return isAuthorizedChannel(message.getChannel()) && isAuthorizedMember(message.getMember());
+    }
+
 }
