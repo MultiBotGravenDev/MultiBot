@@ -14,6 +14,23 @@ public class QuizMessageDAO extends DAO<MessageData> {
     }
 
     @Override
+    public boolean save(MessageData data) {
+        try {
+            PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT INTO quiz_messages VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?");
+            preparedStatement.setString(1, data.id);
+            preparedStatement.setString(2, data.message);
+            preparedStatement.setString(3, data.message);
+
+            preparedStatement.executeUpdate();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
     public MessageData get(String value) {
         MessageData messageData = null;
 
@@ -24,7 +41,9 @@ public class QuizMessageDAO extends DAO<MessageData> {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                messageData = new MessageData(resultSet.getString("text"));
+                String id = resultSet.getString("id");
+                String text = resultSet.getString("text");
+                messageData = new MessageData(id, text);
             }
 
         } catch (SQLException e) {

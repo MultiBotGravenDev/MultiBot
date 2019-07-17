@@ -18,7 +18,8 @@ public class QuizCommand implements CommandExecutor {
     public QuizCommand(DatabaseConnection databaseConnection) {
         this.argumentExecutors = Arrays.asList(
                 new HereCommand(databaseConnection),
-                new ResponsesCommand(databaseConnection)
+                new ResponsesCommand(databaseConnection),
+                new SetCommand(databaseConnection)
         );
     }
 
@@ -60,6 +61,7 @@ public class QuizCommand implements CommandExecutor {
 
         this.argumentExecutors.stream()
                 .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
+                .filter(commandExecutor -> commandExecutor.canExecute(message))
                 .findAny()
                 .ifPresent(commandExecutor -> commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length)));
 

@@ -23,9 +23,7 @@ public  interface CommandExecutor {
 
     void execute(Message message, String[] args);
 
-    default List<String> getAuthorizedChannelsNames() {
-        return new ArrayList<>();
-    }
+    List<String> getAuthorizedChannelsNames();
 
     default boolean isAuthorizedMember(Member member) {
         return true;

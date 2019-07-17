@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 public class ResponsesCommand implements CommandExecutor {
@@ -21,6 +22,11 @@ public class ResponsesCommand implements CommandExecutor {
     @Override
     public String getCommand() {
         return "responses";
+    }
+
+    @Override
+    public List<String> getAuthorizedChannelsNames() {
+        return Arrays.asList("lisez-ce-salon", "piliers");
     }
 
     @Override

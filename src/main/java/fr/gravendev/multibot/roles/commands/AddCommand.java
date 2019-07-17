@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 public class AddCommand implements CommandExecutor {
@@ -22,6 +23,12 @@ public class AddCommand implements CommandExecutor {
     @Override
     public String getCommand() {
         return "add";
+    }
+
+
+    @Override
+    public List<String> getAuthorizedChannelsNames() {
+        return Arrays.asList("rôle-langage", "piliers");
     }
 
     @Override

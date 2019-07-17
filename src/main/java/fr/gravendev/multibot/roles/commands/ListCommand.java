@@ -7,6 +7,8 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,11 @@ public class ListCommand implements CommandExecutor {
     @Override
     public String getCommand() {
         return "list";
+    }
+
+    @Override
+    public List<String> getAuthorizedChannelsNames() {
+        return Arrays.asList("rôle-langage", "piliers");
     }
 
     @Override

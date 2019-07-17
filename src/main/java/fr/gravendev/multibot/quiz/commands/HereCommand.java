@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
@@ -24,6 +25,11 @@ public class HereCommand implements CommandExecutor {
     @Override
     public String getCommand() {
         return "here";
+    }
+
+    @Override
+    public List<String> getAuthorizedChannelsNames() {
+        return Collections.singletonList("lisez-ce-salon");
     }
 
     @Override
