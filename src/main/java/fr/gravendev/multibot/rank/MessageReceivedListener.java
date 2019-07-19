@@ -30,12 +30,11 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
         if (event.getAuthor().isBot()) return;
 
         try {
-            Connection connection = databaseConnection.getConnection();
             User author = event.getAuthor();
 
             int xpEarned = ThreadLocalRandom.current().nextInt(15, 26);
 
-            ExperienceDAO experienceDAO = new ExperienceDAO(connection);
+            ExperienceDAO experienceDAO = new ExperienceDAO(databaseConnection);
             ExperienceData experienceData = experienceDAO.get(author.getId());
 
             if(experienceData != null) {

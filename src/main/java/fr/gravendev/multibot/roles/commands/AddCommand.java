@@ -41,7 +41,7 @@ public class AddCommand implements CommandExecutor {
         if (mentionedRoles.size() != 1) return;
 
         try {
-            RoleDAO roleDAO = new RoleDAO(this.databaseConnection.getConnection());
+            RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
 
             Role mentionedRole = mentionedRoles.get(0);
 

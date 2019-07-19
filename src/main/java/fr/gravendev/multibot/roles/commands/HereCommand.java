@@ -37,11 +37,18 @@ public class HereCommand implements CommandExecutor {
 
         try {
 
-            RoleDAO roleDAO = new RoleDAO(this.databaseConnection.getConnection());
+            RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
 
             channel.sendMessage(roleDAO.get("message").emoteId)
                     .queue(sentMessage -> message.getGuild().getRoles().stream()
-                            .map(role -> roleDAO.get(role.getId()))
+                            .map(role -> {
+                                try {
+                                    return roleDAO.get(role.getId());
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                    return null;
+                                }
+                            })
                             .filter(Objects::nonNull)
                             .forEach(role -> sentMessage.addReaction(message.getGuild().getEmoteById(role.emoteId)).queue())
                     );

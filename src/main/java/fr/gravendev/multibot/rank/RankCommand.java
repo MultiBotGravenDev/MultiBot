@@ -45,7 +45,6 @@ public class RankCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
         try {
-
             Member member = message.getMember();
             List<Member> mentionedMembers = message.getMentionedMembers();
             if(mentionedMembers.size() > 0)
@@ -55,8 +54,9 @@ public class RankCommand implements CommandExecutor {
             List<Role> roles = member.getRoles();
             Color color = roles.size() > 0 ? roles.get(0).getColor() : Color.WHITE;
 
-            ExperienceDAO dao = new ExperienceDAO(databaseConnection.getConnection());
+            ExperienceDAO dao = new ExperienceDAO(databaseConnection);
             ExperienceData data = dao.get(user.getId());
+
             if(data == null) {
                 data = new ExperienceData(user.getId());
                 dao.save(data);

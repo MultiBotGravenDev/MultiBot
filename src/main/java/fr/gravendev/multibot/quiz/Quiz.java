@@ -28,7 +28,7 @@ class Quiz {
     boolean send() {
 
         try {
-            QuizMessageDAO quizMessageDAO = new QuizMessageDAO(this.databaseConnection.getConnection());
+            QuizMessageDAO quizMessageDAO = new QuizMessageDAO(this.databaseConnection);
             MessageData messageData = quizMessageDAO.get(this.questionIndex + "");
 
             if (messageData != null) {
@@ -38,7 +38,13 @@ class Quiz {
 
             } else {
 
-                this.user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(quizMessageDAO.get("stop").message).queue());
+                this.user.openPrivateChannel().queue(privateChannel -> {
+                    try {
+                        privateChannel.sendMessage(quizMessageDAO.get("stop").message).queue();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
                 return false;
 
             }
@@ -64,7 +70,7 @@ class Quiz {
     MessageEmbed.Field getCurrentAnswer() {
         try {
             return new MessageEmbed.Field(
-                    new QuizMessageDAO(this.databaseConnection.getConnection()).get(this.answerIndex + "").message,
+                    new QuizMessageDAO(this.databaseConnection).get(this.answerIndex + "").message,
                     this.responses.get(this.answerIndex),
                     false);
         } catch (SQLException e) {

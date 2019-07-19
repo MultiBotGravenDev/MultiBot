@@ -17,7 +17,7 @@ public class DatabaseConnection {
         dataSource.setPassword(password);
         dataSource.addDataSourceProperty("autoReconnect",true);
         dataSource.addDataSourceProperty("tcpKeepAlive", true);
-        dataSource.setMaximumPoolSize(100);
+        dataSource.setMaximumPoolSize(10);
         dataSource.setMinimumIdle(0);
         dataSource.setIdleTimeout(1);
     }

@@ -63,7 +63,7 @@ public class BanInfoCommand implements CommandExecutor {
                 if (banList.stream().anyMatch(ban -> ban.getUser().getId().equals(user.getId()))) {
 
                     try {
-                        InfractionDAO infractionDAO = new InfractionDAO(databaseConnection.getConnection());
+                        InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
                         InfractionData data = infractionDAO.get(id);
                         if(data != null) {
 
