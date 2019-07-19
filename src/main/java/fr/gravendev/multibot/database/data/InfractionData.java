@@ -22,6 +22,16 @@ public class InfractionData {
         this.end = end;
     }
 
+    public InfractionData(UUID uuid, String punished_id, String punisher_id, InfractionType type, String reason, Date start, Date end) {
+        this.uuid = uuid;
+        this.punished_id = punished_id;
+        this.punisher_id = punisher_id;
+        this.type = type;
+        this.reason = reason;
+        this.start = start;
+        this.end = end;
+    }
+
     public String getPunished_id() {
         return punished_id;
     }
