@@ -21,6 +21,7 @@ public abstract class DAO<T> {
             closeConnection(connection);
         }
     }
+
     protected abstract boolean save(T obj, Connection connection) throws SQLException;
 
     public T get(String value) throws SQLException {
@@ -31,6 +32,7 @@ public abstract class DAO<T> {
             closeConnection(connection);
         }
     }
+
     protected abstract T get(String value, Connection connection) throws SQLException;
 
     public void delete(T obj) throws SQLException {
@@ -41,6 +43,7 @@ public abstract class DAO<T> {
             closeConnection(connection);
         }
     }
+
     protected abstract void delete(T obj, Connection connection) throws SQLException;
     
     public Connection getConnection() throws SQLException {

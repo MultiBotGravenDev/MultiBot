@@ -49,14 +49,14 @@ public class AntiCommand implements CommandExecutor {
         if (!"repost review meme".contains(args[0])) return;
 
         try {
-            GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection.getConnection());
+            GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
             long roleId = guildIdDAO.get("anti_" + args[0]).id;
 
             Member member = mentionedMembers.get(0);
             message.getGuild().getController().addRolesToMember(member, message.getGuild().getRoleById(roleId)).queue(a -> {
 
                 try {
-                    AntiRolesDAO antiRolesDAO = new AntiRolesDAO(this.databaseConnection.getConnection());
+                    AntiRolesDAO antiRolesDAO = new AntiRolesDAO(this.databaseConnection);
                     AntiRoleData antiRoleData = antiRolesDAO.get(member.getUser().getId());
 
                     if (antiRoleData == null) {
