@@ -23,7 +23,8 @@ public  interface CommandExecutor {
 
     void execute(Message message, String[] args);
 
-    List<String> getAuthorizedChannelsNames();
+    default List<String> getAuthorizedChannelsNames() {
+        return new ArrayList<>();}
 
     default boolean isAuthorizedMember(Member member) {
         return true;
@@ -31,7 +32,7 @@ public  interface CommandExecutor {
 
     default boolean isAuthorizedChannel(MessageChannel channel) {
         if (getChannelType() != ChannelType.PRIVATE) {
-            return getAuthorizedChannelsNames().contains(channel.getName()) || channel instanceof PrivateChannel;
+            return getAuthorizedChannelsNames().contains(channel.getName()) || getAuthorizedChannelsNames().isEmpty() || channel instanceof PrivateChannel;
         } else {
             return getChannelType().isEqualsTo(channel.getType());
         }
