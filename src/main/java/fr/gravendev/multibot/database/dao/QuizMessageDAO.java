@@ -15,7 +15,7 @@ public class QuizMessageDAO extends DAO<MessageData> {
     }
 
     @Override
-    protected boolean save(MessageData data, Connection connection) {
+    protected boolean save(MessageData data, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO quiz_messages VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?");
         preparedStatement.setString(1, data.id);
         preparedStatement.setString(2, data.message);

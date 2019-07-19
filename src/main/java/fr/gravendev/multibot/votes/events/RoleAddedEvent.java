@@ -30,7 +30,7 @@ public class RoleAddedEvent implements Listener<GuildMemberRoleAddEvent> {
     public void executeListener(GuildMemberRoleAddEvent event) {
 
         try {
-            VoteDAO voteDAO = new VoteDAO(this.databaseConnection.getConnection());
+            VoteDAO voteDAO = new VoteDAO(this.databaseConnection);
             VoteData voteData = voteDAO.get(event.getUser().getId());
 
             Role role = event.getRoles().get(0);

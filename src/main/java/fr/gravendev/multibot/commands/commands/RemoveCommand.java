@@ -24,7 +24,7 @@ public class RemoveCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         try {
-            new CustomCommandDAO(this.databaseConnection.getConnection()).delete(new CustomCommandData(args[0], ""));
+            new CustomCommandDAO(this.databaseConnection).delete(new CustomCommandData(args[0], ""));
         } catch (SQLException e) {
             e.printStackTrace();
         }

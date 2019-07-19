@@ -26,7 +26,7 @@ public class SetCommand implements CommandExecutor {
 
         try {
             CustomCommandData customCommandData = new CustomCommandData(args[0], String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
-            new CustomCommandDAO(this.databaseConnection.getConnection()).save(customCommandData);
+            new CustomCommandDAO(this.databaseConnection).save(customCommandData);
 
         } catch (SQLException e) {
             e.printStackTrace();
