@@ -1,21 +1,29 @@
 package fr.gravendev.multibot.database.dao;
 
+import fr.gravendev.multibot.database.DatabaseConnection;
+
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public abstract class DAO<T> {
 
-    final Connection connection;
+     private final DatabaseConnection databaseConnection;
 
-    DAO(Connection connection) {
-        this.connection = connection;
+    public DAO(DatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
     }
 
-    public boolean save(T obj) {
-        return true;
+    public abstract boolean save(T obj) throws SQLException;
+    public abstract T get(String value) throws SQLException;
+    public abstract void delete(T obj) throws SQLException;
+    
+    public Connection getConnection() throws SQLException {
+        return databaseConnection.getConnection();
     }
 
-    public T get(String value) {return null;}
-
-    public void delete(T obj) {}
+    public void closeConnection(Connection connection) throws SQLException {
+        if(!connection.isClosed())
+            connection.close();
+    }
 
 }

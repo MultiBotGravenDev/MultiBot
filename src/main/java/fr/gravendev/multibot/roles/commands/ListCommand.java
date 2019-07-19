@@ -33,22 +33,23 @@ public class ListCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
-        try {
-            RoleDAO roleDAO = new RoleDAO(this.databaseConnection.getConnection());
+        RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
 
-            Guild guild = message.getGuild();
-            String roles = guild.getRoles().stream()
-                    .map(role -> roleDAO.get(role.getId()))
-                    .filter(Objects::nonNull)
-                    .map(roleData -> guild.getRoleById(roleData.roleId).getAsMention() + " (" + guild.getEmoteById(roleData.emoteId).getAsMention() + ")")
-                    .collect(Collectors.joining(" - "));
+        Guild guild = message.getGuild();
+        String roles = guild.getRoles().stream()
+                .map(role -> {
+                    try {
+                        return roleDAO.get(role.getId());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .map(roleData -> guild.getRoleById(roleData.roleId).getAsMention() + " (" + guild.getEmoteById(roleData.emoteId).getAsMention() + ")")
+                .collect(Collectors.joining(" - "));
 
-            message.getChannel().sendMessage("listes des rôles enregistrés : " + roles).queue();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        message.getChannel().sendMessage("listes des rôles enregistrés : " + roles).queue();
     }
 
 }

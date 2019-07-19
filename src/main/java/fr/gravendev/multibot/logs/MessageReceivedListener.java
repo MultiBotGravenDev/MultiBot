@@ -37,11 +37,11 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
 
         if(channel.getName().startsWith("présentation-")) {
             try {
-                LogsDAO logsDAO = new LogsDAO(databaseConnection.getConnection());
+                LogsDAO logsDAO = new LogsDAO(databaseConnection);
                 MessageData messageData = new MessageData(message);
                 logsDAO.save(messageData);
 
-                GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection.getConnection());
+                GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
                 GuildIdsData logs = guildIdDAO.get("logs");
 
                 EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.ORANGE)
@@ -61,7 +61,7 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
         if(mentionedRoles.size() > 0) {
             try {
 
-                GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection.getConnection());
+                GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
                 GuildIdsData logs = guildIdDAO.get("logs");
 
                 EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.MAGENTA)

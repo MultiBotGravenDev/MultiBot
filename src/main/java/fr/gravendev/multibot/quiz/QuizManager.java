@@ -25,7 +25,7 @@ public class QuizManager {
         this.quizs.put(user.getIdLong(), new Quiz(this.databaseConnection, user));
 
         try {
-            String startMessage = new QuizMessageDAO(this.databaseConnection.getConnection()).get("start").message;
+            String startMessage = new QuizMessageDAO(this.databaseConnection).get("start").message;
             user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(startMessage).queue());
             send(user);
         } catch (SQLException e) {
@@ -45,7 +45,7 @@ public class QuizManager {
     private void sendResponses(User user, Quiz quiz) {
 
         try {
-            GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection.getConnection());
+            GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
             long guildId = guildIdDAO.get("guild").id;
             long candidsChannelId = guildIdDAO.get("candids").id;
 

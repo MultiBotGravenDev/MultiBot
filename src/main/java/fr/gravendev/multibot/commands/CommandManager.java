@@ -8,6 +8,7 @@ import fr.gravendev.multibot.database.data.CustomCommandData;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.moderation.BanCommand;
 import fr.gravendev.multibot.moderation.BanInfoCommand;
+import fr.gravendev.multibot.moderation.KickCommand;
 import fr.gravendev.multibot.rank.RankCommand;
 import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
@@ -35,10 +36,10 @@ public class CommandManager {
                 new RoleCommand(databaseConnection),
                 new BanCommand(databaseConnection),
                 new BanInfoCommand(databaseConnection),
+                new KickCommand(databaseConnection),
                 new CustomCommand(databaseConnection)
                 new VoteCommand(databaseConnection),
-                new UserinfoCommand(),
-                new BanCommand(databaseConnection)
+                new UserinfoCommand()
         );
         this.databaseConnection = databaseConnection;
     }

@@ -27,7 +27,7 @@ public class CandidsExecutor implements EmoteAddedExecutor {
 
         try {
 
-            GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection.getConnection());
+            GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
             long memberRoleId = guildIdDAO.get("member").id;
 
             event.getChannel().getMessageById(event.getMessageIdLong()).queue(message -> {

@@ -21,22 +21,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class BanCommand implements CommandExecutor {
+public class KickCommand implements CommandExecutor {
 
     private final DatabaseConnection databaseConnection;
 
-    public BanCommand(DatabaseConnection databaseConnection) {
+    public KickCommand(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
 
     @Override
     public String getCommand() {
-        return "ban";
+        return "kick";
     }
 
     @Override
     public String getDescription() {
-        return "Bannir un membre du discord.";
+        return "Ejecter un membre du discord.";
     }
 
     @Override
@@ -50,7 +50,7 @@ public class BanCommand implements CommandExecutor {
 
             List<Member> mentionedMembers = message.getMentionedMembers();
             if (mentionedMembers.size() == 0) {
-                message.getChannel().sendMessage("Usage: ban @Member").queue();
+                message.getChannel().sendMessage("Usage: kick @Member").queue();
                 return;
             }
 
@@ -60,7 +60,7 @@ public class BanCommand implements CommandExecutor {
             Member bot = guild.getMember(message.getJDA().getSelfUser());
 
             User moderator = message.getAuthor();
-            User bannedUser = member.getUser();
+            User kickedUser = member.getUser();
 
             String reason = "Non définie";
             if (args.length >= 2) {
@@ -68,14 +68,14 @@ public class BanCommand implements CommandExecutor {
             }
 
             if (!PermissionUtil.canInteract(bot, member)) {
-                message.getChannel().sendMessage("Impossible de bannir cet utilisateur !").queue();
+                message.getChannel().sendMessage("Impossible d'éjecter cet utilisateur !").queue();
                 return;
             }
 
-            guild.getController().ban(bannedUser, 0, reason).queue();
+            //guild.getController().kick(member, reason).queue();
 
             InfractionData data = new InfractionData(
-                    bannedUser.getId(), moderator.getId(), InfractionType.BAN, reason, new Date(), null);
+                    kickedUser.getId(), moderator.getId(), InfractionType.KICK, reason, new Date(), null);
             InfractionDAO dao = new InfractionDAO(databaseConnection);
             dao.save(data);
 
@@ -88,15 +88,15 @@ public class BanCommand implements CommandExecutor {
             GuildIdsData logs = guildIdDAO.get("logs");
 
             EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
-                    .setAuthor("[BAN] " +bannedUser.getAsTag(), bannedUser.getAvatarUrl())
-                    .addField("Utilisateur:", bannedUser.getAsMention(), true)
+                    .setAuthor("[KICK] " +kickedUser.getAsTag(), kickedUser.getAvatarUrl())
+                    .addField("Utilisateur:", kickedUser.getAsMention(), true)
                     .addField("Modérateur:", moderator.getAsMention(), true)
                     .addField("Raison:", reason, true);
 
             TextChannel logsChannel = guild.getTextChannelById(logs.id);
             logsChannel.sendMessage(embedBuilder.build()).queue();
 
-            message.getChannel().sendMessage(member.getAsMention()+" a été bannis !").queue();
+            message.getChannel().sendMessage(member.getAsMention()+" a été éjecter !").queue();
 
         } catch (SQLException e) {
             e.printStackTrace();

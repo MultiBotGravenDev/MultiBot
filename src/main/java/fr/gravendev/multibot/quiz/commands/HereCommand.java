@@ -39,7 +39,7 @@ public class HereCommand implements CommandExecutor {
 
         try {
 
-            WelcomeMessageDAO welcomeMessageDAO = new WelcomeMessageDAO(this.databaseConnection.getConnection());
+            WelcomeMessageDAO welcomeMessageDAO = new WelcomeMessageDAO(this.databaseConnection);
             MessageData messageData;
 
             MessageBuilder messageBuilder = new MessageBuilder();

@@ -32,7 +32,7 @@ public class MessageCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         try {
-            RoleDAO roleDAO = new RoleDAO(this.databaseConnection.getConnection());
+            RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
             roleDAO.delete(roleDAO.get("message"));
             roleDAO.save(new RoleData("message", String.join(" ", args)));
             message.getChannel().sendMessage("le message a bien été changé en :\n" + String.join(" ", args)).queue();

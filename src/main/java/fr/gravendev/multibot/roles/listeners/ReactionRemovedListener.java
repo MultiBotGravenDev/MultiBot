@@ -28,7 +28,7 @@ public class ReactionRemovedListener implements Listener<MessageReactionRemoveEv
         if (!event.getChannel().getName().equalsIgnoreCase("rôle-langage")) return;
 
         try {
-            RoleDAO roleDAO = new RoleDAO(this.databaseConnection.getConnection());
+            RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
             RoleData roleData = roleDAO.get(event.getReactionEmote().getId());
 
             if (roleData != null) {

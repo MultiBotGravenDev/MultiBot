@@ -32,7 +32,7 @@ public class ReactionAddedListener implements Listener<MessageReactionAddEvent> 
 
         try {
             Guild guild = event.getGuild();
-            RoleDAO roleDAO = new RoleDAO(this.databaseConnection.getConnection());
+            RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
             RoleData roleData = roleDAO.get(event.getReactionEmote().getId());
 
             if (roleData != null) {
