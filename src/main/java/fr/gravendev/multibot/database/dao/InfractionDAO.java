@@ -22,7 +22,7 @@ public class InfractionDAO extends DAO<InfractionData> {
             statement.setString(4, data.getType().name());
             statement.setString(5, data.getReason());
             statement.setTimestamp(6, new Timestamp(data.getStart().getTime()));
-            statement.setTimestamp(7, new Timestamp(data.getEnd().getTime()));
+            statement.setTimestamp(7, data.getEnd() != null ? new Timestamp(data.getEnd().getTime()) : null);
 
             statement.executeUpdate();
 

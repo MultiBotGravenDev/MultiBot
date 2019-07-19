@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.database.data;
 
-import fr.gravendev.multibot.InfractionType;
+import fr.gravendev.multibot.moderation.InfractionType;
 
 import java.util.Date;
 import java.util.UUID;

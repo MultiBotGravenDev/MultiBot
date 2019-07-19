@@ -1,4 +1,4 @@
-package fr.gravendev.multibot;
+package fr.gravendev.multibot.moderation;
 
 public enum InfractionType {
 
