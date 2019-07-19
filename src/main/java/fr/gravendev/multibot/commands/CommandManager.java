@@ -7,6 +7,7 @@ import fr.gravendev.multibot.rank.RankCommand;
 import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.roles.commands.RoleCommand;
+import fr.gravendev.multibot.votes.VoteCommand;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.util.Arrays;
@@ -24,7 +25,8 @@ public class CommandManager {
                 new QuizCommand(databaseConnection),
                 new RankCommand(databaseConnection),
                 new RoleCommand(databaseConnection),
-                new UserinfoCommand()
+                new UserinfoCommand(),
+                new VoteCommand(databaseConnection)
         );
     }
 

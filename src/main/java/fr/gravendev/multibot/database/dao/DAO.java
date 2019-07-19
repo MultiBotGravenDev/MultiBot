@@ -14,7 +14,7 @@ public abstract class DAO<T> {
         return true;
     }
 
-    public abstract T get(String value);
+    public T get(String value) {return null;}
 
     public void delete(T obj) {}
 
