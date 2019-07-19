@@ -6,9 +6,9 @@ import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Guild;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.Date;
 import java.util.Objects;
 import java.util.TimerTask;
 
@@ -24,6 +24,8 @@ public class AntiRolesTask extends TimerTask {
 
     @Override
     public void run() {
+
+        System.out.println("ok");
 
         try {
             GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection.getConnection());
@@ -41,14 +43,13 @@ public class AntiRolesTask extends TimerTask {
                     .filter(Objects::nonNull)
                     .forEach(antiRoleData -> {
 
-                        System.out.println(antiRoleData);
-
                         boolean removeRole = antiRoleData.roles.entrySet().stream()
                                 .filter(entry -> entry.getValue().contains("anti-repost"))
-                                .noneMatch(entry -> entry.getKey().after(Date.from(Instant.now().minusSeconds(10))));
+                                .anyMatch(entry -> entry.getKey().before(Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 30 * 6))));
 
                         if (removeRole) {
                             guild.getController().removeRolesFromMember(guild.getMemberById(antiRoleData.userId), guild.getRoleById(antiRepostId)).queue();
+                            antiRoleDAO.delete(antiRoleData);
                         }
 
                     });
@@ -58,12 +59,17 @@ public class AntiRolesTask extends TimerTask {
                     .filter(Objects::nonNull)
                     .forEach(antiRoleData -> {
 
+                        System.out.println("ok1");
+
                         boolean removeRole = antiRoleData.roles.entrySet().stream()
                                 .filter(entry -> entry.getValue().contains("anti-meme"))
-                                .noneMatch(entry -> entry.getKey().after(Date.from(Instant.now().minusSeconds(20))));
+                                .anyMatch(entry -> entry.getKey().before(Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 30 * 6))));
+
+                        System.out.println(removeRole);
 
                         if (removeRole) {
                             guild.getController().removeRolesFromMember(guild.getMemberById(antiRoleData.userId), guild.getRoleById(antiMemeId)).queue();
+                            antiRoleDAO.delete(antiRoleData);
                         }
 
                     });
@@ -75,10 +81,11 @@ public class AntiRolesTask extends TimerTask {
 
                         boolean removeRole = antiRoleData.roles.entrySet().stream()
                                 .filter(entry -> entry.getValue().contains("anti-review"))
-                                .noneMatch(entry -> entry.getKey().after(Date.from(Instant.now().minusSeconds(20))));
+                                .anyMatch(entry -> entry.getKey().before(Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 30 * 6))));
 
                         if (removeRole) {
                             guild.getController().removeRolesFromMember(guild.getMemberById(antiRoleData.userId), guild.getRoleById(antiReviewId)).queue();
+                            antiRoleDAO.delete(antiRoleData);
                         }
 
                     });

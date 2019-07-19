@@ -3,6 +3,8 @@ package fr.gravendev.multibot.database.dao;
 import fr.gravendev.multibot.database.data.AntiRoleData;
 
 import java.sql.*;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,11 +21,9 @@ public class AntiRolesDAO extends DAO<AntiRoleData> {
 
             for (Map.Entry<Date, String> entry : obj.roles.entrySet()) {
 
-
-                PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT IGNORE INTO anti_roles VALUES(?, ?, ?)");
+                PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT IGNORE INTO anti_roles VALUES(?, ?, NOW())");
                 preparedStatement.setString(1, String.valueOf(obj.userId));
                 preparedStatement.setString(2, entry.getValue());
-                preparedStatement.setDate(3, entry.getKey());
 
                 preparedStatement.execute();
 
@@ -51,8 +51,11 @@ public class AntiRolesDAO extends DAO<AntiRoleData> {
             long userId = 0L;
 
             while (resultSet.next()) {
-                roles.put(resultSet.getDate("start"), resultSet.getString("role"));
                 userId = Long.parseLong(resultSet.getString("user_id"));
+                Timestamp start = resultSet.getTimestamp("start");
+                String role = resultSet.getString("role");
+
+                roles.put(start, role);
             }
 
             antiRoleData = userId != 0L ? new AntiRoleData(userId, roles) : null;
@@ -67,15 +70,22 @@ public class AntiRolesDAO extends DAO<AntiRoleData> {
     @Override
     public void delete(AntiRoleData obj) {
 
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement("DELETE FROM anti_roles WHERE user_id = ?");
-            preparedStatement.setString(1, String.valueOf(obj.userId));
+        obj.roles.entrySet().stream()
+                .filter(entry -> entry.getKey().before(Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 30 * 6))))
+                .forEach(entry -> {
 
-            preparedStatement.execute();
+                    try {
+                        PreparedStatement preparedStatement = this.connection.prepareStatement("DELETE FROM anti_roles WHERE user_id = ? AND role = ?");
+                        preparedStatement.setString(1, String.valueOf(obj.userId));
+                        preparedStatement.setString(2, entry.getValue());
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+                        preparedStatement.execute();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                });
+
 
     }
 

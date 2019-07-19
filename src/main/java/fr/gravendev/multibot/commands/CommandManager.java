@@ -5,6 +5,7 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.commands.commands.CustomCommand;
 import fr.gravendev.multibot.commands.commands.UserinfoCommand;
 import fr.gravendev.multibot.database.data.CustomCommandData;
+import fr.gravendev.multibot.system.commands.AntiCommand;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.moderation.BanCommand;
 import fr.gravendev.multibot.moderation.BanInfoCommand;
@@ -13,6 +14,7 @@ import fr.gravendev.multibot.rank.RankCommand;
 import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.roles.commands.RoleCommand;
+import fr.gravendev.multibot.system.commands.HelpCommand;
 import fr.gravendev.multibot.votes.VoteCommand;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -43,7 +45,8 @@ public class CommandManager {
                 new UserinfoCommand(),
                 new KickCommand(databaseConnection)
                 new VoteCommand(databaseConnection),
-                new CustomCommand(databaseConnection)
+                new CustomCommand(databaseConnection),
+                new AntiCommand(databaseConnection)
         ));
         this.databaseConnection = databaseConnection;
         this.commandExecutors.add(new HelpCommand(this.commandExecutors, databaseConnection));

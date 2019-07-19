@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.commands;
+package fr.gravendev.multibot.system.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
@@ -18,7 +18,7 @@ public class HelpCommand implements CommandExecutor {
     private final List<CommandExecutor> commandExecutors;
     private final DatabaseConnection databaseConnection;
 
-    HelpCommand(List<CommandExecutor> commandExecutors, DatabaseConnection databaseConnection) {
+    public HelpCommand(List<CommandExecutor> commandExecutors, DatabaseConnection databaseConnection) {
         this.commandExecutors = commandExecutors;
         this.databaseConnection = databaseConnection;
     }

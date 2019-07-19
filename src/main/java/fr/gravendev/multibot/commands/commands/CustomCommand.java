@@ -1,6 +1,11 @@
 package fr.gravendev.multibot.commands.commands;
 
+import fr.gravendev.multibot.commands.ChannelType;
+import fr.gravendev.multibot.commands.commands.customs.RemoveCommand;
+import fr.gravendev.multibot.commands.commands.customs.SetCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.util.Arrays;
@@ -21,6 +26,16 @@ public class CustomCommand implements CommandExecutor {
     @Override
     public String getCommand() {
         return "custom";
+    }
+
+    @Override
+    public boolean isAuthorizedMember(Member member) {
+        return member.hasPermission(Permission.ADMINISTRATOR);
+    }
+
+    @Override
+    public ChannelType getChannelType() {
+        return ChannelType.GUILD;
     }
 
     @Override
