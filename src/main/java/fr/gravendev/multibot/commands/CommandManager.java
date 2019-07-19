@@ -37,9 +37,10 @@ public class CommandManager {
                 new BanCommand(databaseConnection),
                 new BanInfoCommand(databaseConnection),
                 new KickCommand(databaseConnection),
-                new CustomCommand(databaseConnection)
+                new CustomCommand(databaseConnection),
                 new VoteCommand(databaseConnection),
-                new UserinfoCommand()
+                new UserinfoCommand(),
+                new KickCommand(databaseConnection)
         );
         this.databaseConnection = databaseConnection;
     }
@@ -62,7 +63,7 @@ public class CommandManager {
         } else {
 
             try {
-                CustomCommandDAO commandDAO = new CustomCommandDAO(this.databaseConnection.getConnection());
+                CustomCommandDAO commandDAO = new CustomCommandDAO(this.databaseConnection);
                 CustomCommandData customCommandData = commandDAO.get(args[0]);
 
                 if (customCommandData != null) {

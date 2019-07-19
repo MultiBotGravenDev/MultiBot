@@ -27,7 +27,7 @@ public class Pillar implements Role {
     @Override
     public long getRoleId() {
         try {
-            return new GuildIdDAO(this.databaseConnection.getConnection()).get("pilier").id;
+            return new GuildIdDAO(this.databaseConnection).get("pilier").id;
         } catch (SQLException e) {
             e.printStackTrace();
             return 0L;

@@ -37,7 +37,7 @@ public class ResponsesCommand implements CommandExecutor {
 
         try {
             TextChannel textChannel = mentionedChannels.get(0);
-            new GuildIdDAO(this.databaseConnection.getConnection())
+            new GuildIdDAO(this.databaseConnection)
                     .save(new GuildIdsData("candids", textChannel.getIdLong()));
             message.getChannel().sendMessage("Le nouveau salon pour envoyer les candidatures a bien été définis à : " + textChannel.getAsMention()).queue();
         } catch (SQLException e) {

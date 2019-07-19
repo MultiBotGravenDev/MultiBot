@@ -36,7 +36,7 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
         if (event.getChannel().getMessageById(event.getMessageIdLong()).complete().getCreationTime().isBefore(OffsetDateTime.now().minusDays(1))) return;
 
         try {
-            VoteDAO voteDAO = new VoteDAO(this.databaseConnection.getConnection());
+            VoteDAO voteDAO = new VoteDAO(this.databaseConnection);
 
             VoteData voteData = voteDAO.get(event.getMessageId());
 

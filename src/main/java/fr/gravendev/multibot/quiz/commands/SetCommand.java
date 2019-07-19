@@ -35,7 +35,7 @@ public class SetCommand implements CommandExecutor {
         if (!args[0].matches("[0-9]+")) return;
 
         try {
-            QuizMessageDAO quizMessageDAO = new QuizMessageDAO(this.databaseConnection.getConnection());
+            QuizMessageDAO quizMessageDAO = new QuizMessageDAO(this.databaseConnection);
             MessageData messageData = quizMessageDAO.get(args[0] + "");
 
             if (messageData == null) {

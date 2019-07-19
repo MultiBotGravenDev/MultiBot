@@ -31,7 +31,7 @@ public class GuildIdDAO extends DAO<GuildIdsData> {
     }
     
     @Override
-    public boolean save(GuildIdsData guildIdsData) {
+    public boolean save(GuildIdsData guildIdsData, Connection connection) throws SQLException {
 
         PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO guild_id VALUES(?, ?) ON DUPLICATE KEY UPDATE id = ?");
         preparedStatement.setString(1, guildIdsData.name);

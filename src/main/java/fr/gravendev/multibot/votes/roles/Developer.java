@@ -27,7 +27,7 @@ public class Developer implements Role {
     @Override
     public long getRoleId() {
         try {
-            return new GuildIdDAO(this.databaseConnection.getConnection()).get("developpeur").id;
+            return new GuildIdDAO(this.databaseConnection).get("developpeur").id;
         } catch (SQLException e) {
             e.printStackTrace();
             return 0L;

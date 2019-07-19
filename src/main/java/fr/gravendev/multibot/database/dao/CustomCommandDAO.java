@@ -1,5 +1,6 @@
 package fr.gravendev.multibot.database.dao;
 
+import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.CustomCommandData;
 
 import java.sql.Connection;
@@ -9,64 +10,48 @@ import java.sql.SQLException;
 
 public class CustomCommandDAO extends DAO<CustomCommandData> {
 
-    public CustomCommandDAO(Connection connection) {
-        super(connection);
+    public CustomCommandDAO(DatabaseConnection databaseConnection) {
+        super(databaseConnection);
     }
 
     @Override
-    public boolean save(CustomCommandData obj) {
+    public boolean save(CustomCommandData obj, Connection connection) throws SQLException {
 
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT INTO custom_commands VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?");
-            preparedStatement.setString(1, obj.command);
-            preparedStatement.setString(2, obj.text);
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO custom_commands VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?");
+        preparedStatement.setString(1, obj.command);
+        preparedStatement.setString(2, obj.text);
 
-            preparedStatement.setString(3, obj.text);
+        preparedStatement.setString(3, obj.text);
 
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        preparedStatement.execute();
         return true;
     }
 
     @Override
-    public CustomCommandData get(String value) {
+    public CustomCommandData get(String value, Connection connection) throws SQLException {
 
-        CustomCommandData customCommandData = null;
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM custom_commands WHERE command = ?");
+        preparedStatement.setString(1, value);
 
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement("SELECT * FROM custom_commands WHERE command = ?");
-            preparedStatement.setString(1, value);
+        ResultSet resultSet = preparedStatement.executeQuery();
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            String command = resultSet.getString("command");
+            String text = resultSet.getString("text");
 
-            if (resultSet.next()) {
-                String command = resultSet.getString("command");
-                String text = resultSet.getString("text");
-
-                customCommandData = new CustomCommandData(command, text);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return new CustomCommandData(command, text);
         }
-
-        return customCommandData;
+        return null;
     }
 
     @Override
-    public void delete(CustomCommandData obj) {
+    public void delete(CustomCommandData obj, Connection connection) throws SQLException {
 
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement("DELETE FROM custom_commands WHERE command = ?");
-            preparedStatement.setString(1, obj.command);
+        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM custom_commands WHERE command = ?");
+        preparedStatement.setString(1, obj.command);
 
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        preparedStatement.execute();
+
 
     }
 
