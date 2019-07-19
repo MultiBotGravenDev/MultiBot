@@ -17,13 +17,14 @@ import fr.gravendev.multibot.votes.VoteCommand;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public class CommandManager {
 
-    private final List<CommandExecutor> commandExecutors;
+    private List<CommandExecutor> commandExecutors;
     private final DatabaseConnection databaseConnection;
     private final char prefix;
 
@@ -41,8 +42,11 @@ public class CommandManager {
                 new VoteCommand(databaseConnection),
                 new UserinfoCommand(),
                 new KickCommand(databaseConnection)
-        );
+                new VoteCommand(databaseConnection),
+                new CustomCommand(databaseConnection)
+        ));
         this.databaseConnection = databaseConnection;
+        this.commandExecutors.add(new HelpCommand(this.commandExecutors, databaseConnection));
     }
 
     void executeCommand(Message message) {

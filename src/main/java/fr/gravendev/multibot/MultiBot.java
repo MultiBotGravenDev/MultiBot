@@ -3,6 +3,7 @@ package fr.gravendev.multibot;
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.events.MultiBotListener;
+import fr.gravendev.multibot.tasks.AntiRolesTask;
 import fr.gravendev.multibot.utils.json.Configuration;
 import fr.gravendev.multibot.utils.json.Serializer;
 import fr.gravendev.multibot.quiz.QuizManager;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import java.util.Timer;
 
 class MultiBot {
 
@@ -39,6 +41,9 @@ class MultiBot {
                     .build();
 
             LOGGER.info("Bot connected");
+
+            new Timer().schedule(new AntiRolesTask(this.jda, this.databaseConnection), 0, 10_000);
+
         } catch (LoginException e) {
             e.printStackTrace();
             LOGGER.error("Failed to connect the bot");

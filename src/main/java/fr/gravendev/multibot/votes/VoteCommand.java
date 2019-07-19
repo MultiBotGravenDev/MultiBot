@@ -108,7 +108,7 @@ public class VoteCommand implements CommandExecutor {
                         .isAccepted(false)
                         .build());
 
-                sentMessage.getChannel().getMessageById(sentMessage.getIdLong()).queueAfter(20, TimeUnit.SECONDS, sentMessage2 -> {
+                sentMessage.getChannel().getMessageById(sentMessage.getIdLong()).queueAfter(24, TimeUnit.HOURS, sentMessage2 -> {
 
                     try {
                         VoteData voteData = voteDAO.get(sentMessage.getId());
