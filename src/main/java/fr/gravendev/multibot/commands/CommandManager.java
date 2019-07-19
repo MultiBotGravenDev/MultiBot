@@ -4,8 +4,9 @@ import fr.gravendev.multibot.commands.commands.AboutCommand;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.commands.commands.CustomCommand;
 import fr.gravendev.multibot.commands.commands.UserinfoCommand;
-import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.database.data.CustomCommandData;
+import fr.gravendev.multibot.database.dao.CustomCommandDAO;
+import fr.gravendev.multibot.moderation.BanCommand;
 import fr.gravendev.multibot.rank.RankCommand;
 import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
@@ -27,13 +28,14 @@ public class CommandManager {
     public CommandManager(char prefix, DatabaseConnection databaseConnection) {
         this.prefix = prefix;
         commandExecutors = Arrays.asList(
-                new AboutCommand(),
                 new QuizCommand(databaseConnection),
+                new AboutCommand(),
                 new RankCommand(databaseConnection),
                 new RoleCommand(databaseConnection),
-                new UserinfoCommand(),
-                new VoteCommand(databaseConnection),
                 new CustomCommand(databaseConnection)
+                new VoteCommand(databaseConnection),
+                new UserinfoCommand(),
+                new BanCommand(databaseConnection)
         );
         this.databaseConnection = databaseConnection;
     }
