@@ -65,7 +65,7 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
             voteDAO.save(voteDataBuilder.build());
 
             event.getChannel().sendMessage(event.getUser().getAsMention() + ", votre vote a bien été pris en compte")
-                    .queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+                    .queue(message -> message.delete().queueAfter(3, TimeUnit.SECONDS));
 
         } catch (SQLException e) {
             e.printStackTrace();
