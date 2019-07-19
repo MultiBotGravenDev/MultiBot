@@ -30,13 +30,4 @@ public class LogsDAO extends DAO<MessageData>{
         }
     }
 
-    @Override
-    public MessageData get(String value) {
-        return null;
-    }
-
-    @Override
-    public void delete(MessageData obj) {
-
-    }
 }
