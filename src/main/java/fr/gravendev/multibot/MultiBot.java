@@ -42,7 +42,7 @@ class MultiBot {
 
             LOGGER.info("Bot connected");
 
-            new Timer().schedule(new AntiRolesTask(this.jda, this.databaseConnection), 0, 10_000);
+            new Thread(() -> new Timer().schedule(new AntiRolesTask(this.jda, this.databaseConnection), 0, 10_000)).start();
 
         } catch (LoginException e) {
             e.printStackTrace();

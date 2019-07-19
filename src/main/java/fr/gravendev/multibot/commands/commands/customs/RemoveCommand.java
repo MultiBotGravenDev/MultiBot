@@ -1,5 +1,6 @@
-package fr.gravendev.multibot.commands.commands;
+package fr.gravendev.multibot.commands.commands.customs;
 
+import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.database.data.CustomCommandData;
@@ -11,7 +12,7 @@ public class RemoveCommand implements CommandExecutor {
 
     private final DatabaseConnection databaseConnection;
 
-    RemoveCommand(DatabaseConnection databaseConnection) {
+    public RemoveCommand(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
 

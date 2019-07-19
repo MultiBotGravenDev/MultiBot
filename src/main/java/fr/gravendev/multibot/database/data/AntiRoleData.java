@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.database.data;
 
-import java.sql.Date;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class AntiRoleData {
@@ -10,7 +11,7 @@ public class AntiRoleData {
 
     public AntiRoleData(long userId, Map<Date, String> roles) {
         this.userId = userId;
-        this.roles = roles;
+        this.roles = new HashMap<>(roles);
     }
 
 }

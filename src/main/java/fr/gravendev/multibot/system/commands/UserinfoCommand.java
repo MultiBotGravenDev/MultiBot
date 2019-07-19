@@ -1,6 +1,7 @@
-package fr.gravendev.multibot.commands.commands;
+package fr.gravendev.multibot.system.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
+import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -13,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UserinfoCommand implements CommandExecutor{
+public class UserinfoCommand implements CommandExecutor {
 
     @Override
     public String getCommand() {
