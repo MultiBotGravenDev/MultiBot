@@ -42,7 +42,7 @@ public class HelpCommand implements CommandExecutor {
                 .forEach(commandExecutor -> embedBuilder.addField(new MessageEmbed.Field(commandExecutor.getCommand(), commandExecutor.getDescription(), false)));
 
         try {
-            CustomCommandDAO customCommandDAO = new CustomCommandDAO(this.databaseConnection.getConnection());
+            CustomCommandDAO customCommandDAO = new CustomCommandDAO(this.databaseConnection);
 
             CustomCommandData customCommandData;
 
