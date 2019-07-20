@@ -9,6 +9,7 @@ import fr.gravendev.multibot.database.dao.LogsDAO;
 import fr.gravendev.multibot.database.data.GuildIdsData;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.logs.MessageData;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -49,7 +50,7 @@ public class KickCommand implements CommandExecutor {
 
         List<Member> mentionedMembers = message.getMentionedMembers();
         if (mentionedMembers.size() == 0) {
-            message.getChannel().sendMessage("Usage: kick @Member").queue();
+            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: kick @membre")).queue();
             return;
         }
 
@@ -67,7 +68,7 @@ public class KickCommand implements CommandExecutor {
         }
 
         if (!PermissionUtil.canInteract(bot, member)) {
-            message.getChannel().sendMessage("Impossible d'éjecter cet utilisateur !").queue();
+            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Impossible d'éjecter cet utilisateur !")).queue();
             return;
         }
 
@@ -95,8 +96,8 @@ public class KickCommand implements CommandExecutor {
         TextChannel logsChannel = guild.getTextChannelById(logs.id);
         logsChannel.sendMessage(embedBuilder.build()).queue();
 
-        message.getChannel().sendMessage(member.getAsMention() + " a été éjecter !").queue();
 
+        message.getChannel().sendMessage(Utils.kickEmbed(kickedUser, reason)).queue();
     }
 
     @Override

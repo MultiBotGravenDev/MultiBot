@@ -5,12 +5,10 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.*;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -46,7 +44,7 @@ public class BanInfoCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
         if (args.length == 0 || extractId(args[0]) == null) {
-            message.getChannel().sendMessage("Usage: baninfo @user").queue();
+            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED,"Utilisation: baninfo @utilisateur")).queue();
             return;
         }
 
@@ -56,7 +54,7 @@ public class BanInfoCommand implements CommandExecutor {
 
             guild.getBanList().queue((banList) -> {
 
-                EmbedBuilder builder;
+                MessageEmbed embed;
 
                 if (banList.stream().anyMatch(ban -> ban.getUser().getId().equals(user.getId()))) {
 
@@ -67,27 +65,19 @@ public class BanInfoCommand implements CommandExecutor {
                         Date dateEnd = data.getEnd();
                         String end = dateEnd == null ? "Jamais" : dateFormat.format(dateEnd);
 
-                        builder = new EmbedBuilder().setColor(Color.RED)
+                        embed = new EmbedBuilder().setColor(Color.RED)
                                 .setTitle("Informations de ban " + user.getName())
                                 .addField("Raison:", data.getReason(), false)
                                 .addField("Date de fin:", end, false)
                                 .addField("Par:", "<@" + data.getPunisher_id() + ">", false)
-                                .addField("Le:", dateFormat.format(data.getStart()), false);
+                                .addField("Le:", dateFormat.format(data.getStart()), false).build();
 
-                    } else {
+                    } else
+                        embed = Utils.buildEmbed(Color.RED, "Impossible de trouver les informations de bannissement");
+                } else
+                    embed = Utils.buildEmbed(Color.RED, "Cet utilisateur n'est pas bannis !");
 
-                        builder = new EmbedBuilder().setColor(Color.RED)
-                                .setTitle("Impossible de trouver les informations de bannissement");
-
-                    }
-
-                } else {
-                    builder = new EmbedBuilder().setColor(Color.RED)
-                            .setTitle("Cet utilisateur n'est pas bannis !");
-                }
-
-                message.getChannel().sendMessage(builder.build()).queue();
-
+                message.getChannel().sendMessage(embed).queue();
             });
         });
     }

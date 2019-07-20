@@ -9,6 +9,7 @@ import fr.gravendev.multibot.database.dao.LogsDAO;
 import fr.gravendev.multibot.database.data.GuildIdsData;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.logs.MessageData;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -66,7 +67,7 @@ public class WarnCommand implements CommandExecutor {
         }
 
         if (!PermissionUtil.canInteract(bot, member)) {
-            message.getChannel().sendMessage("Impossible de mettre un avertissement à cet utilisateur !").queue();
+            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Impossible de mettre un avertissement à cet utilisateur !")).queue();
             return;
         }
 
@@ -92,7 +93,7 @@ public class WarnCommand implements CommandExecutor {
         TextChannel logsChannel = guild.getTextChannelById(logs.id);
         logsChannel.sendMessage(embedBuilder.build()).queue();
 
-        message.getChannel().sendMessage(member.getAsMention() + " a été avertis !").queue();
+        message.getChannel().sendMessage(Utils.muteEmbed(warnedUser, reason)).queue();
     }
 
     @Override

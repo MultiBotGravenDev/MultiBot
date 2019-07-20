@@ -9,6 +9,7 @@ import fr.gravendev.multibot.database.dao.LogsDAO;
 import fr.gravendev.multibot.database.data.GuildIdsData;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.logs.MessageData;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -49,7 +50,7 @@ public class BanCommand implements CommandExecutor {
 
         List<Member> mentionedMembers = message.getMentionedMembers();
         if (mentionedMembers.size() == 0) {
-            message.getChannel().sendMessage("Usage: ban @Member").queue();
+            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED,"Utilisation: ban @membre")).queue();
             return;
         }
 
@@ -67,7 +68,7 @@ public class BanCommand implements CommandExecutor {
         }
 
         if (!PermissionUtil.canInteract(bot, member)) {
-            message.getChannel().sendMessage("Impossible de bannir cet utilisateur !").queue();
+            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED,"Impossible de bannir cet utilisateur !")).queue();
             return;
         }
 
@@ -95,8 +96,7 @@ public class BanCommand implements CommandExecutor {
         TextChannel logsChannel = guild.getTextChannelById(logs.id);
         logsChannel.sendMessage(embedBuilder.build()).queue();
 
-        message.getChannel().sendMessage(member.getAsMention() + " a été bannis !").queue();
-
+        message.getChannel().sendMessage(Utils.banEmbed(bannedUser, reason)).queue();
     }
 
     @Override
