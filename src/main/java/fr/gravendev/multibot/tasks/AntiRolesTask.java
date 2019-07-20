@@ -2,10 +2,10 @@ package fr.gravendev.multibot.tasks;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
-import fr.gravendev.multibot.system.antiroles.AntiMeme;
-import fr.gravendev.multibot.system.antiroles.AntiRepost;
-import fr.gravendev.multibot.system.antiroles.AntiReview;
-import fr.gravendev.multibot.system.antiroles.AntiRole;
+import fr.gravendev.multibot.moderation.commands.antiroles.AntiMeme;
+import fr.gravendev.multibot.moderation.commands.antiroles.AntiRepost;
+import fr.gravendev.multibot.moderation.commands.antiroles.AntiReview;
+import fr.gravendev.multibot.moderation.commands.antiroles.AntiRole;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Guild;
 

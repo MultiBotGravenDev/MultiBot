@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.system.antiroles;
+package fr.gravendev.multibot.moderation.commands.antiroles;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.AntiRolesDAO;
