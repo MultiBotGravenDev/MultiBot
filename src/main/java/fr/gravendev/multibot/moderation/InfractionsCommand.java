@@ -5,6 +5,7 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -47,7 +48,7 @@ public class InfractionsCommand implements CommandExecutor {
 
             List<Member> mentionedMembers = message.getMentionedMembers();
             if (mentionedMembers.size() == 0) {
-                message.getChannel().sendMessage("Usage: infractions @Member").queue();
+                message.getChannel().sendMessage(Utils.buildEmbed(Color.RED,"Utilisation: infractions @membre")).queue();
                 return;
             }
 
