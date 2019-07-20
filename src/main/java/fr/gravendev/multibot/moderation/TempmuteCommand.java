@@ -14,7 +14,6 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.utils.PermissionUtil;
-import org.joda.time.Period;
 
 import java.awt.*;
 import java.util.Calendar;
@@ -52,11 +51,7 @@ public class TempmuteCommand implements CommandExecutor {
 
         Member member = mentionedMembers.get(0);
         User mutedUser = member.getUser();
-        Period duration = Utils.getTimeFromInput(args[1]);
-        if(duration == null) {
-            channel.sendMessage(Utils.buildEmbed(Color.RED, "Durée invalide")).queue();
-            return;
-        }
+        long duration = Utils.parsePeriod(args[1]);
 
         String reason = "Non définie";
         if (args.length >= 3) {
@@ -77,7 +72,7 @@ public class TempmuteCommand implements CommandExecutor {
 
         Calendar calendar = Calendar.getInstance();
         Date start = calendar.getTime();
-        calendar.add(Calendar.SECOND, (int) duration.toStandardDuration().getStandardSeconds());
+        calendar.add(Calendar.MILLISECOND, (int) duration);
         Date end = calendar.getTime();
 
         InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
