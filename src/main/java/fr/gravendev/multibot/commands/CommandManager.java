@@ -6,6 +6,7 @@ import fr.gravendev.multibot.commands.commands.CustomCommand;
 import fr.gravendev.multibot.database.data.CustomCommandData;
 import fr.gravendev.multibot.moderation.*;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
+import fr.gravendev.multibot.moderation.commands.AntiCommand;
 import fr.gravendev.multibot.rank.RankCommand;
 import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
