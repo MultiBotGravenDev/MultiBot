@@ -16,7 +16,6 @@ import fr.gravendev.multibot.commands.commands.UserinfoCommand;
 import fr.gravendev.multibot.votes.VoteCommand;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -70,8 +69,7 @@ public class CommandManager {
             optionalCommandExecutor.get().execute(message, Arrays.copyOfRange(args, 1, args.length));
         } else {
 
-            CustomCommandDAO commandDAO = new CustomCommandDAO(this.databaseConnection);
-            CustomCommandData customCommandData = commandDAO.get(args[0]);
+            CustomCommandData customCommandData = new CustomCommandDAO(this.databaseConnection).get(args[0]);
 
             if (customCommandData != null) {
                 message.getChannel().sendMessage(customCommandData.text).queue();

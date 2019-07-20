@@ -12,10 +12,10 @@ import java.util.List;
 
 public class SetCommand implements CommandExecutor {
 
-    private final DatabaseConnection databaseConnection;
+    private final QuizMessageDAO quizMessageDAO;
 
     SetCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        quizMessageDAO = new QuizMessageDAO(databaseConnection);
     }
 
     @Override
@@ -33,18 +33,17 @@ public class SetCommand implements CommandExecutor {
 
         if (args.length > 2 || !args[0].matches("[0-9]+")) return;
 
-        QuizMessageDAO quizMessageDAO = new QuizMessageDAO(this.databaseConnection);
-        MessageData messageData = quizMessageDAO.get(args[0] + "");
+        MessageData messageData = this.quizMessageDAO.get(args[0]);
 
         if (messageData == null) {
 
             int i = 1;
 
-            while (quizMessageDAO.get(i + "") != null) {
+            while (this.quizMessageDAO.get(String.valueOf(i)) != null) {
                 ++i;
             }
 
-            messageData = new MessageData(i + "", "");
+            messageData = new MessageData(String.valueOf(i), "");
 
         }
 

@@ -9,7 +9,6 @@ import fr.gravendev.multibot.moderation.commands.antiroles.AntiRole;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Guild;
 
-import java.sql.SQLException;
 import java.util.*;
 
 public class AntiRolesTask extends TimerTask {

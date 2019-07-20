@@ -6,20 +6,16 @@ import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
 import fr.gravendev.multibot.database.data.MessageData;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageChannel;
 
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Queue;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class HereCommand implements CommandExecutor {
 
-    private final DatabaseConnection databaseConnection;
+    private final WelcomeMessageDAO welcomeMessageDAO;
 
     HereCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        this.welcomeMessageDAO = new WelcomeMessageDAO(databaseConnection);
     }
 
     @Override
@@ -34,29 +30,35 @@ public class HereCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
+        deleteMessages(message);
+        sendMessages(message);
+    }
 
+    private void sendMessages(Message message) {
+        MessageChannel channel = message.getChannel();
+        List<Message> messages = new ArrayList<>(getMessages());
+
+        for (int i = 0; i < messages.size() - 1; i++) {
+            channel.sendMessage(messages.get(i)).queue();
+        }
+
+        channel.sendMessage(messages.get(messages.size() - 1)).queue(sentMessage -> sentMessage.addReaction("\u2705").queue());
+    }
+
+    private void deleteMessages(Message message) {
         message.getChannel().getHistoryBefore(message, 100).queue(history -> history.getRetrievedHistory().forEach(message1 -> message1.delete().queue()));
+        message.delete().queue();
+    }
 
-        WelcomeMessageDAO welcomeMessageDAO = new WelcomeMessageDAO(this.databaseConnection);
+    private Queue<Message> getMessages() {
         MessageData messageData;
-
         MessageBuilder messageBuilder = new MessageBuilder();
 
-        for (int i = 1; (messageData = welcomeMessageDAO.get(i + "")) != null; ++i) {
+        for (int i = 1; (messageData = this.welcomeMessageDAO.get(i + "")) != null; ++i) {
             messageBuilder.append(messageData.message);
         }
 
-        Queue<Message> queue = messageBuilder.buildAll(MessageBuilder.SplitPolicy.NEWLINE);
-        List<Message> messages = Arrays.stream(queue.toArray(new Message[]{})).collect(Collectors.toList());
-
-        for (int i = 0; i < messages.size() - 1; i++) {
-            message.getChannel().sendMessage(messages.get(i)).queue();
-        }
-
-        message.getChannel().sendMessage(messages.get(messages.size() - 1)).queue(sentMessage -> sentMessage.addReaction("\u2705").queue());
-
-        message.delete().queue();
-
+        return messageBuilder.buildAll(MessageBuilder.SplitPolicy.NEWLINE);
     }
 
 }

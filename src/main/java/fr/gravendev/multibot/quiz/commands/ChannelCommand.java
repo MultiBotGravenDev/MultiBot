@@ -11,17 +11,17 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-public class ResponsesCommand implements CommandExecutor {
+public class ChannelCommand implements CommandExecutor {
 
-    private final DatabaseConnection databaseConnection;
+    private final GuildIdDAO guildIdDAO;
 
-    ResponsesCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    ChannelCommand(DatabaseConnection databaseConnection) {
+        this.guildIdDAO = new GuildIdDAO(databaseConnection);
     }
 
     @Override
     public String getCommand() {
-        return "responses";
+        return "channel";
     }
 
     @Override
@@ -36,8 +36,7 @@ public class ResponsesCommand implements CommandExecutor {
         if (mentionedChannels.size() != 1) return;
 
         TextChannel textChannel = mentionedChannels.get(0);
-        new GuildIdDAO(this.databaseConnection)
-                .save(new GuildIdsData("candids", textChannel.getIdLong()));
+        this.guildIdDAO.save(new GuildIdsData("candids", textChannel.getIdLong()));
         message.getChannel().sendMessage("Le nouveau salon pour envoyer les candidatures a bien été définis à : " + textChannel.getAsMention()).queue();
 
     }

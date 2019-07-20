@@ -7,6 +7,7 @@ import fr.gravendev.multibot.database.dao.AntiRolesDAO;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 
 import fr.gravendev.multibot.database.data.AntiRoleData;
+import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
@@ -47,30 +48,16 @@ public class AntiCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         List<Member> mentionedMembers = message.getMentionedMembers();
-
-        if (args.length == 0) return;
-        if (mentionedMembers.size() != 1) return;
-        if (!"repost review meme".contains(args[0])) return;
+        if (args.length == 0 || mentionedMembers.size() != 1 || !"repost review meme".contains(args[0]) || !GuildUtils.hasRole(mentionedMembers.get(0), "anti-" + args[0])) return;
 
         GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
-        long roleId = guildIdDAO.get("anti_" + args[0]).id;
-        long logsId = guildIdDAO.get("logs").id;
 
         Member member = mentionedMembers.get(0);
-        message.getGuild().getController().addRolesToMember(member, message.getGuild().getRoleById(roleId)).queue(a -> {
+        message.getGuild().getController().addRolesToMember(member, message.getGuild().getRoleById(guildIdDAO.get("anti_" + args[0]).id)).queue(a -> {
 
-            AntiRolesDAO antiRolesDAO = new AntiRolesDAO(this.databaseConnection);
-            AntiRoleData antiRoleData = antiRolesDAO.get(member.getUser().getId());
+            saveInDatabase(args[0], member);
 
-            if (antiRoleData != null) return;
-            antiRoleData = new AntiRoleData(member.getUser().getIdLong(), new HashMap<>());
-
-
-            antiRoleData.roles.put(new Date(System.currentTimeMillis()), "anti-" + args[0]);
-
-            antiRolesDAO.save(antiRoleData);
-
-            message.getGuild().getTextChannelById(logsId).sendMessage(new EmbedBuilder()
+            message.getGuild().getTextChannelById(guildIdDAO.get("logs").id).sendMessage(new EmbedBuilder()
                     .setColor(Color.ORANGE)
                     .setTitle("[ANTI-" + args[0].toUpperCase() + "]" + member.getUser().getAsTag())
                     .addField("Utilisateur :", member.getAsMention(), true)
@@ -80,6 +67,15 @@ public class AntiCommand implements CommandExecutor {
 
         });
 
+    }
+
+    private void saveInDatabase(String roleName, Member member) {
+        AntiRolesDAO antiRolesDAO = new AntiRolesDAO(this.databaseConnection);
+        AntiRoleData antiRoleData = new AntiRolesDAO(this.databaseConnection).get(member.getUser().getId());
+
+        antiRoleData.roles.put(new Date(System.currentTimeMillis()), "anti-" + roleName);
+
+        antiRolesDAO.save(antiRoleData);
     }
 
 }

@@ -24,7 +24,11 @@ public class ReadThisSaloonExecutor implements EmoteAddedExecutor {
 
         Member member = event.getMember();
 
-        if (!event.getReactionEmote().getName().equalsIgnoreCase("\u2705")) return;
+        if (!event.getReactionEmote().getName().equalsIgnoreCase("\u2705")) {
+            event.getReaction().removeReaction(event.getUser()).queue();
+            return;
+        }
+
         if (GuildUtils.hasRole(member, "membre")) return;
 
         this.quizManager.createQuiz(member.getUser());
