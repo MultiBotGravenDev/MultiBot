@@ -5,7 +5,9 @@ import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class InfractionDAO extends DAO<InfractionData> {
@@ -54,6 +56,34 @@ public class InfractionDAO extends DAO<InfractionData> {
         }
 
         return null;
+    }
+
+    public List<InfractionData> getALLInfractions(String discordID) throws SQLException {
+        Connection connection = getConnection();
+        List<InfractionData> infractions = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * FROM infractions WHERE punished_id = ? AND type = 'warn' ORDER BY start DESC");
+            statement.setString(1, discordID);
+
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()) {
+                UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+                String punished_id = resultSet.getString("punished_id");
+                String punisher_id = resultSet.getString("punisher_id");
+                InfractionType type = InfractionType.valueOf(resultSet.getString("type"));
+                String reason = resultSet.getString("reason");
+                Date start = new Date(resultSet.getTimestamp("start").getTime());
+                Date end = resultSet.getTimestamp("end") != null ?
+                        new Date(resultSet.getTimestamp("end").getTime()) : null;
+
+                infractions.add(new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end));
+            }
+        } finally {
+            closeConnection(connection);
+        }
+        return infractions;
     }
 
     @Override
