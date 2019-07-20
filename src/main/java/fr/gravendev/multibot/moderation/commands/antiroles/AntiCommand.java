@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.system.commands;
+package fr.gravendev.multibot.moderation.commands.antiroles;
 
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
