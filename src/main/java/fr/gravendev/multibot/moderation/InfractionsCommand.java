@@ -19,8 +19,6 @@ import java.util.List;
 
 public class InfractionsCommand implements CommandExecutor {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy à HH:mm:ss");
-
     private final DatabaseConnection databaseConnection;
 
     public InfractionsCommand(DatabaseConnection databaseConnection) {
@@ -80,7 +78,7 @@ public class InfractionsCommand implements CommandExecutor {
                     builder.append("**")
                             .append(infraction.getReason())
                             .append("** - ")
-                            .append(dateFormat.format(infraction.getStart()))
+                            .append(Utils.getDateFormat().format(infraction.getStart()))
                             .append("\n");
                 });
                 embedBuilder.addField("10 dernières infractions", builder.toString(), false);

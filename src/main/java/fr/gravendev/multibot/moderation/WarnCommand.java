@@ -93,7 +93,7 @@ public class WarnCommand implements CommandExecutor {
         TextChannel logsChannel = guild.getTextChannelById(logs.id);
         logsChannel.sendMessage(embedBuilder.build()).queue();
 
-        message.getChannel().sendMessage(Utils.muteEmbed(warnedUser, reason)).queue();
+        message.getChannel().sendMessage(Utils.warnEmbed(warnedUser, reason)).queue();
     }
 
     @Override

@@ -8,6 +8,7 @@ import fr.gravendev.multibot.database.dao.GuildIdDAO;
 
 import fr.gravendev.multibot.database.data.AntiRoleData;
 import fr.gravendev.multibot.utils.GuildUtils;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
@@ -62,7 +63,7 @@ public class AntiCommand implements CommandExecutor {
                     .setTitle("[ANTI-" + args[0].toUpperCase() + "]" + member.getUser().getAsTag())
                     .addField("Utilisateur :", member.getAsMention(), true)
                     .addField("Modérateur :", message.getAuthor().getAsMention(), true)
-                    .addField("Fin :", new SimpleDateFormat("dd/MM/yyyy à HH:mm:ss").format(Date.from(Instant.now().plusSeconds(60 * 60 * 24 * 30 * 6))), true)
+                    .addField("Fin :", Utils.getDateFormat().format(Date.from(Instant.now().plusSeconds(60 * 60 * 24 * 30 * 6))), true)
                     .build()).queue();
 
         });
