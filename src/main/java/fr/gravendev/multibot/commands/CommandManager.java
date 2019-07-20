@@ -5,7 +5,7 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.commands.commands.CustomCommand;
 import fr.gravendev.multibot.database.data.CustomCommandData;
 import fr.gravendev.multibot.moderation.WarnCommand;
-import fr.gravendev.multibot.moderation.commands.antiroles.AntiCommand;
+import fr.gravendev.multibot.moderation.commands.AntiCommand;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.moderation.BanCommand;
 import fr.gravendev.multibot.moderation.BanInfoCommand;
