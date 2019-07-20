@@ -4,6 +4,7 @@ import fr.gravendev.multibot.commands.commands.AboutCommand;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.commands.commands.CustomCommand;
 import fr.gravendev.multibot.database.data.CustomCommandData;
+import fr.gravendev.multibot.moderation.WarnCommand;
 import fr.gravendev.multibot.system.commands.AntiCommand;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.moderation.BanCommand;
@@ -46,7 +47,8 @@ public class CommandManager {
                 new KickCommand(databaseConnection),
                 new VoteCommand(databaseConnection),
                 new CustomCommand(databaseConnection),
-                new AntiCommand(databaseConnection)
+                new AntiCommand(databaseConnection),
+                new WarnCommand(databaseConnection)
         ));
         this.databaseConnection = databaseConnection;
         this.commandExecutors.add(new HelpCommand(this.commandExecutors, databaseConnection));
