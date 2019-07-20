@@ -54,7 +54,7 @@ public class QuizManager {
 
             EmbedBuilder embedBuilder = new EmbedBuilder()
                     .setColor(Color.BLUE)
-                    .setAuthor(user.getName(), user.getAvatarUrl(), user.getAvatarUrl());
+                    .setAuthor(user.getAsTag(), user.getAvatarUrl(), user.getAvatarUrl());
 
             while (quiz.nextAnswer()) {
                 embedBuilder.addField(quiz.getCurrentAnswer());
