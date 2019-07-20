@@ -72,7 +72,7 @@ public class KickCommand implements CommandExecutor {
                 return;
             }
 
-            //guild.getController().kick(member, reason).queue();
+            guild.getController().kick(member, reason).queue();
 
             InfractionData data = new InfractionData(
                     kickedUser.getId(), moderator.getId(), InfractionType.KICK, reason, new Date(), null);
