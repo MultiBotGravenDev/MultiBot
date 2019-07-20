@@ -22,15 +22,9 @@ public class EmoteRemovedListener implements Listener<MessageReactionRemoveEvent
     @Override
     public void executeListener(MessageReactionRemoveEvent event) {
 
-        if (event.getUser().isBot()) return;
+        if (event.getUser().isBot() || !event.getChannel().getName().equalsIgnoreCase("lisez-ce-salon")) return;
+        this.quizManager.removeQuiz(event.getUser());
 
-        Member member = event.getMember();
-
-        if (!event.getChannel().getName().equalsIgnoreCase("lisez-ce-salon")) return;
-        if (!event.getReactionEmote().getName().equalsIgnoreCase("\u2705")) return;
-        if (GuildUtils.hasRole(member, "member")) return;
-
-        this.quizManager.removeQuiz(member.getUser());
     }
 
 }

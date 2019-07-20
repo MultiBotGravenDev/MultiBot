@@ -8,7 +8,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Date;
 
@@ -28,7 +27,6 @@ public abstract class AntiRole {
         for (Member member : guild.getMembersWithRoles(role)) {
 
             AntiRoleData antiRoleData = this.antiRolesDAO.get(member.getUser().getId());
-            if (antiRoleData == null) continue;
 
             boolean removeRole = antiRoleData.roles.entrySet().stream()
                     .filter(entry -> entry.getValue().contains("anti-repost"))

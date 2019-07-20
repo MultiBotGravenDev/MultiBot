@@ -18,8 +18,9 @@ public class QuizCommand implements CommandExecutor {
     public QuizCommand(DatabaseConnection databaseConnection) {
         this.argumentExecutors = Arrays.asList(
                 new HereCommand(databaseConnection),
-                new ResponsesCommand(databaseConnection),
-                new SetCommand(databaseConnection)
+                new ChannelCommand(databaseConnection),
+                new SetCommand(databaseConnection),
+                new ListCommand(databaseConnection)
         );
     }
 

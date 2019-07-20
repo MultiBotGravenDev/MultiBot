@@ -50,7 +50,7 @@ public class AntiRolesDAO extends DAO<AntiRoleData> {
             roles.put(start, role);
         }
 
-        return userId != 0L ? new AntiRoleData(userId, roles) : null;
+        return userId != 0L ? new AntiRoleData(userId, roles) : new AntiRoleData(Long.parseLong(value), new HashMap<>());
     }
 
     @Override
