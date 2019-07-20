@@ -46,7 +46,8 @@ public class CommandManager {
                 new AntiCommand(databaseConnection),
                 new WarnCommand(databaseConnection),
                 new InfractionsCommand(databaseConnection),
-                new MuteCommand(databaseConnection)
+                new MuteCommand(databaseConnection),
+                new TempmuteCommand(databaseConnection)
         ));
         this.databaseConnection = databaseConnection;
         this.commandExecutors.add(new HelpCommand(this.commandExecutors, databaseConnection));

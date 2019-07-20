@@ -11,14 +11,12 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 
 import java.awt.*;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BanInfoCommand implements CommandExecutor {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy à HH:mm:ss");
     private static final Pattern mentionUserPattern = Pattern.compile("<@!?([0-9]{8,})>");
     private final DatabaseConnection databaseConnection;
 
@@ -63,14 +61,14 @@ public class BanInfoCommand implements CommandExecutor {
                     if (data != null) {
 
                         Date dateEnd = data.getEnd();
-                        String end = dateEnd == null ? "Jamais" : dateFormat.format(dateEnd);
+                        String end = dateEnd == null ? "Jamais" : Utils.getDateFormat().format(dateEnd);
 
                         embed = new EmbedBuilder().setColor(Color.RED)
                                 .setTitle("Informations de ban " + user.getName())
                                 .addField("Raison:", data.getReason(), false)
                                 .addField("Date de fin:", end, false)
                                 .addField("Par:", "<@" + data.getPunisher_id() + ">", false)
-                                .addField("Le:", dateFormat.format(data.getStart()), false).build();
+                                .addField("Le:", Utils.getDateFormat().format(data.getStart()), false).build();
 
                     } else
                         embed = Utils.buildEmbed(Color.RED, "Impossible de trouver les informations de bannissement");
@@ -92,7 +90,7 @@ public class BanInfoCommand implements CommandExecutor {
         return true;
     }
 
-    public static String extractId(String id) {
+    private static String extractId(String id) {
         Matcher matcher = mentionUserPattern.matcher(id);
         if (matcher.find()) {
             return matcher.group(1);

@@ -2,6 +2,7 @@ package fr.gravendev.multibot.commands.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -39,8 +40,8 @@ public class UserinfoCommand implements CommandExecutor {
             member = mentionedMembers.get(0);
         User user = member.getUser();
 
-        String joinDate = member.getJoinDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm:ss"));
-        String createdDate = user.getCreationTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm:ss"));
+        String joinDate = member.getJoinDate().format(Utils.getDateTimeFormatter());
+        String createdDate = user.getCreationTime().format(Utils.getDateTimeFormatter());
         String roles = member.getRoles().stream().map(Role::getName).collect(Collectors.joining(", "));
 
         String nickname = member.getNickname() == null ? "N/A" : member.getNickname();
