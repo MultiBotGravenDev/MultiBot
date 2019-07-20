@@ -25,40 +25,34 @@ public class CandidsExecutor implements EmoteAddedExecutor {
     @Override
     public void execute(MessageReactionAddEvent event) {
 
-        try {
+        GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
+        long memberRoleId = guildIdDAO.get("member").id;
 
-            GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
-            long memberRoleId = guildIdDAO.get("member").id;
+        event.getChannel().getMessageById(event.getMessageIdLong()).queue(message -> {
 
-            event.getChannel().getMessageById(event.getMessageIdLong()).queue(message -> {
+            Member member = message.getMentionedMembers().get(0);
+            String validationMessage = member.getAsMention() + "\n\n";
 
-                Member member = message.getMentionedMembers().get(0);
-                String validationMessage = member.getAsMention() + "\n\n";
+            if (event.getReactionEmote().getName().equals("\u2705")) {
+                validationMessage += ":white_check_mark: accepté ";
+                Guild guild = message.getGuild();
+                guild.getController().addRolesToMember(member, guild.getRoleById(memberRoleId)).queue();
+            } else {
+                validationMessage += ":x: refusé ";
+            }
 
-                if (event.getReactionEmote().getName().equals("\u2705")) {
-                    validationMessage += ":white_check_mark: accepté ";
-                    Guild guild = message.getGuild();
-                    guild.getController().addRolesToMember(member, guild.getRoleById(memberRoleId)).queue();
-                } else {
-                    validationMessage += ":x: refusé ";
-                }
+            validationMessage += "par " + event.getMember().getAsMention();
 
-                validationMessage += "par " + event.getMember().getAsMention();
-
-                message.getReactions().forEach(messageReaction -> {
-                    messageReaction.removeReaction().queue();
-                    messageReaction.removeReaction(event.getUser()).queue();
-                });
-
-                message.editMessage(new MessageBuilder(message)
-                        .setContent(validationMessage)
-                        .build()).queue();
-
+            message.getReactions().forEach(messageReaction -> {
+                messageReaction.removeReaction().queue();
+                messageReaction.removeReaction(event.getUser()).queue();
             });
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            message.editMessage(new MessageBuilder(message)
+                    .setContent(validationMessage)
+                    .build()).queue();
+
+        });
 
     }
 

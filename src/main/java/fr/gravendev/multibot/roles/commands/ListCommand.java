@@ -37,14 +37,7 @@ public class ListCommand implements CommandExecutor {
 
         Guild guild = message.getGuild();
         String roles = guild.getRoles().stream()
-                .map(role -> {
-                    try {
-                        return roleDAO.get(role.getId());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
+                .map(role -> roleDAO.get(role.getId()))
                 .filter(Objects::nonNull)
                 .map(roleData -> guild.getRoleById(roleData.roleId).getAsMention() + " (" + guild.getEmoteById(roleData.emoteId).getAsMention() + ")")
                 .collect(Collectors.joining(" - "));

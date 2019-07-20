@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MessageCommand implements CommandExecutor {
-    
+
     private final DatabaseConnection databaseConnection;
 
     MessageCommand(DatabaseConnection databaseConnection) {
@@ -31,14 +31,10 @@ public class MessageCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
-        try {
-            RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
-            roleDAO.delete(roleDAO.get("message"));
-            roleDAO.save(new RoleData("message", String.join(" ", args)));
-            message.getChannel().sendMessage("le message a bien été changé en :\n" + String.join(" ", args)).queue();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
+        roleDAO.delete(roleDAO.get("message"));
+        roleDAO.save(new RoleData("message", String.join(" ", args)));
+        message.getChannel().sendMessage("le message a bien été changé en :\n" + String.join(" ", args)).queue();
 
     }
 

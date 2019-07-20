@@ -24,13 +24,9 @@ public class QuizManager {
     public void createQuiz(User user) {
         this.quizs.put(user.getIdLong(), new Quiz(this.databaseConnection, user));
 
-        try {
-            String startMessage = new QuizMessageDAO(this.databaseConnection).get("start").message;
-            user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(startMessage).queue());
-            send(user);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        String startMessage = new QuizMessageDAO(this.databaseConnection).get("start").message;
+        user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(startMessage).queue());
+        send(user);
 
     }
 
@@ -44,31 +40,26 @@ public class QuizManager {
 
     private void sendResponses(User user, Quiz quiz) {
 
-        try {
-            GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
-            long guildId = guildIdDAO.get("guild").id;
-            long candidsChannelId = guildIdDAO.get("candids").id;
+        GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
+        long guildId = guildIdDAO.get("guild").id;
+        long candidsChannelId = guildIdDAO.get("candids").id;
 
-            MessageBuilder messageBuilder = new MessageBuilder();
-            messageBuilder.setContent(user.getAsMention());
+        MessageBuilder messageBuilder = new MessageBuilder();
+        messageBuilder.setContent(user.getAsMention());
 
-            EmbedBuilder embedBuilder = new EmbedBuilder()
-                    .setColor(Color.BLUE)
-                    .setAuthor(user.getAsTag(), user.getAvatarUrl(), user.getAvatarUrl());
+        EmbedBuilder embedBuilder = new EmbedBuilder()
+                .setColor(Color.BLUE)
+                .setAuthor(user.getAsTag(), user.getAvatarUrl(), user.getAvatarUrl());
 
-            while (quiz.nextAnswer()) {
-                embedBuilder.addField(quiz.getCurrentAnswer());
-            }
-
-            messageBuilder.setEmbed(embedBuilder.build())
-                    .sendTo(user.getJDA().getGuildById(guildId).getTextChannelById(candidsChannelId)).queue(message -> {
-                        message.addReaction("\u2705").queue();
-                        message.addReaction("\u274C").queue();
-            });
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (quiz.nextAnswer()) {
+            embedBuilder.addField(quiz.getCurrentAnswer());
         }
+
+        messageBuilder.setEmbed(embedBuilder.build())
+                .sendTo(user.getJDA().getGuildById(guildId).getTextChannelById(candidsChannelId)).queue(message -> {
+            message.addReaction("\u2705").queue();
+            message.addReaction("\u274C").queue();
+        });
 
     }
 

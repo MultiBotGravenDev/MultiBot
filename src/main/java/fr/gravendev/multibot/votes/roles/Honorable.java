@@ -26,12 +26,7 @@ public class Honorable implements Role {
 
     @Override
     public long getRoleId() {
-        try {
-            return new GuildIdDAO(this.databaseConnection).get("honorable").id;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0L;
-        }
+        return new GuildIdDAO(this.databaseConnection).get("honorable").id;
     }
 
     @Override

@@ -27,17 +27,12 @@ public class ReactionRemovedListener implements Listener<MessageReactionRemoveEv
 
         if (!event.getChannel().getName().equalsIgnoreCase("rôle-langage")) return;
 
-        try {
-            RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
-            RoleData roleData = roleDAO.get(event.getReactionEmote().getId());
+        RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
+        RoleData roleData = roleDAO.get(event.getReactionEmote().getId());
 
-            if (roleData != null) {
-                Guild guild = event.getGuild();
-                guild.getController().removeRolesFromMember(event.getMember(), guild.getRoleById(roleData.roleId)).queue();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (roleData != null) {
+            Guild guild = event.getGuild();
+            guild.getController().removeRolesFromMember(event.getMember(), guild.getRoleById(roleData.roleId)).queue();
         }
 
     }

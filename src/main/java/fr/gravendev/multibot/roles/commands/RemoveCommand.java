@@ -36,23 +36,18 @@ public class RemoveCommand implements CommandExecutor {
         if (args.length != 1) return;
         if (mentionedRoles.size() != 1) return;
 
-        try {
-            RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
+        RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
 
-            Role mentionedRole = mentionedRoles.get(0);
+        Role mentionedRole = mentionedRoles.get(0);
 
-            if (roleDAO.get(mentionedRole.getId()) != null) {
+        if (roleDAO.get(mentionedRole.getId()) != null) {
 
-                roleDAO.delete(roleDAO.get(mentionedRole.getId()));
-                message.getChannel().sendMessage("Le role "
-                        + mentionedRole.getAsMention()
-                        + " a bien été supprimé à la liste des rôles").queue();
-            } else {
-                message.getChannel().sendMessage("Ce role n'existe pas").queue();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            roleDAO.delete(roleDAO.get(mentionedRole.getId()));
+            message.getChannel().sendMessage("Le role "
+                    + mentionedRole.getAsMention()
+                    + " a bien été supprimé à la liste des rôles").queue();
+        } else {
+            message.getChannel().sendMessage("Ce role n'existe pas").queue();
         }
 
     }

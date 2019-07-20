@@ -13,9 +13,7 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 
 import java.awt.*;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,33 +60,27 @@ public class BanInfoCommand implements CommandExecutor {
 
                 if (banList.stream().anyMatch(ban -> ban.getUser().getId().equals(user.getId()))) {
 
-                    try {
-                        InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
-                        InfractionData data = infractionDAO.get(id);
-                        if(data != null) {
+                    InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
+                    InfractionData data = infractionDAO.get(id);
+                    if (data != null) {
 
-                            Date dateEnd = data.getEnd();
-                            String end = dateEnd == null ? "Jamais" : dateFormat.format(dateEnd);
+                        Date dateEnd = data.getEnd();
+                        String end = dateEnd == null ? "Jamais" : dateFormat.format(dateEnd);
 
-                            builder = new EmbedBuilder().setColor(Color.RED)
-                                    .setTitle("Informations de ban "+user.getName())
-                                    .addField("Raison:", data.getReason(), false)
-                                    .addField("Date de fin:", end, false)
-                                    .addField("Par:", "<@"+data.getPunisher_id()+">", false)
-                                    .addField("Le:", dateFormat.format(data.getStart()), false);
-
-                        } else {
-
-                            builder = new EmbedBuilder().setColor(Color.RED)
-                                    .setTitle("Impossible de trouver les informations de bannissement");
-
-                        }
-
-                    } catch (SQLException e) {
-                        e.printStackTrace();
                         builder = new EmbedBuilder().setColor(Color.RED)
-                                .setTitle("Une erreur s'est produite !");
+                                .setTitle("Informations de ban " + user.getName())
+                                .addField("Raison:", data.getReason(), false)
+                                .addField("Date de fin:", end, false)
+                                .addField("Par:", "<@" + data.getPunisher_id() + ">", false)
+                                .addField("Le:", dateFormat.format(data.getStart()), false);
+
+                    } else {
+
+                        builder = new EmbedBuilder().setColor(Color.RED)
+                                .setTitle("Impossible de trouver les informations de bannissement");
+
                     }
+
                 } else {
                     builder = new EmbedBuilder().setColor(Color.RED)
                             .setTitle("Cet utilisateur n'est pas bannis !");

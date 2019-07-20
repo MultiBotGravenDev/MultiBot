@@ -62,27 +62,24 @@ public class InfractionDAO extends DAO<InfractionData> {
         Connection connection = getConnection();
         List<InfractionData> infractions = new ArrayList<>();
 
-        try {
-            PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM infractions WHERE punished_id = ? AND type = 'warn' ORDER BY start DESC");
-            statement.setString(1, discordID);
+        PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM infractions WHERE punished_id = ? AND type = 'warn' ORDER BY start DESC");
+        statement.setString(1, discordID);
 
-            ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()) {
-                UUID uuid = UUID.fromString(resultSet.getString("uuid"));
-                String punished_id = resultSet.getString("punished_id");
-                String punisher_id = resultSet.getString("punisher_id");
-                InfractionType type = InfractionType.valueOf(resultSet.getString("type"));
-                String reason = resultSet.getString("reason");
-                Date start = new Date(resultSet.getTimestamp("start").getTime());
-                Date end = resultSet.getTimestamp("end") != null ?
-                        new Date(resultSet.getTimestamp("end").getTime()) : null;
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+            String punished_id = resultSet.getString("punished_id");
+            String punisher_id = resultSet.getString("punisher_id");
+            InfractionType type = InfractionType.valueOf(resultSet.getString("type"));
+            String reason = resultSet.getString("reason");
+            Date start = new Date(resultSet.getTimestamp("start").getTime());
+            Date end = resultSet.getTimestamp("end") != null ?
+                    new Date(resultSet.getTimestamp("end").getTime()) : null;
 
-                infractions.add(new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end));
-            }
-        } finally {
-            closeConnection(connection);
+            infractions.add(new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end));
         }
+
         return infractions;
     }
 

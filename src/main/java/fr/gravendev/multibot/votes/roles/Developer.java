@@ -4,7 +4,6 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 
 import java.awt.*;
-import java.sql.SQLException;
 
 public class Developer implements Role {
 
@@ -26,12 +25,7 @@ public class Developer implements Role {
 
     @Override
     public long getRoleId() {
-        try {
-            return new GuildIdDAO(this.databaseConnection).get("developpeur").id;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0L;
-        }
+        return new GuildIdDAO(this.databaseConnection).get("developpeur").id;
     }
 
     @Override

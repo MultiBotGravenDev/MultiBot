@@ -41,22 +41,17 @@ public class HelpCommand implements CommandExecutor {
                 .filter(commandExecutor -> commandExecutor.isAuthorizedMember(message.getMember()))
                 .forEach(commandExecutor -> embedBuilder.addField(new MessageEmbed.Field(commandExecutor.getCommand(), commandExecutor.getDescription(), false)));
 
-        try {
-            CustomCommandDAO customCommandDAO = new CustomCommandDAO(this.databaseConnection);
+        CustomCommandDAO customCommandDAO = new CustomCommandDAO(this.databaseConnection);
 
-            CustomCommandData customCommandData;
+        CustomCommandData customCommandData;
 
-            for (int i = 0; i < 100; i++) {
-                customCommandData = customCommandDAO.get(String.valueOf(i));
+        for (int i = 0; i < 100; i++) {
+            customCommandData = customCommandDAO.get(String.valueOf(i));
 
-                if (customCommandData != null) {
-                    embedBuilder.addField(customCommandData.command, "", false);
-                }
-
+            if (customCommandData != null) {
+                embedBuilder.addField(customCommandData.command, "", false);
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
         message.getChannel().sendMessage(embedBuilder.build()).queue();

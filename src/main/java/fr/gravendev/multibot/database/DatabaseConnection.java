@@ -20,6 +20,8 @@ public class DatabaseConnection {
         dataSource.addDataSourceProperty("serverTimezone", "UTC");
         dataSource.setMaximumPoolSize(10);
         dataSource.setMinimumIdle(0);
+        dataSource.setIdleTimeout(1);
+        dataSource.addDataSourceProperty("serverTimezone", "UTC");
     }
 
     public Connection getConnection() throws SQLException {

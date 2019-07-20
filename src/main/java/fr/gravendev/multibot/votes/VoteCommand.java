@@ -97,57 +97,48 @@ public class VoteCommand implements CommandExecutor {
             sentMessage.addReaction("\u274C").queue();
             sentMessage.addReaction("\u2B1C").queue();
 
-            try {
-                VoteDAO voteDAO = new VoteDAO(this.databaseConnection);
+            VoteDAO voteDAO = new VoteDAO(this.databaseConnection);
 
-                voteDAO.save(VoteDataBuilder
-                        .aVoteData()
-                        .withMessageId(sentMessage.getIdLong())
-                        .withRole(role.getRoleName())
-                        .withUserID(member.getUser().getIdLong())
-                        .isAccepted(false)
-                        .build());
+            voteDAO.save(VoteDataBuilder
+                    .aVoteData()
+                    .withMessageId(sentMessage.getIdLong())
+                    .withRole(role.getRoleName())
+                    .withUserID(member.getUser().getIdLong())
+                    .isAccepted(false)
+                    .build());
 
-                sentMessage.getChannel().getMessageById(sentMessage.getIdLong()).queueAfter(24, TimeUnit.HOURS, sentMessage2 -> {
+            sentMessage.getChannel().getMessageById(sentMessage.getIdLong()).queueAfter(24, TimeUnit.HOURS, sentMessage2 -> {
 
-                    try {
-                        VoteData voteData = voteDAO.get(sentMessage.getId());
-                        boolean accepted = voteData.yes.size() > voteData.no.size();
+                VoteData voteData = voteDAO.get(sentMessage.getId());
+                boolean accepted = voteData.yes.size() > voteData.no.size();
 
 
-                        MessageEmbed finalEmbed = new EmbedBuilder()
-                                .setColor(role.getColor())
-                                .setAuthor(member.getUser().getAsTag(), member.getUser().getAvatarUrl(), member.getUser().getAvatarUrl())
-                                .setTitle("Vote " + role.getRoleName())
-                                .addField("Présentation :", presentation, false)
-                                .addField("Oui :", voteData.yes.stream().map(userId -> message.getJDA().getUserById(userId).getName()).collect(Collectors.joining("\n")), true)
-                                .addField("Non :", voteData.no.stream().map(userId -> message.getJDA().getUserById(userId).getName()).collect(Collectors.joining("\n")), true)
-                                .addField("Blanc :", voteData.white.stream().map(userId -> message.getJDA().getUserById(userId).getName()).collect(Collectors.joining("\n")), true)
-                                .addField("Accepté :", (accepted ? "Oui" : "Non") + "(" + voteData.yes.size() + "/" + voteData.no.size() + ")", false)
-                                .setFooter("Proposé par " + message.getAuthor().getAsTag(), message.getAuthor().getAvatarUrl())
-                                .build();
+                MessageEmbed finalEmbed = new EmbedBuilder()
+                        .setColor(role.getColor())
+                        .setAuthor(member.getUser().getAsTag(), member.getUser().getAvatarUrl(), member.getUser().getAvatarUrl())
+                        .setTitle("Vote " + role.getRoleName())
+                        .addField("Présentation :", presentation, false)
+                        .addField("Oui :", voteData.yes.stream().map(userId -> message.getJDA().getUserById(userId).getName()).collect(Collectors.joining("\n")), true)
+                        .addField("Non :", voteData.no.stream().map(userId -> message.getJDA().getUserById(userId).getName()).collect(Collectors.joining("\n")), true)
+                        .addField("Blanc :", voteData.white.stream().map(userId -> message.getJDA().getUserById(userId).getName()).collect(Collectors.joining("\n")), true)
+                        .addField("Accepté :", (accepted ? "Oui" : "Non") + "(" + voteData.yes.size() + "/" + voteData.no.size() + ")", false)
+                        .setFooter("Proposé par " + message.getAuthor().getAsTag(), message.getAuthor().getAvatarUrl())
+                        .build();
 
-                        voteData = VoteDataBuilder.fromVoteData(voteData).isAccepted(accepted).build();
-                        voteDAO.save(voteData);
+                voteData = VoteDataBuilder.fromVoteData(voteData).isAccepted(accepted).build();
+                voteDAO.save(voteData);
 
-                        if (accepted) {
+                if (accepted) {
 
-                            message.getGuild().getController().addRolesToMember(member, message.getGuild().getRoleById(role.getRoleId())).queue();
+                    message.getGuild().getController().addRolesToMember(member, message.getGuild().getRoleById(role.getRoleId())).queue();
 
-                        }
+                }
 
-                        sentMessage2.editMessage(finalEmbed).queue();
-                        sentMessage2.clearReactions().queue();
+                sentMessage2.editMessage(finalEmbed).queue();
+                sentMessage2.clearReactions().queue();
 
-                        voteDAO.delete(voteData);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                });
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+                voteDAO.delete(voteData);
+            });
 
         });
 

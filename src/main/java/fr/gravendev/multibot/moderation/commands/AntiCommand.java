@@ -52,42 +52,33 @@ public class AntiCommand implements CommandExecutor {
         if (mentionedMembers.size() != 1) return;
         if (!"repost review meme".contains(args[0])) return;
 
-        try {
-            GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
-            long roleId = guildIdDAO.get("anti_" + args[0]).id;
-            long logsId = guildIdDAO.get("logs").id;
+        GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
+        long roleId = guildIdDAO.get("anti_" + args[0]).id;
+        long logsId = guildIdDAO.get("logs").id;
 
-            Member member = mentionedMembers.get(0);
-            message.getGuild().getController().addRolesToMember(member, message.getGuild().getRoleById(roleId)).queue(a -> {
+        Member member = mentionedMembers.get(0);
+        message.getGuild().getController().addRolesToMember(member, message.getGuild().getRoleById(roleId)).queue(a -> {
 
-                try {
-                    AntiRolesDAO antiRolesDAO = new AntiRolesDAO(this.databaseConnection);
-                    AntiRoleData antiRoleData = antiRolesDAO.get(member.getUser().getId());
+            AntiRolesDAO antiRolesDAO = new AntiRolesDAO(this.databaseConnection);
+            AntiRoleData antiRoleData = antiRolesDAO.get(member.getUser().getId());
 
-                    if (antiRoleData != null) return;
-                        antiRoleData = new AntiRoleData(member.getUser().getIdLong(), new HashMap<>());
+            if (antiRoleData != null) return;
+            antiRoleData = new AntiRoleData(member.getUser().getIdLong(), new HashMap<>());
 
 
-                    antiRoleData.roles.put(new Date(System.currentTimeMillis()), "anti-" + args[0]);
+            antiRoleData.roles.put(new Date(System.currentTimeMillis()), "anti-" + args[0]);
 
-                    antiRolesDAO.save(antiRoleData);
+            antiRolesDAO.save(antiRoleData);
 
-                    message.getGuild().getTextChannelById(logsId).sendMessage(new EmbedBuilder()
-                            .setColor(Color.ORANGE)
-                            .setTitle("[ANTI-" + args[0].toUpperCase() + "]" + member.getUser().getAsTag())
-                            .addField("Utilisateur :", member.getAsMention(), true)
-                            .addField("Modérateur :", message.getAuthor().getAsMention(), true)
-                            .addField("Fin :", new SimpleDateFormat("dd/MM/yyyy à HH:mm:ss").format(Date.from(Instant.now().plusSeconds(60 * 60 * 24 * 30 * 6))), true)
-                            .build()).queue();
+            message.getGuild().getTextChannelById(logsId).sendMessage(new EmbedBuilder()
+                    .setColor(Color.ORANGE)
+                    .setTitle("[ANTI-" + args[0].toUpperCase() + "]" + member.getUser().getAsTag())
+                    .addField("Utilisateur :", member.getAsMention(), true)
+                    .addField("Modérateur :", message.getAuthor().getAsMention(), true)
+                    .addField("Fin :", new SimpleDateFormat("dd/MM/yyyy à HH:mm:ss").format(Date.from(Instant.now().plusSeconds(60 * 60 * 24 * 30 * 6))), true)
+                    .build()).queue();
 
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        });
 
     }
 

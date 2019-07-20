@@ -29,17 +29,12 @@ public class RoleAddedEvent implements Listener<GuildMemberRoleAddEvent> {
     @Override
     public void executeListener(GuildMemberRoleAddEvent event) {
 
-        try {
-            VoteDAO voteDAO = new VoteDAO(this.databaseConnection);
-            VoteData voteData = voteDAO.get(event.getUser().getId());
+        VoteDAO voteDAO = new VoteDAO(this.databaseConnection);
+        VoteData voteData = voteDAO.get(event.getUser().getId());
 
-            Role role = event.getRoles().get(0);
-            if (ROLES_NAMES.contains(role.getName()) && !voteData.accepted) {
-                event.getGuild().getController().removeRolesFromMember(event.getMember(), role).queue();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        Role role = event.getRoles().get(0);
+        if (ROLES_NAMES.contains(role.getName()) && !voteData.accepted) {
+            event.getGuild().getController().removeRolesFromMember(event.getMember(), role).queue();
         }
 
     }

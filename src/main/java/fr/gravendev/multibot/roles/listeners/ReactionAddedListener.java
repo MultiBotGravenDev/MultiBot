@@ -30,19 +30,14 @@ public class ReactionAddedListener implements Listener<MessageReactionAddEvent> 
         if (user.isBot()) return;
         if (!event.getChannel().getName().equalsIgnoreCase("rôle-langage")) return;
 
-        try {
-            Guild guild = event.getGuild();
-            RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
-            RoleData roleData = roleDAO.get(event.getReactionEmote().getId());
+        Guild guild = event.getGuild();
+        RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
+        RoleData roleData = roleDAO.get(event.getReactionEmote().getId());
 
-            if (roleData != null) {
-                guild.getController().addRolesToMember(event.getMember(), guild.getRoleById(roleData.roleId)).queue();
-            } else {
-                event.getReaction().removeReaction(user).queue();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (roleData != null) {
+            guild.getController().addRolesToMember(event.getMember(), guild.getRoleById(roleData.roleId)).queue();
+        } else {
+            event.getReaction().removeReaction(user).queue();
         }
 
     }

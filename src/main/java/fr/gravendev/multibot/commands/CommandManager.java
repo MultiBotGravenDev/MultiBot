@@ -70,16 +70,11 @@ public class CommandManager {
             optionalCommandExecutor.get().execute(message, Arrays.copyOfRange(args, 1, args.length));
         } else {
 
-            try {
-                CustomCommandDAO commandDAO = new CustomCommandDAO(this.databaseConnection);
-                CustomCommandData customCommandData = commandDAO.get(args[0]);
+            CustomCommandDAO commandDAO = new CustomCommandDAO(this.databaseConnection);
+            CustomCommandData customCommandData = commandDAO.get(args[0]);
 
-                if (customCommandData != null) {
-                    message.getChannel().sendMessage(customCommandData.text).queue();
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (customCommandData != null) {
+                message.getChannel().sendMessage(customCommandData.text).queue();
             }
 
         }
