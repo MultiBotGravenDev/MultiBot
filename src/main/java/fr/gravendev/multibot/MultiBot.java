@@ -2,8 +2,8 @@ package fr.gravendev.multibot;
 
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.DatabaseConnectionBuilder;
 import fr.gravendev.multibot.events.MultiBotListener;
-import fr.gravendev.multibot.tasks.AntiRolesTask;
 import fr.gravendev.multibot.utils.json.Configuration;
 import fr.gravendev.multibot.utils.json.Serializer;
 import fr.gravendev.multibot.quiz.QuizManager;
@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.util.Timer;
 
 class MultiBot {
 
@@ -28,7 +27,15 @@ class MultiBot {
 
     MultiBot() {
         this.configuration = new Serializer<Configuration>().deserialize(Configuration.CONFIGURATION_FILE, Configuration.class);
-        this.databaseConnection = new DatabaseConnection(configuration.getHost(), configuration.getUsername(), configuration.getPassword(), configuration.getDatabase());
+
+        this.databaseConnection = DatabaseConnectionBuilder
+                .aDatabaseConnection()
+                .withhost(configuration.getHost())
+                .withuser(configuration.getUser())
+                .withpassword(configuration.getPassword())
+                .withdatabase(configuration.getDatabase())
+                .build();
+
         this.commandManager = new CommandManager(this.configuration.getPrefix(), databaseConnection);
         this.quizManager = new QuizManager(databaseConnection);
     }
@@ -42,11 +49,10 @@ class MultiBot {
 
             LOGGER.info("Bot connected");
 
-            new Thread(() -> new Timer().schedule(new AntiRolesTask(this.jda, this.databaseConnection), 0, 10_000)).start();
-
         } catch (LoginException e) {
             e.printStackTrace();
             LOGGER.error("Failed to connect the bot");
+            System.exit(0);
         }
     }
 

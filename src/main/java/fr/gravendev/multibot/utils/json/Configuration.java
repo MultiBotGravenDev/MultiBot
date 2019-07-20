@@ -22,7 +22,7 @@ public class Configuration {
         return host;
     }
 
-    public String getUsername() {
+    public String getUser() {
         return username;
     }
 
@@ -33,4 +33,5 @@ public class Configuration {
     public String getDatabase() {
         return database;
     }
+
 }
