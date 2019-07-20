@@ -3,14 +3,14 @@ package fr.gravendev.multibot.utils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.User;
-import org.joda.time.Period;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Utils {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy à HH:mm:ss");
@@ -20,21 +20,6 @@ public class Utils {
     }
     public static DateTimeFormatter getDateTimeFormatter() {
         return dateTimeFormatter;
-    }
-
-    private static final PeriodFormatter periodParser = new PeriodFormatterBuilder()
-            .appendDays().appendSuffix("d")
-            .appendHours().appendSuffix("h")
-            .appendMinutes().appendSuffix("m")
-            .appendSeconds().appendSuffix("s")
-            .toFormatter();
-
-    public static Period getTimeFromInput(String input) {
-        try {
-            return periodParser.parsePeriod(input);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
     }
 
     public static MessageEmbed buildEmbed(Color color, String message) {
@@ -53,10 +38,56 @@ public class Utils {
                 "Raison: "+reason+"\n" +
                 "Fin le: "+(end != null ? Utils.getDateFormat().format(end) : "Jamais")).build();
     }
-
     public static MessageEmbed warnEmbed(User user, String reason) {
         return new EmbedBuilder().setColor(Color.DARK_GRAY).setDescription(user.getAsTag()+" a été avertis ! \n" +
                 "Raison: "+reason).build();
+    }
+
+    private static final Map<String, Long> TIME_FORMAT = new HashMap<>();
+
+    static {
+        TIME_FORMAT.put("y", 31_536_000_000L);
+        TIME_FORMAT.put("M", 2_592_000_000L);
+        TIME_FORMAT.put("d", 86_400_000L);
+        TIME_FORMAT.put("h", 3_600_000L);
+        TIME_FORMAT.put("m", 60_000L);
+        TIME_FORMAT.put("s", 1_000L);
+        TIME_FORMAT.put("ms", 1L);
+    }
+
+    public static long parsePeriod(String parser){
+        Objects.requireNonNull(parser, "Parser cannot be nul");
+
+        char[] chars = parser.toCharArray();
+
+        StringBuilder timeBuilder = new StringBuilder();
+        StringBuilder keyBuilder = new StringBuilder();
+
+        long time = 0;
+
+        for(int  i = 0; i < chars.length; i++){
+            if(Character.isDigit(chars[i]))
+                timeBuilder.append(chars[i]);
+            else {
+                keyBuilder.append(chars[i]);
+                if(i == chars.length-1 || Character.isDigit(chars[i+1])){
+                    Long mul = TIME_FORMAT.get(keyBuilder.toString());
+
+                    if(mul == null)
+                        throw new IllegalArgumentException(keyBuilder.toString()+" is not a key valid !");
+
+                    time += (Integer.parseInt(timeBuilder.toString()) * mul);
+
+                    timeBuilder = new StringBuilder();
+                    keyBuilder = new StringBuilder();
+                }
+            }
+        }
+
+        if(keyBuilder.length() > 0 || timeBuilder.length() > 0)
+            throw new IllegalArgumentException("The parser ["+parser+"] is not valid.");
+
+        return time;
     }
 
 }
