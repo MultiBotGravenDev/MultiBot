@@ -17,9 +17,9 @@ public class DatabaseConnection {
         dataSource.setPassword(builder.password);
         dataSource.addDataSourceProperty("autoReconnect",true);
         dataSource.addDataSourceProperty("tcpKeepAlive", true);
+        dataSource.addDataSourceProperty("serverTimezone", "UTC");
         dataSource.setMaximumPoolSize(10);
         dataSource.setMinimumIdle(0);
-        dataSource.setIdleTimeout(1);
     }
 
     public Connection getConnection() throws SQLException {
