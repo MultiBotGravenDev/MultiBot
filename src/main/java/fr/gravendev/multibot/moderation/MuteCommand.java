@@ -21,22 +21,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class WarnCommand implements CommandExecutor {
+public class MuteCommand implements CommandExecutor {
 
     private final DatabaseConnection databaseConnection;
 
-    public WarnCommand(DatabaseConnection databaseConnection) {
+    public MuteCommand(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
 
     @Override
     public String getCommand() {
-        return "warn";
+        return "mute";
     }
 
     @Override
     public String getDescription() {
-        return "Mettre un avertissement à un membre du discord.";
+        return "Rendre muet un membre du discord.";
     }
 
     @Override
@@ -50,7 +50,7 @@ public class WarnCommand implements CommandExecutor {
 
             List<Member> mentionedMembers = message.getMentionedMembers();
             if (mentionedMembers.size() == 0) {
-                message.getChannel().sendMessage("Usage: warn @Member").queue();
+                message.getChannel().sendMessage("Usage: mute @Member").queue();
                 return;
             }
 
@@ -60,7 +60,7 @@ public class WarnCommand implements CommandExecutor {
             Member bot = guild.getMember(message.getJDA().getSelfUser());
 
             User moderator = message.getAuthor();
-            User warnedUser = member.getUser();
+            User mutedUser = member.getUser();
 
             String reason = "Non définie";
             if (args.length >= 2) {
@@ -68,12 +68,18 @@ public class WarnCommand implements CommandExecutor {
             }
 
             if (!PermissionUtil.canInteract(bot, member)) {
-                message.getChannel().sendMessage("Impossible de mettre un avertissement à cet utilisateur !").queue();
+                message.getChannel().sendMessage("Impossible de mute cet utilisateur !").queue();
                 return;
             }
 
+            GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
+            long mutedID = guildIdDAO.get("muted").id;
+            Role muted = guild.getRoleById(mutedID);
+
+            guild.getController().addRolesToMember(member, muted).queue();
+
             InfractionData data = new InfractionData(
-                    warnedUser.getId(), moderator.getId(), InfractionType.WARN, reason, new Date(), null);
+                    mutedUser.getId(), moderator.getId(), InfractionType.MUTE, reason, new Date(), null);
             InfractionDAO dao = new InfractionDAO(databaseConnection);
             dao.save(data);
 
@@ -82,19 +88,18 @@ public class WarnCommand implements CommandExecutor {
             MessageData messageData = new MessageData(message);
             logsDAO.save(messageData);
 
-            GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
             GuildIdsData logs = guildIdDAO.get("logs");
 
             EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
-                    .setAuthor("[WARN] " +warnedUser.getAsTag(), warnedUser.getAvatarUrl())
-                    .addField("Utilisateur:", warnedUser.getAsMention(), true)
+                    .setAuthor("[MUTE] " +mutedUser.getAsTag(), mutedUser.getAvatarUrl())
+                    .addField("Utilisateur:", mutedUser.getAsMention(), true)
                     .addField("Modérateur:", moderator.getAsMention(), true)
                     .addField("Raison:", reason, true);
 
             TextChannel logsChannel = guild.getTextChannelById(logs.id);
             logsChannel.sendMessage(embedBuilder.build()).queue();
 
-            message.getChannel().sendMessage(member.getAsMention()+" a été avertis !").queue();
+            message.getChannel().sendMessage(member.getAsMention()+" a été mute !").queue();
 
         } catch (SQLException e) {
             e.printStackTrace();
