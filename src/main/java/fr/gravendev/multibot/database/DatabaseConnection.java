@@ -9,12 +9,12 @@ public class DatabaseConnection {
 
     private HikariDataSource dataSource;
 
-    public DatabaseConnection(String host, String user, String password, String database) {
+    public DatabaseConnection(DatabaseConnectionBuilder builder) {
 
         dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:mysql://"+host+":3306/"+database);
-        dataSource.setUsername(user);
-        dataSource.setPassword(password);
+        dataSource.setJdbcUrl("jdbc:mysql://" + builder.host + ":3306/" + builder.database);
+        dataSource.setUsername(builder.user);
+        dataSource.setPassword(builder.password);
         dataSource.addDataSourceProperty("autoReconnect",true);
         dataSource.addDataSourceProperty("tcpKeepAlive", true);
         dataSource.setMaximumPoolSize(10);
@@ -25,4 +25,5 @@ public class DatabaseConnection {
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
+
 }
