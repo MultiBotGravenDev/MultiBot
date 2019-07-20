@@ -40,31 +40,26 @@ public class AddCommand implements CommandExecutor {
         if (!args[0].matches("[0-9]+")) return;
         if (mentionedRoles.size() != 1) return;
 
-        try {
-            RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
+        RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
 
-            Role mentionedRole = mentionedRoles.get(0);
+        Role mentionedRole = mentionedRoles.get(0);
 
-            if (roleDAO.get(mentionedRole.getId()) == null) {
+        if (roleDAO.get(mentionedRole.getId()) == null) {
 
-                Emote emote = message.getGuild().getEmoteById(args[0]);
+            Emote emote = message.getGuild().getEmoteById(args[0]);
 
-                if (emote == null) {
-                    message.getChannel().sendMessage("Cet emote n'existe pas").queue();
-                    return;
-                }
-
-                roleDAO.save(new RoleData(mentionedRole.getId(), args[0]));
-                message.getChannel().sendMessage("Le role "
-                        + mentionedRole.getAsMention()
-                        + " a bien été ajouté à la liste des rôles avec la réaction "
-                        + emote.getAsMention()).queue();
-            } else {
-                message.getChannel().sendMessage("Ce role existe déjà").queue();
+            if (emote == null) {
+                message.getChannel().sendMessage("Cet emote n'existe pas").queue();
+                return;
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            roleDAO.save(new RoleData(mentionedRole.getId(), args[0]));
+            message.getChannel().sendMessage("Le role "
+                    + mentionedRole.getAsMention()
+                    + " a bien été ajouté à la liste des rôles avec la réaction "
+                    + emote.getAsMention()).queue();
+        } else {
+            message.getChannel().sendMessage("Ce role existe déjà").queue();
         }
 
     }

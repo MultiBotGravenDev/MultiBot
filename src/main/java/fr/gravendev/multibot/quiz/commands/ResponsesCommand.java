@@ -35,14 +35,10 @@ public class ResponsesCommand implements CommandExecutor {
         List<TextChannel> mentionedChannels = message.getMentionedChannels();
         if (mentionedChannels.size() != 1) return;
 
-        try {
-            TextChannel textChannel = mentionedChannels.get(0);
-            new GuildIdDAO(this.databaseConnection)
-                    .save(new GuildIdsData("candids", textChannel.getIdLong()));
-            message.getChannel().sendMessage("Le nouveau salon pour envoyer les candidatures a bien été définis à : " + textChannel.getAsMention()).queue();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        TextChannel textChannel = mentionedChannels.get(0);
+        new GuildIdDAO(this.databaseConnection)
+                .save(new GuildIdsData("candids", textChannel.getIdLong()));
+        message.getChannel().sendMessage("Le nouveau salon pour envoyer les candidatures a bien été définis à : " + textChannel.getAsMention()).queue();
 
     }
 

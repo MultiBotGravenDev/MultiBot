@@ -46,7 +46,6 @@ public class MuteCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-        try {
 
             List<Member> mentionedMembers = message.getMentionedMembers();
             if (mentionedMembers.size() == 0) {
@@ -101,9 +100,6 @@ public class MuteCommand implements CommandExecutor {
 
             message.getChannel().sendMessage(member.getAsMention()+" a été mute !").queue();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

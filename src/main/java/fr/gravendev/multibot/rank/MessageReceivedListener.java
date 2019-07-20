@@ -29,34 +29,29 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
 
         if (event.getAuthor().isBot()) return;
 
-        try {
-            User author = event.getAuthor();
+        User author = event.getAuthor();
 
-            int xpEarned = ThreadLocalRandom.current().nextInt(15, 26);
+        int xpEarned = ThreadLocalRandom.current().nextInt(15, 26);
 
-            ExperienceDAO experienceDAO = new ExperienceDAO(databaseConnection);
-            ExperienceData experienceData = experienceDAO.get(author.getId());
+        ExperienceDAO experienceDAO = new ExperienceDAO(databaseConnection);
+        ExperienceData experienceData = experienceDAO.get(author.getId());
 
-            if(experienceData != null) {
-                if(experienceData.getLastMessage().getTime() + 60000 < System.currentTimeMillis()) {
-                    experienceData.addMessage();
-                    experienceData.addExperience(xpEarned);
+        if (experienceData != null) {
+            if (experienceData.getLastMessage().getTime() + 60000 < System.currentTimeMillis()) {
+                experienceData.addMessage();
+                experienceData.addExperience(xpEarned);
 
-                    int requireToLevelUp = levelToExp(experienceData.getLevels());
-                    if(experienceData.getExperiences() > requireToLevelUp) {
-                        experienceData.addLevel();
-                        experienceData.removeExperience(requireToLevelUp);
-                    }
-
-                    experienceDAO.save(experienceData);
+                int requireToLevelUp = levelToExp(experienceData.getLevels());
+                if (experienceData.getExperiences() > requireToLevelUp) {
+                    experienceData.addLevel();
+                    experienceData.removeExperience(requireToLevelUp);
                 }
-            } else {
-                experienceData = new ExperienceData(author.getId());
+
                 experienceDAO.save(experienceData);
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } else {
+            experienceData = new ExperienceData(author.getId());
+            experienceDAO.save(experienceData);
         }
 
     }

@@ -19,13 +19,7 @@ public abstract class AntiRole {
 
     AntiRole(DatabaseConnection databaseConnection, String roleName) {
         this.antiRolesDAO = new AntiRolesDAO(databaseConnection);
-
-        try {
-            this.roleId = new GuildIdDAO(databaseConnection).get(roleName).id;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        this.roleId = new GuildIdDAO(databaseConnection).get(roleName).id;
     }
 
     public void deleteRoles(Guild guild) {
@@ -33,14 +27,7 @@ public abstract class AntiRole {
         Role role = guild.getRoleById(this.roleId);
         for (Member member : guild.getMembersWithRoles(role)) {
 
-            AntiRoleData antiRoleData = null;
-
-            try {
-                antiRoleData = this.antiRolesDAO.get(member.getUser().getId());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
+            AntiRoleData antiRoleData = this.antiRolesDAO.get(member.getUser().getId());
             if (antiRoleData == null) continue;
 
             boolean removeRole = antiRoleData.roles.entrySet().stream()
@@ -49,11 +36,7 @@ public abstract class AntiRole {
 
             if (removeRole) {
                 guild.getController().removeRolesFromMember(member, role).queue();
-                try {
-                    this.antiRolesDAO.delete(antiRoleData);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                this.antiRolesDAO.delete(antiRoleData);
             }
 
         }

@@ -37,29 +37,23 @@ public class HereCommand implements CommandExecutor {
 
         message.getChannel().getHistoryBefore(message, 100).queue(history -> history.getRetrievedHistory().forEach(message1 -> message1.delete().queue()));
 
-        try {
+        WelcomeMessageDAO welcomeMessageDAO = new WelcomeMessageDAO(this.databaseConnection);
+        MessageData messageData;
 
-            WelcomeMessageDAO welcomeMessageDAO = new WelcomeMessageDAO(this.databaseConnection);
-            MessageData messageData;
+        MessageBuilder messageBuilder = new MessageBuilder();
 
-            MessageBuilder messageBuilder = new MessageBuilder();
-
-            for (int i = 1; (messageData = welcomeMessageDAO.get(i + "")) != null; ++i) {
-                messageBuilder.append(messageData.message);
-            }
-
-            Queue<Message> queue = messageBuilder.buildAll(MessageBuilder.SplitPolicy.NEWLINE);
-            List<Message> messages = Arrays.stream(queue.toArray(new Message[]{})).collect(Collectors.toList());
-
-            for (int i = 0; i < messages.size() - 1; i++) {
-                message.getChannel().sendMessage(messages.get(i)).queue();
-            }
-
-            message.getChannel().sendMessage(messages.get(messages.size() - 1)).queue(sentMessage -> sentMessage.addReaction("\u2705").queue());
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        for (int i = 1; (messageData = welcomeMessageDAO.get(i + "")) != null; ++i) {
+            messageBuilder.append(messageData.message);
         }
+
+        Queue<Message> queue = messageBuilder.buildAll(MessageBuilder.SplitPolicy.NEWLINE);
+        List<Message> messages = Arrays.stream(queue.toArray(new Message[]{})).collect(Collectors.toList());
+
+        for (int i = 0; i < messages.size() - 1; i++) {
+            message.getChannel().sendMessage(messages.get(i)).queue();
+        }
+
+        message.getChannel().sendMessage(messages.get(messages.size() - 1)).queue(sentMessage -> sentMessage.addReaction("\u2705").queue());
 
         message.delete().queue();
 

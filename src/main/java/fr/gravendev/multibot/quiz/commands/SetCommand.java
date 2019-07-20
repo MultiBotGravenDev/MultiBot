@@ -31,36 +31,30 @@ public class SetCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
-        if (args.length > 2) return;
-        if (!args[0].matches("[0-9]+")) return;
+        if (args.length > 2 || !args[0].matches("[0-9]+")) return;
 
-        try {
-            QuizMessageDAO quizMessageDAO = new QuizMessageDAO(this.databaseConnection);
-            MessageData messageData = quizMessageDAO.get(args[0] + "");
+        QuizMessageDAO quizMessageDAO = new QuizMessageDAO(this.databaseConnection);
+        MessageData messageData = quizMessageDAO.get(args[0] + "");
 
-            if (messageData == null) {
+        if (messageData == null) {
 
-                int i = 1;
+            int i = 1;
 
-                while (quizMessageDAO.get(i + "") != null) {
-                    ++i;
-                }
-
-                messageData = new MessageData(i + "", "");
-
+            while (quizMessageDAO.get(i + "") != null) {
+                ++i;
             }
 
-            args = Arrays.copyOfRange(args, 1, args.length);
-            String question = String.join(" ", args);
+            messageData = new MessageData(i + "", "");
 
-            messageData = new MessageData(messageData.id, question);
-            quizMessageDAO.save(messageData);
-
-            message.getChannel().sendMessage("La question numéro " + messageData.id + " a bien été changée en :\n" + messageData.message).queue();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+
+        args = Arrays.copyOfRange(args, 1, args.length);
+        String question = String.join(" ", args);
+
+        messageData = new MessageData(messageData.id, question);
+        quizMessageDAO.save(messageData);
+
+        message.getChannel().sendMessage("La question numéro " + messageData.id + " a bien été changée en :\n" + messageData.message).queue();
 
     }
 

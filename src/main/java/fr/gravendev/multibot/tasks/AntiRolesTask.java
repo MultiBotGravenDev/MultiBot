@@ -18,14 +18,7 @@ public class AntiRolesTask extends TimerTask {
     private final List<AntiRole> antiRoles;
 
     public AntiRolesTask(JDA jda, DatabaseConnection databaseConnection) {
-        Guild guild1;
-        try {
-            guild1 = jda.getGuildById(new GuildIdDAO(databaseConnection).get("guild").id);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            guild1 = null;
-        }
-        this.guild = guild1;
+        this.guild = jda.getGuildById(new GuildIdDAO(databaseConnection).get("guild").id);
 
         this.antiRoles = Arrays.asList(
                 new AntiRepost(databaseConnection),

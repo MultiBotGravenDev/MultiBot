@@ -13,34 +13,33 @@ public abstract class DAO<T> {
         this.databaseConnection = databaseConnection;
     }
 
-    public boolean save(T obj) throws SQLException {
-        Connection connection = getConnection();
-        try {
+    public boolean save(T obj) {
+        try(Connection connection = getConnection()) {
             return save(obj, connection);
-        }finally {
-            closeConnection(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
     protected abstract boolean save(T obj, Connection connection) throws SQLException;
 
-    public T get(String value) throws SQLException {
-        Connection connection = getConnection();
-        try {
+    public T get(String value) {
+        try(Connection connection = getConnection()) {
             return get(value, connection);
-        }finally {
-            closeConnection(connection);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return null;
         }
     }
 
     protected abstract T get(String value, Connection connection) throws SQLException;
 
-    public void delete(T obj) throws SQLException {
-        Connection connection = getConnection();
-        try {
+    public void delete(T obj) {
+        try(Connection connection = getConnection()) {
             delete(obj, connection);
-        }finally {
-            closeConnection(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -48,11 +47,6 @@ public abstract class DAO<T> {
     
     public Connection getConnection() throws SQLException {
         return databaseConnection.getConnection();
-    }
-
-    public void closeConnection(Connection connection) throws SQLException {
-        if(!connection.isClosed())
-            connection.close();
     }
 
 }

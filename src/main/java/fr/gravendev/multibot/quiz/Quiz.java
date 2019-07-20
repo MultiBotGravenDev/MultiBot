@@ -27,34 +27,20 @@ class Quiz {
 
     boolean send() {
 
-        try {
-            QuizMessageDAO quizMessageDAO = new QuizMessageDAO(this.databaseConnection);
-            MessageData messageData = quizMessageDAO.get(this.questionIndex + "");
+        QuizMessageDAO quizMessageDAO = new QuizMessageDAO(this.databaseConnection);
+        MessageData messageData = quizMessageDAO.get(this.questionIndex + "");
 
-            if (messageData != null) {
+        if (messageData != null) {
 
-                this.user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(messageData.message).queue());
-                return true;
+            this.user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(messageData.message).queue());
+            return true;
 
-            } else {
+        } else {
 
-                this.user.openPrivateChannel().queue(privateChannel -> {
-                    try {
-                        privateChannel.sendMessage(quizMessageDAO.get("stop").message).queue();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                });
-                return false;
+            this.user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(quizMessageDAO.get("stop").message).queue());
+            return false;
 
-            }
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
-        return true;
 
     }
 
@@ -68,14 +54,9 @@ class Quiz {
     }
 
     MessageEmbed.Field getCurrentAnswer() {
-        try {
-            return new MessageEmbed.Field(
-                    new QuizMessageDAO(this.databaseConnection).get(this.answerIndex + "").message,
-                    this.responses.get(this.answerIndex),
-                    false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return new MessageEmbed.Field("", "", false);
+        return new MessageEmbed.Field(
+                new QuizMessageDAO(this.databaseConnection).get(this.answerIndex + "").message,
+                this.responses.get(this.answerIndex),
+                false);
     }
 }

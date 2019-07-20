@@ -78,7 +78,7 @@ public class RankCommand implements CommandExecutor {
             builder.drawString(String.format("Niveau %d", levels), Color.WHITE, levels >= 100 ? 730 : 750, 90, 35);
 
             message.getChannel().sendFile(builder.toInputStream(), "card.png").queue();
-        } catch (IOException | SQLException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

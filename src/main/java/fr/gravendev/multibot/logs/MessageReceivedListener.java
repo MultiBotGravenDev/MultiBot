@@ -33,49 +33,43 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
         Message message = event.getMessage();
         MessageChannel channel = message.getChannel();
         User user = message.getAuthor();
-        if(user.isBot()) return;
+        if (user.isBot()) return;
 
-        if(channel.getName().startsWith("présentation-")) {
-            try {
-                LogsDAO logsDAO = new LogsDAO(databaseConnection);
-                MessageData messageData = new MessageData(message);
-                logsDAO.save(messageData);
+        if (channel.getName().startsWith("présentation-")) {
 
-                GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
-                GuildIdsData logs = guildIdDAO.get("logs");
+            LogsDAO logsDAO = new LogsDAO(databaseConnection);
+            MessageData messageData = new MessageData(message);
+            logsDAO.save(messageData);
 
-                EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.ORANGE)
-                        .setAuthor(user.getName(),user.getAvatarUrl())
-                        .setDescription("Projet envoyé dans <#"+channel.getId()+">")
-                        .addField("Aller au message: ", "[Lien]("+message.getJumpUrl()+")", false)
-                        .setFooter("User ID: "+user.getId(), user.getAvatarUrl());
+            GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
+            GuildIdsData logs = guildIdDAO.get("logs");
 
-                TextChannel logsChannel = message.getGuild().getTextChannelById(logs.id);
-                logsChannel.sendMessage(embedBuilder.build()).queue();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.ORANGE)
+                    .setAuthor(user.getName(), user.getAvatarUrl())
+                    .setDescription("Projet envoyé dans <#" + channel.getId() + ">")
+                    .addField("Aller au message: ", "[Lien](" + message.getJumpUrl() + ")", false)
+                    .setFooter("User ID: " + user.getId(), user.getAvatarUrl());
+
+            TextChannel logsChannel = message.getGuild().getTextChannelById(logs.id);
+            logsChannel.sendMessage(embedBuilder.build()).queue();
         }
 
         List<Role> mentionedRoles = message.getMentionedRoles();
-        if(mentionedRoles.size() > 0) {
-            try {
+        if (mentionedRoles.size() > 0) {
 
-                GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
-                GuildIdsData logs = guildIdDAO.get("logs");
+            GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
+            GuildIdsData logs = guildIdDAO.get("logs");
 
-                EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.MAGENTA)
-                        .setAuthor(user.getName(),user.getAvatarUrl())
-                        .setDescription("Rôle mentionné dans <#"+channel.getId()+">")
-                        .addField("Rôle mentionné: ", mentionedRoles.stream().map(Role::getName).collect(Collectors.joining(", ")), false)
-                        .addField("Aller au message: ", "[Lien]("+message.getJumpUrl()+")", false)
-                        .setFooter("User ID: "+user.getId(), user.getAvatarUrl());
+            EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.MAGENTA)
+                    .setAuthor(user.getName(), user.getAvatarUrl())
+                    .setDescription("Rôle mentionné dans <#" + channel.getId() + ">")
+                    .addField("Rôle mentionné: ", mentionedRoles.stream().map(Role::getName).collect(Collectors.joining(", ")), false)
+                    .addField("Aller au message: ", "[Lien](" + message.getJumpUrl() + ")", false)
+                    .setFooter("User ID: " + user.getId(), user.getAvatarUrl());
 
-                TextChannel logsChannel = message.getGuild().getTextChannelById(logs.id);
-                logsChannel.sendMessage(embedBuilder.build()).queue();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            TextChannel logsChannel = message.getGuild().getTextChannelById(logs.id);
+            logsChannel.sendMessage(embedBuilder.build()).queue();
+
         }
 
     }
