@@ -17,11 +17,11 @@ public interface CommandExecutor {
         return "";
     }
 
+    void execute(Message message, String[] args);
+
     default ChannelType getChannelType() {
         return ChannelType.ALL;
     }
-
-    void execute(Message message, String[] args);
 
     default List<String> getAuthorizedChannelsNames() {
         return new ArrayList<>();
@@ -32,11 +32,19 @@ public interface CommandExecutor {
     }
 
     default boolean isAuthorizedChannel(MessageChannel channel) {
-        if (getChannelType() != ChannelType.PRIVATE) {
-            return getAuthorizedChannelsNames().contains(channel.getName()) || getAuthorizedChannelsNames().isEmpty() || channel instanceof PrivateChannel;
-        } else {
-            return getChannelType().isEqualsTo(channel.getType());
+        switch (getChannelType()) {
+
+            case ALL:
+                if (channel.getType() == net.dv8tion.jda.core.entities.ChannelType.PRIVATE) return true;
+
+            case GUILD:
+                if (getAuthorizedChannelsNames().contains(channel.getName())) return true;
+                return getAuthorizedChannelsNames().isEmpty();
+
+            case PRIVATE:
+                return channel.getType() == net.dv8tion.jda.core.entities.ChannelType.PRIVATE;
         }
+        return false;
     }
 
     default boolean canExecute(Message message) {
