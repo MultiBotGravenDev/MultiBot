@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 
 public class ListCommand implements CommandExecutor {
 
-    private final DatabaseConnection databaseConnection;
+    private final RoleDAO roleDAO;
 
     ListCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        this.roleDAO = new RoleDAO(databaseConnection);
     }
 
     @Override
@@ -36,8 +36,6 @@ public class ListCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-
-        RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
 
         Guild guild = message.getGuild();
 
