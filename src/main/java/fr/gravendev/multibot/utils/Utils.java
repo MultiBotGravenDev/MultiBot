@@ -25,9 +25,10 @@ public class Utils {
     public static MessageEmbed buildEmbed(Color color, String message) {
         return new EmbedBuilder().setColor(color).setDescription(message).build();
     }
-    public static MessageEmbed banEmbed(User user, String reason) {
+    public static MessageEmbed banEmbed(User user, String reason, Date end) {
         return new EmbedBuilder().setColor(Color.DARK_GRAY).setDescription(user.getAsTag()+" a été bannis ! \n" +
-                "Raison: "+reason).build();
+                "Raison: "+reason+"\n" +
+                "Fin le: "+(end != null ? Utils.getDateFormat().format(end) : "Jamais")).build();
     }
     public static MessageEmbed kickEmbed(User user, String reason) {
         return new EmbedBuilder().setColor(Color.DARK_GRAY).setDescription(user.getAsTag()+" a été éjecté ! \n" +
@@ -74,7 +75,7 @@ public class Utils {
                     Long mul = TIME_FORMAT.get(keyBuilder.toString());
 
                     if(mul == null)
-                        throw new IllegalArgumentException(keyBuilder.toString()+" is not a key valid !");
+                        return -1;
 
                     time += (Integer.parseInt(timeBuilder.toString()) * mul);
 
@@ -85,7 +86,7 @@ public class Utils {
         }
 
         if(keyBuilder.length() > 0 || timeBuilder.length() > 0)
-            throw new IllegalArgumentException("The parser ["+parser+"] is not valid.");
+            return -1;
 
         return time;
     }

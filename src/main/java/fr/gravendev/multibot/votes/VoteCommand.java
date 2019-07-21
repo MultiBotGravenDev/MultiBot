@@ -128,7 +128,7 @@ public class VoteCommand implements CommandExecutor {
 
                 if (accepted) {
 
-                    message.getGuild().getController().addRolesToMember(member, message.getGuild().getRoleById(role.getRoleId())).queue();
+                    message.getGuild().getController().addSingleRoleToMember(member, message.getGuild().getRoleById(role.getRoleId())).queue();
 
                 }
 

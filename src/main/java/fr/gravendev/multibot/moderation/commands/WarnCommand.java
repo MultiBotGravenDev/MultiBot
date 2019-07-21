@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class WarnCommand implements CommandExecutor {
+public class WarnCommand extends AModeration {
 
     private final DatabaseConnection databaseConnection;
 
@@ -45,58 +45,6 @@ public class WarnCommand implements CommandExecutor {
     }
 
     @Override
-    public void execute(Message message, String[] args) {
-
-        List<Member> mentionedMembers = message.getMentionedMembers();
-        if (mentionedMembers.size() == 0) {
-            message.getChannel().sendMessage("Usage: warn @Member").queue();
-            return;
-        }
-
-        Guild guild = message.getGuild();
-
-        Member member = mentionedMembers.get(0);
-        Member bot = guild.getMember(message.getJDA().getSelfUser());
-
-        User moderator = message.getAuthor();
-        User warnedUser = member.getUser();
-
-        String reason = "Non définie";
-        if (args.length >= 2) {
-            reason = Stream.of(args).skip(1).collect(Collectors.joining(" "));
-        }
-
-        if (!PermissionUtil.canInteract(bot, member)) {
-            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Impossible de mettre un avertissement à cet utilisateur !")).queue();
-            return;
-        }
-
-        InfractionData data = new InfractionData(
-                warnedUser.getId(), moderator.getId(), InfractionType.WARN, reason, new Date(), null);
-        InfractionDAO dao = new InfractionDAO(databaseConnection);
-        dao.save(data);
-
-
-        LogsDAO logsDAO = new LogsDAO(databaseConnection);
-        MessageData messageData = new MessageData(message);
-        logsDAO.save(messageData);
-
-        GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
-        GuildIdsData logs = guildIdDAO.get("logs");
-
-        EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
-                .setAuthor("[WARN] " + warnedUser.getAsTag(), warnedUser.getAvatarUrl())
-                .addField("Utilisateur:", warnedUser.getAsMention(), true)
-                .addField("Modérateur:", moderator.getAsMention(), true)
-                .addField("Raison:", reason, true);
-
-        TextChannel logsChannel = guild.getTextChannelById(logs.id);
-        logsChannel.sendMessage(embedBuilder.build()).queue();
-
-        message.getChannel().sendMessage(Utils.warnEmbed(warnedUser, reason)).queue();
-    }
-
-    @Override
     public boolean isAuthorizedMember(Member member) {
         return member.hasPermission(Permission.ADMINISTRATOR);
     }
@@ -106,4 +54,34 @@ public class WarnCommand implements CommandExecutor {
         return true;
     }
 
+    @Override
+    boolean isTemporary() {
+        return false;
+    }
+
+    @Override
+    protected void execute(Message message, User victim, String reason, Date start, Date end) {
+
+        User user = message.getAuthor();
+        Guild guild = message.getGuild();
+
+        InfractionData data = new InfractionData(
+                victim.getId(), user.getId(), InfractionType.WARN, reason, new Date(), null);
+        InfractionDAO dao = new InfractionDAO(databaseConnection);
+        dao.save(data);
+
+        GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
+        GuildIdsData logs = guildIdDAO.get("logs");
+
+        EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
+                .setAuthor("[WARN] " + victim.getAsTag(), victim.getAvatarUrl())
+                .addField("Utilisateur:", victim.getAsMention(), true)
+                .addField("Modérateur:", user.getAsMention(), true)
+                .addField("Raison:", reason, true);
+
+        TextChannel logsChannel = guild.getTextChannelById(logs.id);
+        logsChannel.sendMessage(embedBuilder.build()).queue();
+
+        message.getChannel().sendMessage(Utils.warnEmbed(victim, reason)).queue();
+    }
 }

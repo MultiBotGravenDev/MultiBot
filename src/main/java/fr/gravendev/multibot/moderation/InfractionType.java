@@ -4,8 +4,6 @@ public enum InfractionType {
 
     BAN("Ban"),
     MUTE("Mute"),
-    TEMPBAN("Tempban"),
-    TEMPMUTE("Tempmute"),
     KICK("Kick"),
     WARN("Avertissement");
 

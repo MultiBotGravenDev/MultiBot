@@ -57,7 +57,7 @@ public class AntiCommand implements CommandExecutor {
         GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
 
         Member member = mentionedMembers.get(0);
-        message.getGuild().getController().addRolesToMember(member, message.getGuild().getRoleById(guildIdDAO.get("anti_" + args[0]).id)).queue(a -> {
+        message.getGuild().getController().addSingleRoleToMember(member, message.getGuild().getRoleById(guildIdDAO.get("anti_" + args[0]).id)).queue(a -> {
 
             saveInDatabase(args[0], member);
 
