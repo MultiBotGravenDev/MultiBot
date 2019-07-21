@@ -26,10 +26,10 @@ public class GuildIdDAO extends DAO<GuildIdsData> {
             long id = Long.parseLong(resultSet.getString("id"));
             return new GuildIdsData(name, id);
         }
-        
+
         return null;
     }
-    
+
     @Override
     public boolean save(GuildIdsData guildIdsData, Connection connection) throws SQLException {
 
@@ -42,7 +42,7 @@ public class GuildIdDAO extends DAO<GuildIdsData> {
 
         return true;
     }
-    
+
 
     @Override
     protected void delete(GuildIdsData obj, Connection connection) {

@@ -52,7 +52,8 @@ public class AntiCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         List<Member> mentionedMembers = message.getMentionedMembers();
-        if (args.length != 2 || mentionedMembers.size() != 1 || !"repost review meme".contains(args[0]) || GuildUtils.hasRole(mentionedMembers.get(0), "anti-" + args[0])) return;
+        if (args.length != 2 || mentionedMembers.size() != 1 || !"repost review meme".contains(args[0]) || GuildUtils.hasRole(mentionedMembers.get(0), "anti-" + args[0]))
+            return;
 
         GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
 

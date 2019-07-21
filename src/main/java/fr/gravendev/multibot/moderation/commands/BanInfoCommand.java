@@ -43,7 +43,7 @@ public class BanInfoCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
         if (args.length == 0 || extractId(args[0]) == null) {
-            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED,"Utilisation: baninfo @utilisateur")).queue();
+            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: baninfo @utilisateur")).queue();
             return;
         }
 

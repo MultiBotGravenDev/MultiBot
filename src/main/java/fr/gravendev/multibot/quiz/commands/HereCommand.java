@@ -3,7 +3,6 @@ package fr.gravendev.multibot.quiz.commands;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
-import fr.gravendev.multibot.database.data.MessageData;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;

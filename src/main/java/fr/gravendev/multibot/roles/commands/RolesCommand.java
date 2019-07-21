@@ -35,7 +35,7 @@ public class RolesCommand implements CommandExecutor {
         return "Commandes relatives aux rôles langages. \n"
                 + this.argumentExecutors
                 .stream()
-                .map(executor -> "!roles " + executor.getCommand() +  " (" + executor.getDescription() + ")\n")
+                .map(executor -> "!roles " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
                 .reduce((message, executorInfos) -> message += executorInfos)
                 .orElse("");
     }

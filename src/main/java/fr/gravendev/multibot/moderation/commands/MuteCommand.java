@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.moderation;
+package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.database.DatabaseConnection;
@@ -6,6 +6,8 @@ import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.GuildIdsData;
 import fr.gravendev.multibot.database.data.InfractionData;
+import fr.gravendev.multibot.moderation.AModeration;
+import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.GuildUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -60,7 +62,7 @@ public class MuteCommand extends AModeration {
         Guild guild = message.getGuild();
 
         Member memberVictim = guild.getMember(victim);
-        if(GuildUtils.hasRole(memberVictim, "Muted")) {
+        if (GuildUtils.hasRole(memberVictim, "Muted")) {
             message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Ce membre est déjà mute")).queue();
             return;
         }

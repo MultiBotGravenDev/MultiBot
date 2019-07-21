@@ -44,18 +44,6 @@ public class ExperienceData {
         return lastMessage;
     }
 
-    public void setExperiences(int experiences) {
-        this.experience = experiences;
-    }
-
-    public void setLevels(int levels) {
-        this.level = levels;
-    }
-
-    public void setMessages(int messages) {
-        this.message = messages;
-    }
-
     public void addMessage() {
         message++;
     }
@@ -63,6 +51,7 @@ public class ExperienceData {
     public void addLevel() {
         level++;
     }
+
     public void addExperience(int experience) {
         this.experience += experience;
     }

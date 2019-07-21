@@ -83,7 +83,7 @@ public class InfractionDAO extends DAO<InfractionData> {
         return infractions;
     }
 
-    public InfractionData getLast(String discordID, InfractionType infractionType) throws SQLException{
+    public InfractionData getLast(String discordID, InfractionType infractionType) throws SQLException {
         PreparedStatement statement = getConnection().prepareStatement(
                 "SELECT * FROM infractions WHERE punished_id = ? AND type = ? ORDER BY start DESC");
         statement.setString(1, discordID);

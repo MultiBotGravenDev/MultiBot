@@ -2,12 +2,10 @@ package fr.gravendev.multibot.database;
 
 public class DatabaseConnectionBuilder {
 
-    public String host;
-    public String user;
-    public String password;
-    public String database;
+    String host, user, password, database;
 
-    private DatabaseConnectionBuilder() {}
+    private DatabaseConnectionBuilder() {
+    }
 
     public static DatabaseConnectionBuilder aDatabaseConnection() {
         return new DatabaseConnectionBuilder();

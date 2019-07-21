@@ -7,8 +7,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
-import java.sql.SQLException;
-
 public class CandidsExecutor implements EmoteAddedExecutor {
 
     private final DatabaseConnection databaseConnection;

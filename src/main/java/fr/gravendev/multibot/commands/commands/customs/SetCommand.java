@@ -6,7 +6,6 @@ import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.database.data.CustomCommandData;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 
 public class SetCommand implements CommandExecutor {

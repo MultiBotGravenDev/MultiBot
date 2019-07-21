@@ -18,6 +18,7 @@ import java.util.List;
 public class UnmuteCommand implements CommandExecutor {
 
     private DatabaseConnection databaseConnection;
+
     public UnmuteCommand(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
@@ -44,7 +45,7 @@ public class UnmuteCommand implements CommandExecutor {
         }
 
         Member member = mentionedMembers.get(0);
-        if(!GuildUtils.hasRole(member, "Muted")) {
+        if (!GuildUtils.hasRole(member, "Muted")) {
             message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Ce membre n'est pas mute")).queue();
             return;
         }
@@ -58,7 +59,7 @@ public class UnmuteCommand implements CommandExecutor {
             return;
         }
 
-        if(data != null) {
+        if (data != null) {
             data.setEnd(new Date());
             infractionDAO.save(data);
         }
@@ -68,7 +69,7 @@ public class UnmuteCommand implements CommandExecutor {
         Role muted = guild.getRoleById(mutedID);
 
         guild.getController().removeSingleRoleFromMember(member, muted).queue();
-        message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, member.getUser().getAsTag()+" vient d'être unmute")).queue();
+        message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, member.getUser().getAsTag() + " vient d'être unmute")).queue();
 
     }
 }

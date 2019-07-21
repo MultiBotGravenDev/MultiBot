@@ -16,7 +16,8 @@ public class VoteEmbedBuilder {
     private int no;
     private int white;
 
-    private VoteEmbedBuilder() {}
+    private VoteEmbedBuilder() {
+    }
 
     public static VoteEmbedBuilder aVoteEmbed() {
         return new VoteEmbedBuilder();
@@ -59,7 +60,7 @@ public class VoteEmbedBuilder {
                 .setAuthor(member.getNickname())
                 .setTitle("Vote " + role.getRoleName())
                 .setImage(member.getUser().getAvatarUrl())
-                .addField("Présentation :",  presentation, false)
+                .addField("Présentation :", presentation, false)
                 .addField("Oui :", yes + "", true)
                 .addField("Non :", no + "", true)
                 .addField("Blanc :", white + "", true)
