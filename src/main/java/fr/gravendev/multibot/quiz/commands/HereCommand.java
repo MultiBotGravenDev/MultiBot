@@ -36,7 +36,12 @@ public class HereCommand implements CommandExecutor {
 
     private void sendMessages(Message message) {
         MessageChannel channel = message.getChannel();
-        List<Message> messages = new ArrayList<>(getMessages());
+
+        Queue<Message> builtMessages = new MessageBuilder()
+                .append(this.welcomeMessageDAO.get(String.valueOf(1)).message)
+                .buildAll(MessageBuilder.SplitPolicy.NEWLINE);
+
+        List<Message> messages = new ArrayList<>(builtMessages);
 
         for (int i = 0; i < messages.size() - 1; i++) {
             channel.sendMessage(messages.get(i)).queue();
@@ -48,17 +53,6 @@ public class HereCommand implements CommandExecutor {
     private void deleteMessages(Message message) {
         message.getChannel().getHistoryBefore(message, 100).queue(history -> history.getRetrievedHistory().forEach(message1 -> message1.delete().queue()));
         message.delete().queue();
-    }
-
-    private Queue<Message> getMessages() {
-        MessageData messageData;
-        MessageBuilder messageBuilder = new MessageBuilder();
-
-        for (int i = 1; (messageData = this.welcomeMessageDAO.get(i + "")) != null; ++i) {
-            messageBuilder.append(messageData.message);
-        }
-
-        return messageBuilder.buildAll(MessageBuilder.SplitPolicy.NEWLINE);
     }
 
 }

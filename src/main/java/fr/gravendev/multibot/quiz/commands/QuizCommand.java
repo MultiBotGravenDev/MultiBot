@@ -3,6 +3,7 @@ package fr.gravendev.multibot.quiz.commands;
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -15,11 +16,11 @@ public class QuizCommand implements CommandExecutor {
 
     private final List<CommandExecutor> argumentExecutors;
 
-    public QuizCommand(DatabaseConnection databaseConnection) {
+    public QuizCommand(DatabaseConnection databaseConnection, WelcomeMessagesSetManager welcomeMessagesSetManager) {
         this.argumentExecutors = Arrays.asList(
                 new HereCommand(databaseConnection),
                 new ChannelCommand(databaseConnection),
-                new SetCommand(databaseConnection),
+                new SetCommand(databaseConnection, welcomeMessagesSetManager),
                 new ListCommand(databaseConnection)
         );
     }

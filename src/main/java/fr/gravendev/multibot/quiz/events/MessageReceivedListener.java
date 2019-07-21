@@ -2,15 +2,19 @@ package fr.gravendev.multibot.quiz.events;
 
 import fr.gravendev.multibot.events.Listener;
 import fr.gravendev.multibot.quiz.QuizManager;
+import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
 
     private final QuizManager quizManager;
+    private final WelcomeMessagesSetManager welcomeMessagesSetManager;
 
-    public MessageReceivedListener(QuizManager quizManager) {
+    public MessageReceivedListener(QuizManager quizManager, WelcomeMessagesSetManager welcomeMessagesSetManager) {
         this.quizManager = quizManager;
+        this.welcomeMessagesSetManager = welcomeMessagesSetManager;
     }
 
     @Override
@@ -21,13 +25,22 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
     @Override
     public void executeListener(MessageReceivedEvent event) {
 
-        User author = event.getAuthor();
-        if (author.isBot() || !this.quizManager.isWaitingFor(author)) return;
+        Message message = event.getMessage();
+        User author = message.getAuthor();
 
-        this.quizManager.registerResponse(author, event.getMessage().getContentDisplay());
-        this.quizManager.send(author);
+        if (author.isBot()) return;
+
+        if (this.quizManager.isWaitingFor(author)) {
+
+            this.quizManager.registerResponse(author, message.getContentDisplay());
+            this.quizManager.send(author);
+
+        } else {
+
+            this.welcomeMessagesSetManager.registerMessage(message);
+
+        }
 
     }
-
 
 }
