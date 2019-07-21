@@ -4,6 +4,7 @@ import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.DatabaseConnectionBuilder;
 import fr.gravendev.multibot.events.MultiBotListener;
+import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.utils.json.Configuration;
 import fr.gravendev.multibot.utils.json.Serializer;
 import fr.gravendev.multibot.quiz.QuizManager;
@@ -22,6 +23,7 @@ class MultiBot {
     private final CommandManager commandManager;
     private final DatabaseConnection databaseConnection;
     private final QuizManager quizManager;
+    private final WelcomeMessagesSetManager welcomeMessagesSetManager;
 
     private JDA jda;
 
@@ -36,15 +38,16 @@ class MultiBot {
                 .withdatabase(configuration.getDatabase())
                 .build();
 
-        this.commandManager = new CommandManager(this.configuration.getPrefix(), databaseConnection);
         this.quizManager = new QuizManager(databaseConnection);
+        this.welcomeMessagesSetManager = new WelcomeMessagesSetManager(databaseConnection);
+        this.commandManager = new CommandManager(this.configuration.getPrefix(), databaseConnection, welcomeMessagesSetManager);
     }
 
     void start() {
         try {
 
             this.jda = new JDABuilder(configuration.getToken())
-                    .addEventListener(new MultiBotListener(this.commandManager, this.databaseConnection, this.quizManager))
+                    .addEventListener(new MultiBotListener(this.commandManager, this.databaseConnection, this.quizManager, this.welcomeMessagesSetManager))
                     .build();
 
             LOGGER.info("Bot connected");

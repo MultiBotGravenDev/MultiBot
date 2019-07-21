@@ -3,6 +3,7 @@ package fr.gravendev.multibot.events;
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.logs.MessageReceivedListener;
+import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.quiz.events.EmoteAddedListener;
 import fr.gravendev.multibot.quiz.events.EmoteRemovedListener;
 import fr.gravendev.multibot.quiz.QuizManager;
@@ -16,12 +17,12 @@ public class MultiBotListener implements EventListener {
 
     private final List<Listener> events;
 
-    public MultiBotListener(CommandManager commandManager, DatabaseConnection databaseConnection, QuizManager quizManager) {
+    public MultiBotListener(CommandManager commandManager, DatabaseConnection databaseConnection, QuizManager quizManager, WelcomeMessagesSetManager welcomeMessagesSetManager) {
         events = Arrays.asList(
-                new fr.gravendev.multibot.quiz.events.MessageReceivedListener(quizManager),
                 new fr.gravendev.multibot.commands.MessageReceivedListener(commandManager),
                 new fr.gravendev.multibot.rank.MessageReceivedListener(databaseConnection),
                 new fr.gravendev.multibot.logs.MessageReceivedListener(databaseConnection),
+                new fr.gravendev.multibot.quiz.events.MessageReceivedListener(quizManager, welcomeMessagesSetManager),
                 new fr.gravendev.multibot.quiz.events.EmoteAddedListener(quizManager, databaseConnection),
                 new fr.gravendev.multibot.quiz.events.EmoteRemovedListener(quizManager),
                 new fr.gravendev.multibot.roles.listeners.ReactionAddedListener(databaseConnection),
