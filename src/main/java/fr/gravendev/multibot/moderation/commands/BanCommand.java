@@ -22,7 +22,7 @@ public class BanCommand extends AModeration {
     }
 
     @Override
-    boolean isTemporary() {
+    protected boolean isTemporary() {
         return false;
     }
 

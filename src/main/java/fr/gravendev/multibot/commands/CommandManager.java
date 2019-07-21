@@ -5,7 +5,20 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.commands.commands.CustomCommand;
 import fr.gravendev.multibot.database.data.CustomCommandData;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
+import fr.gravendev.multibot.moderation.*;
+import fr.gravendev.multibot.moderation.BanCommand;
+import fr.gravendev.multibot.moderation.BanInfoCommand;
+import fr.gravendev.multibot.moderation.InfractionsCommand;
+import fr.gravendev.multibot.moderation.KickCommand;
+import fr.gravendev.multibot.moderation.MuteCommand;
+import fr.gravendev.multibot.moderation.MuteInfoCommand;
+import fr.gravendev.multibot.moderation.TempbanCommand;
+import fr.gravendev.multibot.moderation.TempmuteCommand;
+import fr.gravendev.multibot.moderation.WarnCommand;
 import fr.gravendev.multibot.moderation.commands.AntiCommand;
+import fr.gravendev.multibot.moderation.commands.UnbanCommand;
+import fr.gravendev.multibot.moderation.commands.UnmuteCommand;
+import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.rank.RankCommand;
 import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
@@ -32,6 +45,7 @@ public class CommandManager {
                 new AboutCommand(),
                 new CustomCommand(databaseConnection),
                 new UserinfoCommand(),
+
                 new AntiCommand(databaseConnection),
                 new BanCommand(databaseConnection),
                 new BanInfoCommand(databaseConnection),
@@ -44,6 +58,7 @@ public class CommandManager {
                 new UnbanCommand(databaseConnection),
                 new UnmuteCommand(databaseConnection),
                 new WarnCommand(databaseConnection),
+
                 new QuizCommand(databaseConnection, welcomeMessagesSetManager),
                 new RankCommand(databaseConnection),
                 new RolesCommand(databaseConnection),

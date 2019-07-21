@@ -55,7 +55,7 @@ public class WarnCommand extends AModeration {
     }
 
     @Override
-    boolean isTemporary() {
+    protected boolean isTemporary() {
         return false;
     }
 

@@ -23,7 +23,7 @@ public class TempbanCommand extends AModeration {
     }
 
     @Override
-    boolean isTemporary() {
+    protected boolean isTemporary() {
         return true;
     }
 
