@@ -17,9 +17,10 @@ public class RoleDAO extends DAO<RoleData> {
 
     @Override
     protected boolean save(RoleData obj, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO roles VALUES(?, ?)");
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO roles VALUES(?, ?) ON DUPLICATE KEY UPDATE emote_id = ?");
         preparedStatement.setString(1, obj.roleId);
         preparedStatement.setString(2, obj.emoteId);
+        preparedStatement.setString(3, obj.emoteId);
 
         preparedStatement.execute();
         return true;

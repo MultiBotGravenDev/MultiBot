@@ -6,16 +6,15 @@ import fr.gravendev.multibot.database.dao.RoleDAO;
 import fr.gravendev.multibot.database.data.RoleData;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
 public class MessageCommand implements CommandExecutor {
 
-    private final DatabaseConnection databaseConnection;
+    private final RoleDAO roleDAO;
 
     MessageCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        this.roleDAO = new RoleDAO(databaseConnection);
     }
 
     @Override
@@ -31,10 +30,8 @@ public class MessageCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
-        RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
-        roleDAO.delete(roleDAO.get("message"));
-        roleDAO.save(new RoleData("message", String.join(" ", args)));
-        message.getChannel().sendMessage("le message a bien été changé en :\n" + String.join(" ", args)).queue();
+        this.roleDAO.save(new RoleData("message", String.join(" ", args)));
+        message.getChannel().sendMessage("Le message a bien été changé en :\n" + String.join(" ", args)).queue();
 
     }
 

@@ -6,7 +6,6 @@ import fr.gravendev.multibot.database.dao.RoleDAO;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +35,7 @@ public class ListCommand implements CommandExecutor {
         RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
 
         Guild guild = message.getGuild();
+
         String roles = guild.getRoles().stream()
                 .map(role -> roleDAO.get(role.getId()))
                 .filter(Objects::nonNull)
