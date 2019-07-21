@@ -30,24 +30,27 @@ public class CommandManager {
     public CommandManager(char prefix, DatabaseConnection databaseConnection) {
         this.prefix = prefix;
         commandExecutors = new ArrayList<>(Arrays.asList(
-                new QuizCommand(databaseConnection),
                 new AboutCommand(),
-                new RankCommand(databaseConnection),
-                new RoleCommand(databaseConnection),
+                new CustomCommand(databaseConnection),
+                new UserinfoCommand(),
+
+                new AntiCommand(databaseConnection),
                 new BanCommand(databaseConnection),
                 new BanInfoCommand(databaseConnection),
-                new KickCommand(databaseConnection),
-                new CustomCommand(databaseConnection),
-                new VoteCommand(databaseConnection),
-                new UserinfoCommand(),
-                new KickCommand(databaseConnection),
-                new VoteCommand(databaseConnection),
-                new CustomCommand(databaseConnection),
-                new AntiCommand(databaseConnection),
-                new WarnCommand(databaseConnection),
                 new InfractionsCommand(databaseConnection),
+                new KickCommand(databaseConnection),
                 new MuteCommand(databaseConnection),
-                new TempmuteCommand(databaseConnection)
+                new TempmuteCommand(databaseConnection),
+                new WarnCommand(databaseConnection),
+
+                new QuizCommand(databaseConnection),
+
+                new RankCommand(databaseConnection),
+
+                new RoleCommand(databaseConnection),
+
+                new VoteCommand(databaseConnection)
+
         ));
         this.databaseConnection = databaseConnection;
         this.commandExecutors.add(new HelpCommand(this.commandExecutors, databaseConnection));
