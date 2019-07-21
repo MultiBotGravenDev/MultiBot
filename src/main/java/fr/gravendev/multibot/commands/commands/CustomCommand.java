@@ -30,7 +30,12 @@ public class CustomCommand implements CommandExecutor {
 
     @Override
     public String getDescription() {
-        return "Permet de créer une command custom";
+        return "Permet de créer une command custom \n"
+                + this.argumentsExecutors
+                .stream()
+                .map(executor -> "!custom " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
+                .reduce((message, executorInfos) -> message += executorInfos)
+                .orElse("");
     }
 
     @Override
@@ -48,7 +53,7 @@ public class CustomCommand implements CommandExecutor {
 
         if (args.length == 0) {
             message.getChannel().sendMessage("commande inconnue. "
-                    + "!quiz ["
+                    + "!custom ["
                     + this.argumentsExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining("/"))
                     + "]").queue();
             return;
