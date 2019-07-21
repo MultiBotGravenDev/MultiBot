@@ -10,10 +10,10 @@ import java.util.Arrays;
 
 public class SetCommand implements CommandExecutor {
 
-    private final DatabaseConnection databaseConnection;
+    private final CustomCommandDAO CustomCommandDAO;
 
     public SetCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        this.CustomCommandDAO = new CustomCommandDAO(databaseConnection);
     }
 
     @Override
@@ -24,8 +24,14 @@ public class SetCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
+        if (args.length < 2) {
+            message.getChannel().sendMessage("Erreur. !custom set <commande> <texte>").queue();
+            return;
+        }
+
         CustomCommandData customCommandData = new CustomCommandData(args[0], String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
-        new CustomCommandDAO(this.databaseConnection).save(customCommandData);
+        this.CustomCommandDAO.save(customCommandData);
+        message.getChannel().sendMessage("La commande ``" + args[0] + "`` a été enregistrée").queue();
 
     }
 

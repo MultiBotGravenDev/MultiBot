@@ -38,6 +38,11 @@ public class SetCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
+        if (args.length == 0) {
+            message.getChannel().sendMessage("Erreur. !quiz set question/message").queue();
+            return;
+        }
+
         if (args[0].equalsIgnoreCase("question")) {
 
             setQuestion(message, Arrays.copyOfRange(args, 1, args.length));
@@ -52,7 +57,10 @@ public class SetCommand implements CommandExecutor {
 
     private void setQuestion(Message message, String[] args) {
 
-        if (args.length > 2 || !args[0].matches("[0-9]+")) return;
+        if (args.length > 2 || !args[0].matches("[0-9]+")) {
+            message.getChannel().sendMessage("Erreur. !quiz set question <numéro de la question> <texte>").queue();
+            return;
+        }
 
         MessageData messageData = this.quizMessageDAO.get(args[0]);
 

@@ -36,7 +36,10 @@ public class RemoveCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         List<Role> mentionedRoles = message.getMentionedRoles();
-        if (args.length != 1 || mentionedRoles.size() != 1) return;
+        if (mentionedRoles.size() != 1) {
+            message.getChannel().sendMessage("Erreur. !roles remove @role").queue();
+            return;
+        }
 
         Role mentionedRole = mentionedRoles.get(0);
 

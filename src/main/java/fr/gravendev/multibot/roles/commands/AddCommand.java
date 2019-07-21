@@ -38,7 +38,10 @@ public class AddCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         List<Role> mentionedRoles = message.getMentionedRoles();
-        if (args.length != 2 || !args[0].matches("[0-9]+") || mentionedRoles.size() != 1) return;
+        if (args.length != 2 || !args[0].matches("[0-9]+") || mentionedRoles.size() != 1) {
+            message.getChannel().sendMessage("Erreur. !roles add <id de l'emote> @role").queue();
+            return;
+        }
 
         Role mentionedRole = mentionedRoles.get(0);
 

@@ -37,7 +37,10 @@ public class ChannelCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         List<TextChannel> mentionedChannels = message.getMentionedChannels();
-        if (mentionedChannels.size() != 1) return;
+        if (mentionedChannels.size() != 1) {
+            message.getChannel().sendMessage("Erreur. !quiz channel #channel").queue();
+            return;
+        }
 
         TextChannel textChannel = mentionedChannels.get(0);
         this.guildIdDAO.save(new GuildIdsData("candids", textChannel.getIdLong()));
