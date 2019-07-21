@@ -4,18 +4,17 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.RoleDAO;
 import fr.gravendev.multibot.database.data.RoleData;
 import fr.gravendev.multibot.events.Listener;
+import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
-import java.sql.SQLException;
-
 public class ReactionAddedListener implements Listener<MessageReactionAddEvent> {
 
-    private final DatabaseConnection databaseConnection;
+    private final RoleDAO roleDAO;
 
     public ReactionAddedListener(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        this.roleDAO = new RoleDAO(databaseConnection);
     }
 
     @Override
@@ -26,18 +25,14 @@ public class ReactionAddedListener implements Listener<MessageReactionAddEvent> 
     @Override
     public void executeListener(MessageReactionAddEvent event) {
 
-        User user = event.getUser();
-        if (user.isBot()) return;
-        if (!event.getChannel().getName().equalsIgnoreCase("rôle-langage")) return;
+        if (event.getUser().isBot() || !event.getChannel().getName().equalsIgnoreCase("rôle-langage")) return;
 
-        Guild guild = event.getGuild();
-        RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
         RoleData roleData = roleDAO.get(event.getReactionEmote().getId());
 
         if (roleData != null) {
-            guild.getController().addRolesToMember(event.getMember(), guild.getRoleById(roleData.roleId)).queue();
+            GuildUtils.addRole(event.getMember(), roleData.roleId).queue();
         } else {
-            event.getReaction().removeReaction(user).queue();
+            event.getReaction().removeReaction(event.getUser()).queue();
         }
 
     }

@@ -6,16 +6,15 @@ import fr.gravendev.multibot.database.dao.RoleDAO;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
 public class RemoveCommand implements CommandExecutor {
 
-    private final DatabaseConnection databaseConnection;
+    private final RoleDAO roleDAO;
 
     RemoveCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        this.roleDAO = new RoleDAO(databaseConnection);
     }
 
     @Override
@@ -32,11 +31,7 @@ public class RemoveCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         List<Role> mentionedRoles = message.getMentionedRoles();
-
-        if (args.length != 1) return;
-        if (mentionedRoles.size() != 1) return;
-
-        RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
+        if (args.length != 1 || mentionedRoles.size() != 1) return;
 
         Role mentionedRole = mentionedRoles.get(0);
 
