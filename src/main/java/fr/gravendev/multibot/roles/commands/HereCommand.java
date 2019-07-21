@@ -6,17 +6,16 @@ import fr.gravendev.multibot.database.dao.RoleDAO;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class HereCommand implements CommandExecutor {
 
-    private final DatabaseConnection databaseConnection;
+    private final RoleDAO roleDAO;
 
     HereCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        this.roleDAO = new RoleDAO(databaseConnection);
     }
 
     @Override
@@ -34,8 +33,6 @@ public class HereCommand implements CommandExecutor {
 
         MessageChannel channel = message.getChannel();
         channel.getHistoryBefore(message, 100).queue(messageHistory -> messageHistory.getRetrievedHistory().forEach(oldMessage -> oldMessage.delete().queue()));
-
-        RoleDAO roleDAO = new RoleDAO(this.databaseConnection);
 
         channel.sendMessage(roleDAO.get("message").emoteId)
                 .queue(sentMessage -> message.getGuild().getRoles().stream()
