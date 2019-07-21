@@ -83,6 +83,28 @@ public class InfractionDAO extends DAO<InfractionData> {
         return infractions;
     }
 
+    public InfractionData getLast(String discordID, InfractionType infractionType) throws SQLException{
+        PreparedStatement statement = getConnection().prepareStatement(
+                "SELECT * FROM infractions WHERE punished_id = ? AND type = ? ORDER BY start DESC");
+        statement.setString(1, discordID);
+        statement.setString(2, infractionType.name());
+
+        ResultSet resultSet = statement.executeQuery();
+        if (resultSet.next()) {
+            UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+            String punished_id = resultSet.getString("punished_id");
+            String punisher_id = resultSet.getString("punisher_id");
+            InfractionType type = InfractionType.valueOf(resultSet.getString("type"));
+            String reason = resultSet.getString("reason");
+            Date start = new Date(resultSet.getTimestamp("start").getTime());
+            Date end = resultSet.getTimestamp("end") != null ?
+                    new Date(resultSet.getTimestamp("end").getTime()) : null;
+            return new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end);
+        }
+
+        return null;
+    }
+
     @Override
     protected void delete(InfractionData obj, Connection connection) {
     }

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class KickCommand implements CommandExecutor {
+public class KickCommand extends AModeration {
 
     private final DatabaseConnection databaseConnection;
 
@@ -46,50 +46,28 @@ public class KickCommand implements CommandExecutor {
     }
 
     @Override
-    public void execute(Message message, String[] args) {
+    boolean isTemporary() {
+        return false;
+    }
 
-        List<Member> mentionedMembers = message.getMentionedMembers();
-        if (mentionedMembers.size() == 0) {
-            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: kick @membre")).queue();
-            return;
-        }
-
+    @Override
+    protected void execute(Message message, User victim, String reason, Date start, Date end) {
+        User moderator = message.getAuthor();
         Guild guild = message.getGuild();
 
-        Member member = mentionedMembers.get(0);
-        Member bot = guild.getMember(message.getJDA().getSelfUser());
-
-        User moderator = message.getAuthor();
-        User kickedUser = member.getUser();
-
-        String reason = "Non définie";
-        if (args.length >= 2) {
-            reason = Stream.of(args).skip(1).collect(Collectors.joining(" "));
-        }
-
-        if (!PermissionUtil.canInteract(bot, member)) {
-            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Impossible d'éjecter cet utilisateur !")).queue();
-            return;
-        }
-
-        guild.getController().kick(member, reason).queue();
+        guild.getController().kick(victim.getId(), reason).queue();
 
         InfractionData data = new InfractionData(
-                kickedUser.getId(), moderator.getId(), InfractionType.KICK, reason, new Date(), null);
+                victim.getId(), moderator.getId(), InfractionType.KICK, reason, new Date(), null);
         InfractionDAO dao = new InfractionDAO(databaseConnection);
         dao.save(data);
-
-
-        LogsDAO logsDAO = new LogsDAO(databaseConnection);
-        MessageData messageData = new MessageData(message);
-        logsDAO.save(messageData);
 
         GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
         GuildIdsData logs = guildIdDAO.get("logs");
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
-                .setAuthor("[KICK] " + kickedUser.getAsTag(), kickedUser.getAvatarUrl())
-                .addField("Utilisateur:", kickedUser.getAsMention(), true)
+                .setAuthor("[KICK] " + victim.getAsTag(), victim.getAvatarUrl())
+                .addField("Utilisateur:", victim.getAsMention(), true)
                 .addField("Modérateur:", moderator.getAsMention(), true)
                 .addField("Raison:", reason, true);
 
@@ -97,7 +75,7 @@ public class KickCommand implements CommandExecutor {
         logsChannel.sendMessage(embedBuilder.build()).queue();
 
 
-        message.getChannel().sendMessage(Utils.kickEmbed(kickedUser, reason)).queue();
+        message.getChannel().sendMessage(Utils.kickEmbed(victim, reason)).queue();
     }
 
     @Override

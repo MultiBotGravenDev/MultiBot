@@ -11,6 +11,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,7 +58,14 @@ public class BanInfoCommand implements CommandExecutor {
                 if (banList.stream().anyMatch(ban -> ban.getUser().getId().equals(user.getId()))) {
 
                     InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
-                    InfractionData data = infractionDAO.get(id);
+                    InfractionData data;
+                    try {
+                        data = infractionDAO.getLast(id, InfractionType.BAN);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+
                     if (data != null) {
 
                         Date dateEnd = data.getEnd();
