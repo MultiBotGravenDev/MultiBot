@@ -48,6 +48,7 @@ public class BanInfoCommand implements CommandExecutor {
         }
 
         String id = extractId(args[0]);
+
         message.getJDA().retrieveUserById(id).queue(user -> {
             Guild guild = message.getGuild();
 

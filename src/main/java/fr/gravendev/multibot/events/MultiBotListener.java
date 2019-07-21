@@ -2,10 +2,7 @@ package fr.gravendev.multibot.events;
 
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.logs.MessageReceivedListener;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
-import fr.gravendev.multibot.quiz.events.EmoteAddedListener;
-import fr.gravendev.multibot.quiz.events.EmoteRemovedListener;
 import fr.gravendev.multibot.quiz.QuizManager;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.EventListener;

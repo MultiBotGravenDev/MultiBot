@@ -46,7 +46,7 @@ public class KickCommand extends AModeration {
     }
 
     @Override
-    boolean isTemporary() {
+    protected boolean isTemporary() {
         return false;
     }
 

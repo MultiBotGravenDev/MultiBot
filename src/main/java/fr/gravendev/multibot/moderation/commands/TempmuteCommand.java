@@ -43,7 +43,7 @@ public class TempmuteCommand extends AModeration {
     }
 
     @Override
-    boolean isTemporary() {
+    protected boolean isTemporary() {
         return true;
     }
 
