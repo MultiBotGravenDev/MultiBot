@@ -7,7 +7,6 @@ import fr.gravendev.multibot.database.data.GuildIdsData;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 

@@ -5,7 +5,6 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.data.ExperienceData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
-import fr.gravendev.multibot.rank.ImageBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
@@ -15,7 +14,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,7 +45,7 @@ public class RankCommand implements CommandExecutor {
         try {
             Member member = message.getMember();
             List<Member> mentionedMembers = message.getMentionedMembers();
-            if(mentionedMembers.size() > 0)
+            if (mentionedMembers.size() > 0)
                 member = mentionedMembers.get(0);
             User user = member.getUser();
 
@@ -57,7 +55,7 @@ public class RankCommand implements CommandExecutor {
             ExperienceDAO dao = new ExperienceDAO(databaseConnection);
             ExperienceData data = dao.get(user.getId());
 
-            if(data == null) {
+            if (data == null) {
                 data = new ExperienceData(user.getId());
                 dao.save(data);
             }
@@ -69,7 +67,7 @@ public class RankCommand implements CommandExecutor {
             BufferedImage image = new BufferedImage(950, 300, BufferedImage.TYPE_INT_RGB);
             ImageBuilder builder = new ImageBuilder(image);
 
-            builder.drawImage(new URL(member.getUser().getAvatarUrl()), 50);
+            builder.drawImage(new URL(member.getUser().getAvatarUrl()));
 
             builder.drawProgress(color, experiences, expToLevelUp);
 

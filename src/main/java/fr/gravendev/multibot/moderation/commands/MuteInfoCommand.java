@@ -1,9 +1,10 @@
-package fr.gravendev.multibot.moderation;
+package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
+import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.GuildUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -19,6 +20,7 @@ import java.util.List;
 public class MuteInfoCommand implements CommandExecutor {
 
     private final DatabaseConnection databaseConnection;
+
     public MuteInfoCommand(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
@@ -38,7 +40,7 @@ public class MuteInfoCommand implements CommandExecutor {
         }
 
         Member member = mentionedMembers.get(0);
-        if(!GuildUtils.hasRole(member, "Muted")) {
+        if (!GuildUtils.hasRole(member, "Muted")) {
             messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Ce membre n'est pas mute")).queue();
             return;
         }
@@ -52,7 +54,7 @@ public class MuteInfoCommand implements CommandExecutor {
             return;
         }
 
-        if(data == null) {
+        if (data == null) {
             messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Impossible de trouver des informations sur le mute de ce membre")).queue();
             return;
         }

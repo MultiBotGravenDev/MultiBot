@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.moderation;
+package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
@@ -12,7 +12,6 @@ import net.dv8tion.jda.core.entities.*;
 
 import java.awt.*;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -46,7 +45,7 @@ public class InfractionsCommand implements CommandExecutor {
 
             List<Member> mentionedMembers = message.getMentionedMembers();
             if (mentionedMembers.size() == 0) {
-                message.getChannel().sendMessage(Utils.buildEmbed(Color.RED,"Utilisation: infractions @membre")).queue();
+                message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: infractions @membre")).queue();
                 return;
             }
 
@@ -74,13 +73,11 @@ public class InfractionsCommand implements CommandExecutor {
 
                 StringBuilder builder = new StringBuilder();
 
-                allInfractions.stream().limit(10).forEach(infraction -> {
-                    builder.append("**")
-                            .append(infraction.getReason())
-                            .append("** - ")
-                            .append(Utils.getDateFormat().format(infraction.getStart()))
-                            .append("\n");
-                });
+                allInfractions.stream().limit(10).forEach(infraction -> builder.append("**")
+                        .append(infraction.getReason())
+                        .append("** - ")
+                        .append(Utils.getDateFormat().format(infraction.getStart()))
+                        .append("\n"));
                 embedBuilder.addField("10 dernières infractions", builder.toString(), false);
             }
 

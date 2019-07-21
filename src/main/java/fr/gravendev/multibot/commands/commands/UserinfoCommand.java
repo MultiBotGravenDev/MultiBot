@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.commands.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
-import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
@@ -10,7 +9,6 @@ import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
 
 import java.awt.*;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +34,7 @@ public class UserinfoCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
         Member member = message.getMember();
         List<Member> mentionedMembers = message.getMentionedMembers();
-        if(mentionedMembers.size() > 0)
+        if (mentionedMembers.size() > 0)
             member = mentionedMembers.get(0);
         User user = member.getUser();
 
@@ -57,7 +55,7 @@ public class UserinfoCommand implements CommandExecutor {
                 .addField("Mention", user.getAsMention(), true)
                 .addField("A rejoint", joinDate, true)
                 .addField("Roles", roles, true)
-                .setFooter("Crée le "+createdDate,null);
+                .setFooter("Crée le " + createdDate, null);
 
         message.getChannel().sendMessage(embedBuilder.build()).queue();
 

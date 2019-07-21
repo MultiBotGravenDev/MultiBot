@@ -35,8 +35,8 @@ public class QuizCommand implements CommandExecutor {
         return "Commandes relatives au quizz d'entrée sur le serveur. \n"
                 + this.argumentExecutors
                 .stream()
-                .map(executor -> "!quiz " + executor.getCommand() +  " (" + executor.getDescription() + ")\n")
-                .reduce((message, executorInfos) -> message +=  executorInfos)
+                .map(executor -> "!quiz " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
+                .reduce((message, executorInfos) -> message += executorInfos)
                 .orElse("");
     }
 

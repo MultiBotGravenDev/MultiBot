@@ -9,7 +9,7 @@ import net.dv8tion.jda.core.entities.PrivateChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-public  interface CommandExecutor {
+public interface CommandExecutor {
 
     String getCommand();
 
@@ -24,7 +24,8 @@ public  interface CommandExecutor {
     void execute(Message message, String[] args);
 
     default List<String> getAuthorizedChannelsNames() {
-        return new ArrayList<>();}
+        return new ArrayList<>();
+    }
 
     default boolean isAuthorizedMember(Member member) {
         return true;

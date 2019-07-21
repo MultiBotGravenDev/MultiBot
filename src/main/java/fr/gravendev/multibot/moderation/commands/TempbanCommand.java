@@ -1,12 +1,13 @@
-package fr.gravendev.multibot.moderation;
+package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
-import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.GuildIdsData;
 import fr.gravendev.multibot.database.data.InfractionData;
+import fr.gravendev.multibot.moderation.AModeration;
+import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -18,6 +19,7 @@ import java.util.Date;
 public class TempbanCommand extends AModeration {
 
     private DatabaseConnection databaseConnection;
+
     public TempbanCommand(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }

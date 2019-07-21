@@ -15,7 +15,7 @@ public class DatabaseConnection {
         dataSource.setJdbcUrl("jdbc:mysql://" + builder.host + ":3306/" + builder.database);
         dataSource.setUsername(builder.user);
         dataSource.setPassword(builder.password);
-        dataSource.addDataSourceProperty("autoReconnect",true);
+        dataSource.addDataSourceProperty("autoReconnect", true);
         dataSource.addDataSourceProperty("tcpKeepAlive", true);
         dataSource.addDataSourceProperty("serverTimezone", "UTC");
         dataSource.setMaximumPoolSize(10);

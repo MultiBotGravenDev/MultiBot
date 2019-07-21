@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.moderation;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.utils.PermissionUtil;

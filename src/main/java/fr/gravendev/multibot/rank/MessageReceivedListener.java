@@ -7,8 +7,6 @@ import fr.gravendev.multibot.events.Listener;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MessageReceivedListener implements Listener<MessageReceivedEvent> {

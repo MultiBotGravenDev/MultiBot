@@ -7,14 +7,14 @@ import java.sql.SQLException;
 
 public abstract class DAO<T> {
 
-     private final DatabaseConnection databaseConnection;
+    private final DatabaseConnection databaseConnection;
 
     public DAO(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
 
     public boolean save(T obj) {
-        try(Connection connection = getConnection()) {
+        try (Connection connection = getConnection()) {
             return save(obj, connection);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -25,7 +25,7 @@ public abstract class DAO<T> {
     protected abstract boolean save(T obj, Connection connection) throws SQLException;
 
     public T get(String value) {
-        try(Connection connection = getConnection()) {
+        try (Connection connection = getConnection()) {
             return get(value, connection);
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -36,7 +36,7 @@ public abstract class DAO<T> {
     protected abstract T get(String value, Connection connection) throws SQLException;
 
     public void delete(T obj) {
-        try(Connection connection = getConnection()) {
+        try (Connection connection = getConnection()) {
             delete(obj, connection);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -44,7 +44,7 @@ public abstract class DAO<T> {
     }
 
     protected abstract void delete(T obj, Connection connection) throws SQLException;
-    
+
     public Connection getConnection() throws SQLException {
         return databaseConnection.getConnection();
     }
