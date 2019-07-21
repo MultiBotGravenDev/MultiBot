@@ -23,6 +23,11 @@ public class MessageCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Permet de changer le message.";
+    }
+
+    @Override
     public List<String> getAuthorizedChannelsNames() {
         return Arrays.asList("rôle-langage", "piliers");
     }

@@ -24,6 +24,11 @@ public class HereCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Permet d'envoyer le message et les réactions pour obtenir les rôles.";
+    }
+
+    @Override
     public List<String> getAuthorizedChannelsNames() {
         return Collections.singletonList("rôle-langage");
     }

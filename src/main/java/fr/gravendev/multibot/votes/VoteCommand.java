@@ -10,14 +10,12 @@ import fr.gravendev.multibot.votes.roles.Developer;
 import fr.gravendev.multibot.votes.roles.Honorable;
 import fr.gravendev.multibot.votes.roles.Pillar;
 import fr.gravendev.multibot.votes.roles.Role;
-
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +42,7 @@ public class VoteCommand implements CommandExecutor {
 
     @Override
     public String getDescription() {
-        return "lance un vote pour une personne";
+        return "Permet de lancer un vote pour une personne.";
     }
 
     @Override

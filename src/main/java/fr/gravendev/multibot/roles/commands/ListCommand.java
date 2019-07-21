@@ -30,6 +30,11 @@ public class ListCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Permet de voir la liste des rôles.";
+    }
+
+    @Override
     public void execute(Message message, String[] args) {
 
         RoleDAO roleDAO = new RoleDAO(this.databaseConnection);

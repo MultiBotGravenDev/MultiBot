@@ -24,6 +24,11 @@ public class HereCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Permet d'envoyer le message de bienvenue et la réactions permettant de déclencher le quizz.";
+    }
+
+    @Override
     public List<String> getAuthorizedChannelsNames() {
         return Collections.singletonList("lisez-ce-salon");
     }

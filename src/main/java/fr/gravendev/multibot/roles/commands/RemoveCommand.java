@@ -23,6 +23,11 @@ public class RemoveCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Permet de supprimer un rôle.";
+    }
+
+    @Override
     public List<String> getAuthorizedChannelsNames() {
         return Arrays.asList("rôle-langage", "piliers");
     }

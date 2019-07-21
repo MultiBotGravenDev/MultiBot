@@ -11,7 +11,7 @@ import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.rank.RankCommand;
 import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.roles.commands.RoleCommand;
+import fr.gravendev.multibot.roles.commands.RolesCommand;
 import fr.gravendev.multibot.commands.commands.HelpCommand;
 import fr.gravendev.multibot.commands.commands.UserinfoCommand;
 import fr.gravendev.multibot.votes.VoteCommand;
@@ -44,7 +44,7 @@ public class CommandManager {
                 new WarnCommand(databaseConnection),
                 new QuizCommand(databaseConnection, welcomeMessagesSetManager),
                 new RankCommand(databaseConnection),
-                new RoleCommand(databaseConnection),
+                new RolesCommand(databaseConnection),
                 new VoteCommand(databaseConnection)
         ));
         this.databaseConnection = databaseConnection;

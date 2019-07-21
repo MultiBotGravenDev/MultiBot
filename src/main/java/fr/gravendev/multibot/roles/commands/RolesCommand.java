@@ -11,11 +11,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RoleCommand implements CommandExecutor {
+public class RolesCommand implements CommandExecutor {
 
     private final List<CommandExecutor> argumentExecutors;
 
-    public RoleCommand(DatabaseConnection databaseConnection) {
+    public RolesCommand(DatabaseConnection databaseConnection) {
         this.argumentExecutors = Arrays.asList(
                 new AddCommand(databaseConnection),
                 new RemoveCommand(databaseConnection),
@@ -32,7 +32,12 @@ public class RoleCommand implements CommandExecutor {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Commandes relatives aux rôles langages. \n"
+                + this.argumentExecutors
+                .stream()
+                .map(executor -> "!roles " + executor.getCommand() +  " (" + executor.getDescription() + ")\n")
+                .reduce((message, executorInfos) -> message += executorInfos)
+                .orElse("");
     }
 
     @Override

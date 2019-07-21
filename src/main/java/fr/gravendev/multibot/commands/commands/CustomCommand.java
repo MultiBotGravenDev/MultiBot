@@ -29,6 +29,11 @@ public class CustomCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Permet de créer une command custom";
+    }
+
+    @Override
     public boolean isAuthorizedMember(Member member) {
         return member.hasPermission(Permission.ADMINISTRATOR);
     }
