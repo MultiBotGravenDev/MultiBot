@@ -49,7 +49,7 @@ public class RolesCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length == 0) {
-            message.getChannel().sendMessage("commande inconnue. "
+            message.getChannel().sendMessage("Erreur. "
                     + "!roles ["
                     + this.argumentExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining("/"))
                     + "]").queue();

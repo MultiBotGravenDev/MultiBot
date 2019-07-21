@@ -64,8 +64,10 @@ public class VoteCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         List<Member> mentionedMembers = message.getMentionedMembers();
-        if (mentionedMembers.size() < 1) return;
-        if (args.length < 2) return;
+        if (mentionedMembers.size() < 1 || args.length < 2) {
+            message.getChannel().sendMessage("Erreur. !vote @personne <présentation>").queue();
+            return;
+        }
 
         Member member = mentionedMembers.get(0);
 
@@ -76,7 +78,10 @@ public class VoteCommand implements CommandExecutor {
 
         if (role == null) return;
 
-        if (member.getRoles().stream().anyMatch(role1 -> role1.getIdLong() == role.getRoleId())) return;
+        if (member.getRoles().stream().anyMatch(role1 -> role1.getIdLong() == role.getRoleId())) {
+            message.getChannel().sendMessage("Cette personne a déjà le role" + role.getRoleName()).queue();
+            return;
+        }
 
         String presentation = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 

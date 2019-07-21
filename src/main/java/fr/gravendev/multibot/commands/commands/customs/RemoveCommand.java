@@ -22,7 +22,13 @@ public class RemoveCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
+        if (args.length == 0) {
+            message.getChannel().sendMessage("Erreur. !custom remove <commande>").queue();
+            return;
+        }
+
         new CustomCommandDAO(this.databaseConnection).delete(new CustomCommandData(args[0], ""));
+        message.getChannel().sendMessage("La commande custom ``" + args[0] + "`` a été supprimée.").queue();
 
     }
 
