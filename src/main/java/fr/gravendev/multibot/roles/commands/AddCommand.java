@@ -24,6 +24,10 @@ public class AddCommand implements CommandExecutor {
         return "add";
     }
 
+    @Override
+    public String getDescription() {
+        return "Permet d'ajouter un rôle.";
+    }
 
     @Override
     public List<String> getAuthorizedChannelsNames() {

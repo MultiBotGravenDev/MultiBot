@@ -25,6 +25,11 @@ public class ChannelCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Permet de changer le channel où sont envoyées les candidatures.";
+    }
+
+    @Override
     public List<String> getAuthorizedChannelsNames() {
         return Arrays.asList("lisez-ce-salon", "piliers");
     }

@@ -32,7 +32,12 @@ public class QuizCommand implements CommandExecutor {
 
     @Override
     public String getDescription() {
-        return "envoie le message de bienvenue et la réaction pour recevoir le formulaire";
+        return "Commandes relatives au quizz d'entrée sur le serveur. \n"
+                + this.argumentExecutors
+                .stream()
+                .map(executor -> "!quiz " + executor.getCommand() +  " (" + executor.getDescription() + ")\n")
+                .reduce((message, executorInfos) -> message +=  executorInfos)
+                .orElse("");
     }
 
     @Override

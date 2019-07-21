@@ -22,10 +22,13 @@ public class ListCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Permet d'obtenir la liste des questions du quizz.";
+    }
+
+    @Override
     public void execute(Message message, String[] args) {
-
         buildMessage().sendTo(message.getChannel()).queue();
-
     }
 
     @NotNull

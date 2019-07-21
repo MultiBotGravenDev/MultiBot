@@ -34,7 +34,7 @@ public class RankCommand implements CommandExecutor {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Permet de voir son niveau et son classement.";
     }
 
     @Override

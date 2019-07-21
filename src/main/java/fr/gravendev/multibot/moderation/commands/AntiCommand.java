@@ -16,7 +16,6 @@ import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
 import java.sql.Date;
-import java.time.Duration;
 import java.time.Instant;
 
 import java.util.List;
@@ -32,6 +31,11 @@ public class AntiCommand implements CommandExecutor {
     @Override
     public String getCommand() {
         return "anti";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Permet de mettre un role anti- (meme, repost...) à une personne pour une durée de 6 mois.";
     }
 
     @Override

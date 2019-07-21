@@ -26,6 +26,11 @@ public class SetCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Permet de changer les questions du quizz et le message de bienvenue.";
+    }
+
+    @Override
     public List<String> getAuthorizedChannelsNames() {
         return Arrays.asList("lisez-ce-salon", "piliers");
     }
