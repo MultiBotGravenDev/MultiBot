@@ -16,10 +16,9 @@ import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
 import java.sql.Date;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
+
 import java.util.List;
 
 public class AntiCommand implements CommandExecutor {
@@ -49,7 +48,7 @@ public class AntiCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         List<Member> mentionedMembers = message.getMentionedMembers();
-        if (args.length == 0 || mentionedMembers.size() != 1 || !"repost review meme".contains(args[0]) || !GuildUtils.hasRole(mentionedMembers.get(0), "anti-" + args[0])) return;
+        if (args.length != 2 || mentionedMembers.size() != 1 || !"repost review meme".contains(args[0]) || GuildUtils.hasRole(mentionedMembers.get(0), "anti-" + args[0])) return;
 
         GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
 
@@ -60,7 +59,7 @@ public class AntiCommand implements CommandExecutor {
 
             message.getGuild().getTextChannelById(guildIdDAO.get("logs").id).sendMessage(new EmbedBuilder()
                     .setColor(Color.ORANGE)
-                    .setTitle("[ANTI-" + args[0].toUpperCase() + "]" + member.getUser().getAsTag())
+                    .setTitle("[ANTI-" + args[0].toUpperCase() + "] " + member.getUser().getAsTag())
                     .addField("Utilisateur :", member.getAsMention(), true)
                     .addField("Modérateur :", message.getAuthor().getAsMention(), true)
                     .addField("Fin :", Utils.getDateFormat().format(Date.from(Instant.now().plusSeconds(60 * 60 * 24 * 30 * 6))), true)
