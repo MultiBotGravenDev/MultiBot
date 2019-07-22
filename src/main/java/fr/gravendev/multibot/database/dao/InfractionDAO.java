@@ -19,9 +19,9 @@ public class InfractionDAO extends DAO<InfractionData> {
     @Override
     protected boolean save(InfractionData data, Connection connection) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO infractions(`uuid`, `punished_id`, `punisher_id`, `type`, `reason`, `start`, `end`)" +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?)" +
-                        "ON DUPLICATE KEY UPDATE end = VALUES(end)");
+                "INSERT INTO infractions(`uuid`, `punished_id`, `punisher_id`, `type`, `reason`, `start`, `end`, `finished`)" +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)" +
+                        "ON DUPLICATE KEY UPDATE end = VALUES(end), finished = VALUES(finished)");
 
         statement.setString(1, data.getUUID().toString());
         statement.setString(2, data.getPunished_id());
@@ -30,6 +30,7 @@ public class InfractionDAO extends DAO<InfractionData> {
         statement.setString(5, data.getReason());
         statement.setTimestamp(6, new Timestamp(data.getStart().getTime()));
         statement.setTimestamp(7, data.getEnd() != null ? new Timestamp(data.getEnd().getTime()) : null);
+        statement.setBoolean(8, data.isFinished());
 
         statement.executeUpdate();
 
@@ -52,7 +53,8 @@ public class InfractionDAO extends DAO<InfractionData> {
             Date start = new Date(resultSet.getTimestamp("start").getTime());
             Date end = resultSet.getTimestamp("end") != null ?
                     new Date(resultSet.getTimestamp("end").getTime()) : null;
-            return new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end);
+            boolean finished = resultSet.getBoolean("finished");
+            return new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end, finished);
         }
 
         return null;
@@ -76,8 +78,32 @@ public class InfractionDAO extends DAO<InfractionData> {
             Date start = new Date(resultSet.getTimestamp("start").getTime());
             Date end = resultSet.getTimestamp("end") != null ?
                     new Date(resultSet.getTimestamp("end").getTime()) : null;
+            boolean finished = resultSet.getBoolean("finished");
+            infractions.add(new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end, finished));
+        }
 
-            infractions.add(new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end));
+        return infractions;
+    }
+
+    public List<InfractionData> getALLUnfinished() throws SQLException {
+        Connection connection = getConnection();
+        List<InfractionData> infractions = new ArrayList<>();
+
+        PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM infractions WHERE END < NOW() AND FINISHED = 0");
+
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+            String punished_id = resultSet.getString("punished_id");
+            String punisher_id = resultSet.getString("punisher_id");
+            InfractionType type = InfractionType.valueOf(resultSet.getString("type"));
+            String reason = resultSet.getString("reason");
+            Date start = new Date(resultSet.getTimestamp("start").getTime());
+            Date end = resultSet.getTimestamp("end") != null ?
+                    new Date(resultSet.getTimestamp("end").getTime()) : null;
+            boolean finished = resultSet.getBoolean("finished");
+            infractions.add(new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end, finished));
         }
 
         return infractions;
@@ -99,7 +125,8 @@ public class InfractionDAO extends DAO<InfractionData> {
             Date start = new Date(resultSet.getTimestamp("start").getTime());
             Date end = resultSet.getTimestamp("end") != null ?
                     new Date(resultSet.getTimestamp("end").getTime()) : null;
-            return new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end);
+            boolean finished = resultSet.getBoolean("finished");
+            return new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end, finished);
         }
 
         return null;
