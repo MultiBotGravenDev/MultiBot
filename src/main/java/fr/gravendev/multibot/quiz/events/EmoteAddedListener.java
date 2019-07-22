@@ -17,7 +17,7 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
 
     public EmoteAddedListener(QuizManager quizManager, DatabaseConnection databaseConnection) {
         this.executors = Arrays.asList(
-                new ReadThisSaloonExecutor(quizManager),
+                new ReadThisSaloonExecutor(quizManager, databaseConnection),
                 new CandidsExecutor(databaseConnection)
         );
     }
@@ -33,7 +33,7 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
         if (event.getUser().isBot()) return;
 
         this.executors.stream()
-                .filter(executor -> executor.getSaloon().equalsIgnoreCase(event.getChannel().getName()))
+                .filter(executor -> executor.getSaloonId() == event.getChannel().getIdLong())
                 .findAny()
                 .ifPresent(executor -> executor.execute(event));
 

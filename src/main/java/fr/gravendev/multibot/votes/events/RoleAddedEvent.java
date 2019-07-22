@@ -4,6 +4,8 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.VoteDAO;
 import fr.gravendev.multibot.database.data.VoteData;
 import fr.gravendev.multibot.events.Listener;
+import fr.gravendev.multibot.utils.GuildUtils;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleAddEvent;
 
@@ -33,8 +35,14 @@ public class RoleAddedEvent implements Listener<GuildMemberRoleAddEvent> {
         VoteData voteData = voteDAO.get(event.getUser().getId());
 
         Role role = event.getRoles().get(0);
+
+        Member member = event.getMember();
+        if (GuildUtils.hasRole(member, "Pilier de la Commu") || GuildUtils.hasRole(member, "Gérant")) {
+            return;
+        }
+
         if (ROLES_NAMES.contains(role.getName()) && !voteData.accepted) {
-            event.getGuild().getController().removeRolesFromMember(event.getMember(), role).queue();
+            event.getGuild().getController().removeRolesFromMember(member, role).queue();
         }
 
     }

@@ -17,7 +17,7 @@ public class CustomCommandDAO extends DAO<CustomCommandData> {
     @Override
     public boolean save(CustomCommandData obj, Connection connection) throws SQLException {
 
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO custom_commands VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?");
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO custom_commands(command, text) VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?");
         preparedStatement.setString(1, obj.command);
         preparedStatement.setString(2, obj.text);
 
@@ -30,8 +30,9 @@ public class CustomCommandDAO extends DAO<CustomCommandData> {
     @Override
     public CustomCommandData get(String value, Connection connection) throws SQLException {
 
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM custom_commands WHERE command = ?");
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM custom_commands WHERE command = ? OR id = ?");
         preparedStatement.setString(1, value);
+        preparedStatement.setString(2, value);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 

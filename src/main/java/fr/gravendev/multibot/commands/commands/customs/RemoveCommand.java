@@ -20,6 +20,11 @@ public class RemoveCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Permet de supprimer un commande custom.";
+    }
+
+    @Override
     public void execute(Message message, String[] args) {
 
         if (args.length == 0) {

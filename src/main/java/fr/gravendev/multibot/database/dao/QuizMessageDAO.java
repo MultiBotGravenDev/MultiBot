@@ -43,7 +43,14 @@ public class QuizMessageDAO extends DAO<MessageData> {
     }
 
     @Override
-    protected void delete(MessageData obj, Connection connection) {
+    protected void delete(MessageData obj, Connection connection) throws SQLException {
+
+        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM quiz_messages WHERE id = ?");
+        preparedStatement.setString(1, obj.id);
+
+        preparedStatement.execute();
+
     }
+
 }
 
