@@ -51,14 +51,16 @@ public class SetCommand implements CommandExecutor {
 
             this.welcomeMessagesSetManager.onCommand(message);
 
+        } else {
+            message.getChannel().sendMessage("Erreur. !quiz set question/message").queue();
         }
 
     }
 
     private void setQuestion(Message message, String[] args) {
 
-        if (args.length > 2 || !args[0].matches("[0-9]+")) {
-            message.getChannel().sendMessage("Erreur. !quiz set question <numéro de la question> <texte>").queue();
+        if (args.length < 1 || !args[0].matches("[0-9]+")) {
+            message.getChannel().sendMessage("Erreur. !quiz set question <numéro de la question> <texte ou vide>").queue();
             return;
         }
 
@@ -80,9 +82,14 @@ public class SetCommand implements CommandExecutor {
         String question = String.join(" ", args);
 
         messageData = new MessageData(messageData.id, question);
-        quizMessageDAO.save(messageData);
 
-        message.getChannel().sendMessage("La question numéro " + messageData.id + " a bien été changée en :\n" + messageData.message).queue();
+        if (!messageData.message.equalsIgnoreCase("")) {
+            quizMessageDAO.save(messageData);
+            message.getChannel().sendMessage("La question numéro " + messageData.id + " a bien été changée en :\n" + messageData.message).queue();
+        } else {
+            quizMessageDAO.delete(messageData);
+            message.getChannel().sendMessage("La question numéro " + messageData.id + " a bien été supprimée").queue();
+        }
 
     }
 

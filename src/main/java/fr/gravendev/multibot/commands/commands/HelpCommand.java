@@ -61,6 +61,8 @@ public class HelpCommand implements CommandExecutor {
 
         }
 
+
+
         return customCommands;
     }
 

@@ -31,6 +31,11 @@ public class MuteInfoCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Obtenir des informations sur le mute d'un membre.";
+    }
+
+    @Override
     public void execute(Message message, String[] args) {
         List<Member> mentionedMembers = message.getMentionedMembers();
         MessageChannel messageChannel = message.getChannel();

@@ -17,8 +17,8 @@ public class CandidsExecutor implements EmoteAddedExecutor {
     }
 
     @Override
-    public String getSaloon() {
-        return "candids";
+    public long getSaloonId() {
+        return this.guildIdDAO.get("candids").id;
     }
 
     @Override
@@ -31,11 +31,21 @@ public class CandidsExecutor implements EmoteAddedExecutor {
             Member member = message.getMentionedMembers().get(0);
             String validationMessage = member.getAsMention() + "\n\n";
 
-            if (event.getReactionEmote().getName().equals("\u2705")) {
-                validationMessage += ":white_check_mark: accepté ";
-                GuildUtils.addRole(member, String.valueOf(memberRoleId)).queue();
-            } else {
-                validationMessage += ":x: refusé ";
+            switch (event.getReactionEmote().getName()) {
+
+                case "\u2705":
+                    validationMessage += ":white_check_mark: accepté ";
+                    GuildUtils.addRole(member, String.valueOf(memberRoleId)).queue();
+                    break;
+
+                case "\u274C":
+                    validationMessage += ":x: refusé ";
+                    break;
+
+                default:
+                    event.getReaction().removeReaction(event.getUser()).queue();
+                    return;
+
             }
 
             validationMessage += "par " + event.getMember().getAsMention();

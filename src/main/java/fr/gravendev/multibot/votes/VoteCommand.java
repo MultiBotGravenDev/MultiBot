@@ -110,7 +110,7 @@ public class VoteCommand implements CommandExecutor {
                     .isAccepted(false)
                     .build());
 
-            sentMessage.getChannel().getMessageById(sentMessage.getIdLong()).queueAfter(24, TimeUnit.HOURS, sentMessage2 -> {
+            sentMessage.getChannel().getMessageById(sentMessage.getIdLong()).queueAfter(1, TimeUnit.DAYS, sentMessage2 -> {
 
                 VoteData voteData = voteDAO.get(sentMessage.getId());
                 boolean accepted = voteData.yes.size() > voteData.no.size();
@@ -124,7 +124,7 @@ public class VoteCommand implements CommandExecutor {
                         .addField("Oui :", voteData.yes.stream().map(userId -> message.getJDA().getUserById(userId).getName()).collect(Collectors.joining("\n")), true)
                         .addField("Non :", voteData.no.stream().map(userId -> message.getJDA().getUserById(userId).getName()).collect(Collectors.joining("\n")), true)
                         .addField("Blanc :", voteData.white.stream().map(userId -> message.getJDA().getUserById(userId).getName()).collect(Collectors.joining("\n")), true)
-                        .addField("Accepté :", (accepted ? "Oui" : "Non") + "(" + voteData.yes.size() + "/" + voteData.no.size() + ")", false)
+                        .addField(accepted ? "Accepté :" : "Refusé :", "(" + voteData.yes.size() + "/" + voteData.no.size() + ")", false)
                         .setFooter("Proposé par " + message.getAuthor().getAsTag(), message.getAuthor().getAvatarUrl())
                         .build();
 

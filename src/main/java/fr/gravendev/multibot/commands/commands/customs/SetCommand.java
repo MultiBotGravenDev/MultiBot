@@ -22,6 +22,11 @@ public class SetCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Permet de créer ou changer une commande custom.";
+    }
+
+    @Override
     public void execute(Message message, String[] args) {
 
         if (args.length < 2) {
