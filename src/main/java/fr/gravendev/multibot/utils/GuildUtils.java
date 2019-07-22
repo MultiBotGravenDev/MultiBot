@@ -15,11 +15,11 @@ public class GuildUtils {
     }
 
     public static AuditableRestAction<Void> addRole(Member member, String roleId) {
-        return member.getGuild().getController().addRolesToMember(member, member.getGuild().getRoleById(roleId));
+        return member.getGuild().getController().addSingleRoleToMember(member, member.getGuild().getRoleById(roleId));
     }
 
     public static AuditableRestAction<Void> removeRole(Member member, String roleId) {
-        return member.getGuild().getController().removeRolesFromMember(member, member.getGuild().getRoleById(roleId));
+        return member.getGuild().getController().removeSingleRoleFromMember(member, member.getGuild().getRoleById(roleId));
     }
 
 }
