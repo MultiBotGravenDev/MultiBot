@@ -13,10 +13,10 @@ import java.util.concurrent.TimeUnit;
 
 public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
 
-    private final DatabaseConnection databaseConnection;
+    private final VoteDAO voteDAO;
 
     public EmoteAddedListener(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        voteDAO = new VoteDAO(databaseConnection);
     }
 
     @Override
@@ -36,14 +36,13 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
         if (event.getChannel().getMessageById(event.getMessageIdLong()).complete().getCreationTime().isBefore(OffsetDateTime.now().minusDays(1)))
             return;
 
-        VoteDAO voteDAO = new VoteDAO(this.databaseConnection);
-
         VoteData voteData = voteDAO.get(event.getMessageId());
 
         if (voteData == null) return;
 
-        VoteDataBuilder voteDataBuilder = VoteDataBuilder
-                .fromVoteData(voteData);
+        Arrays.asList(voteData.yes, voteData.no, voteData.white).forEach(longs -> longs.remove(event.getUser().getIdLong()));
+
+        VoteDataBuilder voteDataBuilder = VoteDataBuilder.fromVoteData(voteData);
 
         long userId = event.getUser().getIdLong();
         switch (event.getReactionEmote().getName()) {

@@ -79,7 +79,7 @@ public class VoteCommand implements CommandExecutor {
         if (role == null) return;
 
         if (member.getRoles().stream().anyMatch(role1 -> role1.getIdLong() == role.getRoleId())) {
-            message.getChannel().sendMessage("Cette personne a déjà le role" + role.getRoleName()).queue();
+            message.getChannel().sendMessage("Cette personne a déjà le role " + role.getRoleName()).queue();
             return;
         }
 
@@ -110,7 +110,7 @@ public class VoteCommand implements CommandExecutor {
                     .isAccepted(false)
                     .build());
 
-            sentMessage.getChannel().getMessageById(sentMessage.getIdLong()).queueAfter(1, TimeUnit.DAYS, sentMessage2 -> {
+            sentMessage.getChannel().getMessageById(sentMessage.getIdLong()).queueAfter(20, TimeUnit.SECONDS, sentMessage2 -> {
 
                 VoteData voteData = voteDAO.get(sentMessage.getId());
                 boolean accepted = voteData.yes.size() > voteData.no.size();

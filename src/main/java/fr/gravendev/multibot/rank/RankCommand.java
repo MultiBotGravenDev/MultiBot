@@ -49,6 +49,8 @@ public class RankCommand implements CommandExecutor {
                 member = mentionedMembers.get(0);
             User user = member.getUser();
 
+            if (user.isBot()) return;
+
             List<Role> roles = member.getRoles();
             Color color = roles.size() > 0 ? roles.get(0).getColor() : Color.WHITE;
 

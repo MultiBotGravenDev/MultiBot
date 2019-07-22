@@ -18,19 +18,28 @@ public class VoteDAO extends DAO<VoteData> {
     @Override
     public boolean save(VoteData voteData, Connection connection) throws SQLException {
 
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO votes (message_id, role, user_id, accepted) VALUES(?, ?, ?, ?) ON DUPLICATE KEY UPDATE accepted = ?");
+        if (get(String.valueOf(voteData.messageId), connection).role == null) {
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO votes (message_id, role, user_id, accepted) VALUES(?, ?, ?, ?)");
 
-        preparedStatement.setString(1, String.valueOf(voteData.messageId));
-        preparedStatement.setString(2, String.valueOf(voteData.role));
-        preparedStatement.setString(3, String.valueOf(voteData.userId));
-        preparedStatement.setBoolean(4, voteData.accepted);
+            preparedStatement.setString(1, String.valueOf(voteData.messageId));
+            preparedStatement.setString(2, String.valueOf(voteData.role));
+            preparedStatement.setString(3, String.valueOf(voteData.userId));
+            preparedStatement.setBoolean(4, voteData.accepted);
 
-        preparedStatement.setBoolean(5, voteData.accepted);
+            preparedStatement.execute();
+        }
 
-        preparedStatement.execute();
+        if (get(String.valueOf(voteData.messageId)).accepted != voteData.accepted) {
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE votes SET accepted = ? WHERE message_id = ?");
+
+            preparedStatement.setBoolean(1, voteData.accepted);
+            preparedStatement.setString(2, String.valueOf(voteData.messageId));
+
+            preparedStatement.execute();
+        }
 
         for (Long voter : voteData.yes) {
-            preparedStatement = connection.prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?");
             preparedStatement.setInt(1, voteData.voteId);
             preparedStatement.setString(2, String.valueOf(voter));
             preparedStatement.setString(3, "yes");
@@ -41,7 +50,7 @@ public class VoteDAO extends DAO<VoteData> {
         }
 
         for (Long voter : voteData.no) {
-            preparedStatement = connection.prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?");
             preparedStatement.setInt(1, voteData.voteId);
             preparedStatement.setString(2, String.valueOf(voter));
             preparedStatement.setString(3, "no");
@@ -52,7 +61,7 @@ public class VoteDAO extends DAO<VoteData> {
         }
 
         for (Long voter : voteData.white) {
-            preparedStatement = connection.prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?");
             preparedStatement.setInt(1, voteData.voteId);
             preparedStatement.setString(2, String.valueOf(voter));
             preparedStatement.setString(3, "white");
