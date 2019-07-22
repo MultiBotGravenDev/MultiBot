@@ -2,6 +2,7 @@ package fr.gravendev.multibot.quiz.events.emoteaddedexecutors;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
+import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -9,10 +10,10 @@ import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
 public class CandidsExecutor implements EmoteAddedExecutor {
 
-    private final DatabaseConnection databaseConnection;
+    private final GuildIdDAO guildIdDAO;
 
     public CandidsExecutor(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        this.guildIdDAO = new GuildIdDAO(databaseConnection);
     }
 
     @Override
@@ -23,8 +24,7 @@ public class CandidsExecutor implements EmoteAddedExecutor {
     @Override
     public void execute(MessageReactionAddEvent event) {
 
-        GuildIdDAO guildIdDAO = new GuildIdDAO(this.databaseConnection);
-        long memberRoleId = guildIdDAO.get("member").id;
+        long memberRoleId = this.guildIdDAO.get("member").id;
 
         event.getChannel().getMessageById(event.getMessageIdLong()).queue(message -> {
 
@@ -33,18 +33,14 @@ public class CandidsExecutor implements EmoteAddedExecutor {
 
             if (event.getReactionEmote().getName().equals("\u2705")) {
                 validationMessage += ":white_check_mark: accepté ";
-                Guild guild = message.getGuild();
-                guild.getController().addSingleRoleToMember(member, guild.getRoleById(memberRoleId)).queue();
+                GuildUtils.addRole(member, String.valueOf(memberRoleId)).queue();
             } else {
                 validationMessage += ":x: refusé ";
             }
 
             validationMessage += "par " + event.getMember().getAsMention();
 
-            message.getReactions().forEach(messageReaction -> {
-                messageReaction.removeReaction().queue();
-                messageReaction.removeReaction(event.getUser()).queue();
-            });
+            message.clearReactions().queue();
 
             message.editMessage(new MessageBuilder(message)
                     .setContent(validationMessage)
