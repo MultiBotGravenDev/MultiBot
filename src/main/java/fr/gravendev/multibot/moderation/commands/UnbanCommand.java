@@ -59,6 +59,7 @@ public class UnbanCommand implements CommandExecutor {
 
             if (data != null) {
                 data.setEnd(new Date());
+                data.setFinished(true);
                 infractionDAO.save(data);
             }
 

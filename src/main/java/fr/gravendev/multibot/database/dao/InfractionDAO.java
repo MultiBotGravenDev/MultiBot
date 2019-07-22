@@ -61,75 +61,79 @@ public class InfractionDAO extends DAO<InfractionData> {
     }
 
     public List<InfractionData> getALLInfractions(String discordID) throws SQLException {
-        Connection connection = getConnection();
-        List<InfractionData> infractions = new ArrayList<>();
+        try (Connection connection = getConnection()) {
+            List<InfractionData> infractions = new ArrayList<>();
 
-        PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM infractions WHERE punished_id = ? AND type = 'warn' ORDER BY start DESC");
-        statement.setString(1, discordID);
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * FROM infractions WHERE punished_id = ? AND type = 'warn' ORDER BY start DESC");
+            statement.setString(1, discordID);
 
-        ResultSet resultSet = statement.executeQuery();
-        while (resultSet.next()) {
-            UUID uuid = UUID.fromString(resultSet.getString("uuid"));
-            String punished_id = resultSet.getString("punished_id");
-            String punisher_id = resultSet.getString("punisher_id");
-            InfractionType type = InfractionType.valueOf(resultSet.getString("type"));
-            String reason = resultSet.getString("reason");
-            Date start = new Date(resultSet.getTimestamp("start").getTime());
-            Date end = resultSet.getTimestamp("end") != null ?
-                    new Date(resultSet.getTimestamp("end").getTime()) : null;
-            boolean finished = resultSet.getBoolean("finished");
-            infractions.add(new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end, finished));
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+                String punished_id = resultSet.getString("punished_id");
+                String punisher_id = resultSet.getString("punisher_id");
+                InfractionType type = InfractionType.valueOf(resultSet.getString("type"));
+                String reason = resultSet.getString("reason");
+                Date start = new Date(resultSet.getTimestamp("start").getTime());
+                Date end = resultSet.getTimestamp("end") != null ?
+                        new Date(resultSet.getTimestamp("end").getTime()) : null;
+                boolean finished = resultSet.getBoolean("finished");
+                infractions.add(new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end, finished));
+            }
+
+            return infractions;
         }
-
-        return infractions;
     }
 
     public List<InfractionData> getALLUnfinished() throws SQLException {
-        Connection connection = getConnection();
-        List<InfractionData> infractions = new ArrayList<>();
+        try (Connection connection = getConnection()) {
+            List<InfractionData> infractions = new ArrayList<>();
 
-        PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM infractions WHERE END < NOW() AND FINISHED = 0");
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * FROM infractions WHERE END < NOW() AND FINISHED = 0");
 
-        ResultSet resultSet = statement.executeQuery();
-        while (resultSet.next()) {
-            UUID uuid = UUID.fromString(resultSet.getString("uuid"));
-            String punished_id = resultSet.getString("punished_id");
-            String punisher_id = resultSet.getString("punisher_id");
-            InfractionType type = InfractionType.valueOf(resultSet.getString("type"));
-            String reason = resultSet.getString("reason");
-            Date start = new Date(resultSet.getTimestamp("start").getTime());
-            Date end = resultSet.getTimestamp("end") != null ?
-                    new Date(resultSet.getTimestamp("end").getTime()) : null;
-            boolean finished = resultSet.getBoolean("finished");
-            infractions.add(new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end, finished));
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+                String punished_id = resultSet.getString("punished_id");
+                String punisher_id = resultSet.getString("punisher_id");
+                InfractionType type = InfractionType.valueOf(resultSet.getString("type"));
+                String reason = resultSet.getString("reason");
+                Date start = new Date(resultSet.getTimestamp("start").getTime());
+                Date end = resultSet.getTimestamp("end") != null ?
+                        new Date(resultSet.getTimestamp("end").getTime()) : null;
+                boolean finished = resultSet.getBoolean("finished");
+                infractions.add(new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end, finished));
+            }
+
+            return infractions;
         }
-
-        return infractions;
     }
 
     public InfractionData getLast(String discordID, InfractionType infractionType) throws SQLException {
-        PreparedStatement statement = getConnection().prepareStatement(
-                "SELECT * FROM infractions WHERE punished_id = ? AND type = ? ORDER BY start DESC");
-        statement.setString(1, discordID);
-        statement.setString(2, infractionType.name());
+        try(Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * FROM infractions WHERE punished_id = ? AND type = ? ORDER BY start DESC");
+            statement.setString(1, discordID);
+            statement.setString(2, infractionType.name());
 
-        ResultSet resultSet = statement.executeQuery();
-        if (resultSet.next()) {
-            UUID uuid = UUID.fromString(resultSet.getString("uuid"));
-            String punished_id = resultSet.getString("punished_id");
-            String punisher_id = resultSet.getString("punisher_id");
-            InfractionType type = InfractionType.valueOf(resultSet.getString("type"));
-            String reason = resultSet.getString("reason");
-            Date start = new Date(resultSet.getTimestamp("start").getTime());
-            Date end = resultSet.getTimestamp("end") != null ?
-                    new Date(resultSet.getTimestamp("end").getTime()) : null;
-            boolean finished = resultSet.getBoolean("finished");
-            return new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end, finished);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+                String punished_id = resultSet.getString("punished_id");
+                String punisher_id = resultSet.getString("punisher_id");
+                InfractionType type = InfractionType.valueOf(resultSet.getString("type"));
+                String reason = resultSet.getString("reason");
+                Date start = new Date(resultSet.getTimestamp("start").getTime());
+                Date end = resultSet.getTimestamp("end") != null ?
+                        new Date(resultSet.getTimestamp("end").getTime()) : null;
+                boolean finished = resultSet.getBoolean("finished");
+                return new InfractionData(uuid, punished_id, punisher_id, type, reason, start, end, finished);
+            }
+
+            return null;
         }
-
-        return null;
     }
 
     @Override
