@@ -46,6 +46,12 @@ public abstract class AModeration implements CommandExecutor {
         Calendar calendar = Calendar.getInstance();
         Date start = calendar.getTime();
 
+        if (args.length < 2) {
+            messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: "+getCommand()+" @membre " +
+                    (isTemporary() ? "durée " : "") + "raison")).queue();
+            return;
+        }
+
         if(isTemporary()) {
             long duration = Utils.parsePeriod(args[1]);
             if(duration == -1) {

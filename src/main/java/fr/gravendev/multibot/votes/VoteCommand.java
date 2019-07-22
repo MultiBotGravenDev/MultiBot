@@ -110,7 +110,7 @@ public class VoteCommand implements CommandExecutor {
                     .isAccepted(false)
                     .build());
 
-            sentMessage.getChannel().getMessageById(sentMessage.getIdLong()).queueAfter(20, TimeUnit.SECONDS, sentMessage2 -> {
+            sentMessage.getChannel().getMessageById(sentMessage.getIdLong()).queueAfter(1, TimeUnit.DAYS, sentMessage2 -> {
 
                 VoteData voteData = voteDAO.get(sentMessage.getId());
                 boolean accepted = voteData.yes.size() > voteData.no.size();
