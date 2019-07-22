@@ -11,6 +11,7 @@ public class InfractionData {
     private String punished_id, punisher_id, reason;
     private InfractionType type;
     private Date start, end;
+    private boolean finished;
 
     public InfractionData(String punished_id, String punisher_id, InfractionType type, String reason, Date start, Date end) {
         this.uuid = UUID.randomUUID();
@@ -20,9 +21,10 @@ public class InfractionData {
         this.reason = reason;
         this.start = start;
         this.end = end;
+        this.finished = false;
     }
 
-    public InfractionData(UUID uuid, String punished_id, String punisher_id, InfractionType type, String reason, Date start, Date end) {
+    public InfractionData(UUID uuid, String punished_id, String punisher_id, InfractionType type, String reason, Date start, Date end, boolean finished) {
         this.uuid = uuid;
         this.punished_id = punished_id;
         this.punisher_id = punisher_id;
@@ -30,6 +32,7 @@ public class InfractionData {
         this.reason = reason;
         this.start = start;
         this.end = end;
+        this.finished = finished;
     }
 
     public String getPunished_id() {
@@ -62,5 +65,13 @@ public class InfractionData {
 
     public void setEnd(Date end) {
         this.end = end;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
+    public boolean isFinished() {
+        return finished;
     }
 }
