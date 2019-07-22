@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,7 +63,7 @@ public class UserinfoCommand implements CommandExecutor {
     }
 
     public List<String> getAuthorizedChannelsNames() {
-        return Collections.singletonList("général");
+        return Arrays.asList("général", "_commandes");
     }
 
     @Override
