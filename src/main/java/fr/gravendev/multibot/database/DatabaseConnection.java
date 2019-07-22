@@ -18,7 +18,7 @@ public class DatabaseConnection {
         dataSource.addDataSourceProperty("autoReconnect", true);
         dataSource.addDataSourceProperty("tcpKeepAlive", true);
         dataSource.addDataSourceProperty("serverTimezone", "UTC");
-        dataSource.setMaximumPoolSize(10);
+        dataSource.setMaximumPoolSize(15);
         dataSource.setMinimumIdle(0);
         dataSource.setIdleTimeout(1);
         dataSource.addDataSourceProperty("serverTimezone", "UTC");
