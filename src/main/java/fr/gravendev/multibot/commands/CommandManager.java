@@ -63,11 +63,18 @@ public class CommandManager {
 
         Optional<CommandExecutor> optionalCommandExecutor = this.commandExecutors.stream()
                 .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
-                .filter(commandExecutor -> commandExecutor.canExecute(message))
                 .findAny();
 
         if (optionalCommandExecutor.isPresent()) {
-            optionalCommandExecutor.get().execute(message, Arrays.copyOfRange(args, 1, args.length));
+
+            CommandExecutor commandExecutor = optionalCommandExecutor.get();
+
+            if (commandExecutor.canExecute(message)) {
+                commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length));
+            } else {
+                message.getChannel().sendMessage("Mauvais channel ou permission manquante.").queue();
+            }
+
         } else {
 
             CustomCommandData customCommandData = new CustomCommandDAO(this.databaseConnection).get(args[0]);
