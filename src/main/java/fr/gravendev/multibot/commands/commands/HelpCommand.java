@@ -1,5 +1,6 @@
 package fr.gravendev.multibot.commands.commands;
 
+import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.database.data.CustomCommandData;
@@ -28,6 +29,16 @@ public class HelpCommand implements CommandExecutor {
     }
 
     @Override
+    public String getDescription() {
+        return "Commande d'aide regroupant toutes les commandes.";
+    }
+
+    @Override
+    public ChannelType getChannelType() {
+        return ChannelType.ALL;
+    }
+
+    @Override
     public void execute(Message message, String[] args) {
 
         SelfUser bot = message.getJDA().getSelfUser();
@@ -37,7 +48,12 @@ public class HelpCommand implements CommandExecutor {
                 .setAuthor(bot.getName(), bot.getAvatarUrl(), bot.getAvatarUrl());
 
         this.commandExecutors.stream()
-                .filter(commandExecutor -> commandExecutor.isAuthorizedMember(message.getMember()))
+                .filter(commandExecutor -> {
+                    if (message.getMember() == null) {
+                        return commandExecutor.isAuthorizedChannel(message.getChannel());
+                    }
+                    return commandExecutor.isAuthorizedMember(message.getMember());
+                })
                 .forEach(commandExecutor -> embedBuilder.addField(new MessageEmbed.Field(commandExecutor.getCommand(), commandExecutor.getDescription(), false)));
 
         getCustomCommands().forEach(customCommand -> embedBuilder.addField(customCommand.command, "", false));

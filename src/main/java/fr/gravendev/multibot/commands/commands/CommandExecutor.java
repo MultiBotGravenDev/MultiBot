@@ -4,7 +4,6 @@ import fr.gravendev.multibot.commands.ChannelType;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.PrivateChannel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +12,7 @@ public interface CommandExecutor {
 
     String getCommand();
 
-    default String getDescription() {
-        return "";
-    }
+    String getDescription();
 
     void execute(Message message, String[] args);
 
@@ -48,7 +45,8 @@ public interface CommandExecutor {
     }
 
     default boolean canExecute(Message message) {
-        return isAuthorizedChannel(message.getChannel()) && isAuthorizedMember(message.getMember());
+        return isAuthorizedChannel(message.getChannel())
+                && (message.getChannelType() == net.dv8tion.jda.core.entities.ChannelType.PRIVATE || isAuthorizedMember(message.getMember()));
     }
 
 }

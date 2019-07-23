@@ -6,6 +6,9 @@ import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.database.data.CustomCommandData;
 import fr.gravendev.multibot.moderation.BanInfoCommand;
 import fr.gravendev.multibot.moderation.commands.*;
+import fr.gravendev.multibot.polls.PollsManager;
+import fr.gravendev.multibot.polls.commands.ColorCommand;
+import fr.gravendev.multibot.polls.commands.PollCommand;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.rank.RankCommand;
@@ -24,7 +27,7 @@ public class CommandManager {
     private final DatabaseConnection databaseConnection;
     private final char prefix;
 
-    public CommandManager(char prefix, DatabaseConnection databaseConnection, WelcomeMessagesSetManager welcomeMessagesSetManager) {
+    public CommandManager(char prefix, DatabaseConnection databaseConnection, WelcomeMessagesSetManager welcomeMessagesSetManager, PollsManager pollsManager) {
         this.prefix = prefix;
         commandExecutors = new ArrayList<>(Arrays.asList(
                 new AboutCommand(),
@@ -47,7 +50,9 @@ public class CommandManager {
                 new QuizCommand(databaseConnection, welcomeMessagesSetManager),
                 new RankCommand(databaseConnection),
                 new RolesCommand(databaseConnection),
-                new VoteCommand(databaseConnection)
+                new VoteCommand(databaseConnection),
+
+                new PollCommand(pollsManager)
         ));
         this.databaseConnection = databaseConnection;
         this.commandExecutors.add(new HelpCommand(this.commandExecutors, databaseConnection));
