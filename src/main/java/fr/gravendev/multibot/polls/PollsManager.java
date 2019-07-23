@@ -43,19 +43,26 @@ public class PollsManager {
     }
 
     public void finish(User user) {
-        TextChannel channel = user.getJDA().getGuildById(this.guildIdDAO.get("guild").id).getTextChannelById(this.guildIdDAO.get("sondages_verif").id);
+        if (!this.polls.containsKey(user.getIdLong())) return;
+        long guildId = this.guildIdDAO.get("guild").id;
+        long sondagesVerifId = this.guildIdDAO.get("sondages_verif").id;
+
+        TextChannel channel = user.getJDA().getGuildById(guildId).getTextChannelById(sondagesVerifId);
         this.polls.get(user.getIdLong()).finish(channel, false);
+    }
+
+    public void sendFinalPoll(User user, String title) {
+        long userId = user.getIdLong();
+        long guildId = this.guildIdDAO.get("guild").id;
+        long sondagesId = this.guildIdDAO.get("sondages").id;
+        if (!this.polls.containsKey(userId) || !this.polls.get(userId).isSameTitle(title)) return;
+
+        TextChannel channel = user.getJDA().getGuildById(guildId).getTextChannelById(sondagesId);
+        this.polls.get(userId).finish(channel, true);
     }
 
     public void removePoll(User user) {
         this.polls.remove(user.getIdLong());
-    }
-
-    public void sendFinalPoll(User user, String title) {
-        if (!this.polls.containsKey(user.getIdLong())) return;
-        if (!this.polls.get(user.getIdLong()).isSameTitle(title)) return;
-        TextChannel channel = user.getJDA().getGuildById(this.guildIdDAO.get("guild").id).getTextChannelById(this.guildIdDAO.get("sondages").id);
-        this.polls.get(user.getIdLong()).finish(channel, true);
     }
 
 }
