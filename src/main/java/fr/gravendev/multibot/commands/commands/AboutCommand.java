@@ -26,7 +26,7 @@ public class AboutCommand implements CommandExecutor {
 
     @Override
     public List<String> getAuthorizedChannelsNames() {
-        return Collections.singletonList("_commandes");
+        return Collections.singletonList("commandes");
     }
 
     @Override

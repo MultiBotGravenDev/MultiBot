@@ -2,10 +2,8 @@ package fr.gravendev.multibot.polls;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
-import net.dv8tion.jda.core.entities.Emote;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
-import org.w3c.dom.Text;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -45,9 +43,19 @@ public class PollsManager {
     }
 
     public void finish(User user) {
-        if (!this.polls.containsKey(user.getIdLong())) return;
         TextChannel channel = user.getJDA().getGuildById(this.guildIdDAO.get("guild").id).getTextChannelById(this.guildIdDAO.get("sondages_verif").id);
-        this.polls.get(user.getIdLong()).finish(channel);
+        this.polls.get(user.getIdLong()).finish(channel, false);
+    }
+
+    public void removePoll(User user) {
+        this.polls.remove(user.getIdLong());
+    }
+
+    public void sendFinalPoll(User user, String title) {
+        if (!this.polls.containsKey(user.getIdLong())) return;
+        if (!this.polls.get(user.getIdLong()).isSameTitle(title)) return;
+        TextChannel channel = user.getJDA().getGuildById(this.guildIdDAO.get("guild").id).getTextChannelById(this.guildIdDAO.get("sondages").id);
+        this.polls.get(user.getIdLong()).finish(channel, true);
     }
 
 }

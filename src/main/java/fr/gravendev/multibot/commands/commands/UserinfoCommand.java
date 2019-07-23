@@ -63,7 +63,7 @@ public class UserinfoCommand implements CommandExecutor {
     }
 
     public List<String> getAuthorizedChannelsNames() {
-        return Arrays.asList("général", "_commandes");
+        return Arrays.asList("général", "commandes");
     }
 
     @Override

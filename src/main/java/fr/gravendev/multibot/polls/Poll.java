@@ -4,6 +4,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.requests.RestAction;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.TreeMap;
 
 public class Poll {
 
-    private static final String EMOTES = ":one: :two: :three: :for: :five: :six: :seven: :eight: :nine: ";
+    private static final String EMOTES = "1\u20E3 2\u20E3 3\u20E3 4\u20E3 5\u20E3 6\u20E3 7\u20E3 8\u20E3 9\u20E3";
 
     private final User user;
     private final long messageId;
@@ -50,21 +51,43 @@ public class Poll {
     }
 
     void setEmote(int numberEmote, String emote) {
-        this.emotes.put(numberEmote, emote);
+        if (this.choices.containsKey(numberEmote)) {
+            this.emotes.put(numberEmote, emote);
+        }
         update();
     }
 
     private void update() {
         this.user.openPrivateChannel().queue(privateChannel ->
-                privateChannel.getMessageById(this.messageId).queue(message -> message.editMessage(buildMessage().build()).queue()));
+                privateChannel.getMessageById(this.messageId).queue(message -> {
+                    User selfUser = message.getJDA().getSelfUser();
+                    message.getReactions().forEach(messageReaction -> {
+                        if (!this.emotes.values().contains(messageReaction.getReactionEmote().getName())) {
+                            messageReaction.removeReaction(selfUser).queue();
+                        }
+                    });
+                    message.editMessage(buildMessage().build()).queue(message1 -> this.emotes.values()
+                            .stream()
+                            .map(message1::addReaction)
+                            .forEach(RestAction::queue));
+                }));
     }
 
-    void finish(TextChannel channel) {
+    void finish(TextChannel channel, boolean sendReactions) {
 
-        buildMessage().setContent(this.user.getAsMention()).sendTo(channel).queue(message -> {
-            message.addReaction("\u2705").queue();
-            message.addReaction("\u274C").queue();
-        });
+        if (sendReactions) {
+            buildMessage().sendTo(channel).queue(message ->
+                    this.emotes.values()
+                            .stream()
+                            .map(message::addReaction)
+                            .forEach(RestAction::queue)
+            );
+        } else {
+            buildMessage().setContent(this.user.getAsMention()).sendTo(channel).queue(message -> {
+                message.addReaction("\u2705").queue();
+                message.addReaction("\u274C").queue();
+            });
+        }
 
     }
 
@@ -84,6 +107,11 @@ public class Poll {
 
         return new MessageBuilder().setEmbed(embedBuilder.build());
 
+    }
+
+    boolean isSameTitle(String title) {
+        if (title == null) title = " ";
+        return title.equalsIgnoreCase(this.title);
     }
 
 }
