@@ -50,7 +50,7 @@ public class WelcomeMessagesSetManager {
     public void registerMessage(Message message) {
         List<Message> messages = this.setters.get(message.getAuthor().getIdLong());
 
-        boolean isNotACommand = !message.getContentDisplay().startsWith("!quiz set message");
+        boolean isNotACommand = !message.getContentDisplay().startsWith("!quiz setChoice message");
 
         if (messages != null && isNotACommand) {
 

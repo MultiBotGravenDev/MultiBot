@@ -18,7 +18,7 @@ public class SetCommand implements CommandExecutor {
 
     @Override
     public String getCommand() {
-        return "set";
+        return "setChoice";
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SetCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length < 2) {
-            message.getChannel().sendMessage("Erreur. !custom set <commande> <texte>").queue();
+            message.getChannel().sendMessage("Erreur. !custom setChoice <commande> <texte>").queue();
             return;
         }
 
