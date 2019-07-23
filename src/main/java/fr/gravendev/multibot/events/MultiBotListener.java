@@ -2,6 +2,7 @@ package fr.gravendev.multibot.events;
 
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.quiz.QuizManager;
 import net.dv8tion.jda.core.events.Event;
@@ -14,7 +15,7 @@ public class MultiBotListener implements EventListener {
 
     private final List<Listener> events;
 
-    public MultiBotListener(CommandManager commandManager, DatabaseConnection databaseConnection, QuizManager quizManager, WelcomeMessagesSetManager welcomeMessagesSetManager) {
+    public MultiBotListener(CommandManager commandManager, DatabaseConnection databaseConnection, QuizManager quizManager, WelcomeMessagesSetManager welcomeMessagesSetManager, PollsManager pollsManager) {
         events = Arrays.asList(
                 new fr.gravendev.multibot.commands.MessageReceivedListener(commandManager),
                 new fr.gravendev.multibot.rank.MessageReceivedListener(databaseConnection),
@@ -26,6 +27,8 @@ public class MultiBotListener implements EventListener {
                 new fr.gravendev.multibot.roles.listeners.ReactionRemovedListener(databaseConnection),
                 new fr.gravendev.multibot.votes.events.EmoteAddedListener(databaseConnection),
                 new fr.gravendev.multibot.votes.events.RoleAddedEvent(databaseConnection),
+                new fr.gravendev.multibot.polls.events.MessageReceivedListener(),
+                new fr.gravendev.multibot.polls.events.EmoteAddedListener(),
                 new ReadyListener(databaseConnection)
         );
     }
