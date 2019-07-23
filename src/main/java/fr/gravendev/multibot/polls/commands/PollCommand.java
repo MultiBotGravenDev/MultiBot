@@ -21,7 +21,9 @@ public class PollCommand implements CommandExecutor {
         this.pollsManager = pollsManager;
         argumentsExecutors = Arrays.asList(
                 new ColorCommand(this.pollsManager),
-                new AskCommand(this.pollsManager)
+                new AskCommand(this.pollsManager),
+                new ChoiceCommand(this.pollsManager),
+                new EmoteCommand(this.pollsManager)
         );
     }
 
