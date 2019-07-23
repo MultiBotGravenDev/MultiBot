@@ -42,7 +42,7 @@ class MultiBot {
 
         this.quizManager = new QuizManager(databaseConnection);
         this.welcomeMessagesSetManager = new WelcomeMessagesSetManager(databaseConnection);
-        this.pollsManager = new PollsManager();
+        this.pollsManager = new PollsManager(databaseConnection);
         this.commandManager = new CommandManager(this.configuration.getPrefix(), databaseConnection, welcomeMessagesSetManager, pollsManager);
     }
 

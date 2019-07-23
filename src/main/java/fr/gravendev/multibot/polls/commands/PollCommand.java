@@ -23,7 +23,8 @@ public class PollCommand implements CommandExecutor {
                 new ColorCommand(this.pollsManager),
                 new AskCommand(this.pollsManager),
                 new ChoiceCommand(this.pollsManager),
-                new EmoteCommand(this.pollsManager)
+                new EmoteCommand(this.pollsManager),
+                new FinishCommand(this.pollsManager)
         );
     }
 
