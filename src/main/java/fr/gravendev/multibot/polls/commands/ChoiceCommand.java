@@ -25,7 +25,9 @@ public class ChoiceCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
-        if (args.length == 0 || !args[0].matches("[0-9]+")) {
+        if (this.pollsManager.hasNotPoll(message.getAuthor())) return;
+
+        if (args.length == 0 || !args[0].matches("[0-9]+") && !args[0].equals("0")) {
             message.getChannel().sendMessage("Erreur. !poll choice <numéro du choix> <texte ou vide>").queue();
             return;
         }

@@ -27,7 +27,6 @@ public class MultiBotListener implements EventListener {
                 new fr.gravendev.multibot.roles.listeners.ReactionRemovedListener(databaseConnection),
                 new fr.gravendev.multibot.votes.events.EmoteAddedListener(databaseConnection),
                 new fr.gravendev.multibot.votes.events.RoleAddedEvent(databaseConnection),
-                new fr.gravendev.multibot.polls.events.MessageReceivedListener(),
                 new fr.gravendev.multibot.polls.events.EmoteAddedListener(databaseConnection, pollsManager),
                 new ReadyListener(databaseConnection)
         );

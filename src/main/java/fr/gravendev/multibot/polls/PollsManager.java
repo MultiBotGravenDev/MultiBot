@@ -22,28 +22,27 @@ public class PollsManager {
         this.polls.put(user.getIdLong(), new Poll(user, messageId));
     }
 
+    public void removePoll(User user) {
+        this.polls.remove(user.getIdLong());
+    }
+
     public void setColor(User user, Colors color) {
-        if (!this.polls.containsKey(user.getIdLong())) return;
         this.polls.get(user.getIdLong()).setColor(color);
     }
 
     public void setTitle(User user, String title) {
-        if (!this.polls.containsKey(user.getIdLong())) return;
         this.polls.get(user.getIdLong()).setTitle(title);
     }
 
     public void setChoice(User user, String[] choice) {
-        if (!this.polls.containsKey(user.getIdLong())) return;
         this.polls.get(user.getIdLong()).setChoice(Integer.parseInt(choice[0]), String.join(" ", Arrays.copyOfRange(choice, 1, choice.length)));
     }
 
     public void setEmote(User user, int numberEmote, String emote) {
-        if (!this.polls.containsKey(user.getIdLong())) return;
         this.polls.get(user.getIdLong()).setEmote(numberEmote, emote);
     }
 
-    public void finish(User user) {
-        if (!this.polls.containsKey(user.getIdLong())) return;
+    public void sendToValidation(User user) {
         long guildId = this.guildIdDAO.get("guild").id;
         long sondagesVerifId = this.guildIdDAO.get("sondages_verif").id;
 
@@ -51,7 +50,7 @@ public class PollsManager {
         this.polls.get(user.getIdLong()).finish(channel, false);
     }
 
-    public void sendFinalPoll(User user, String title) {
+    public void send(User user, String title) {
         long userId = user.getIdLong();
         long guildId = this.guildIdDAO.get("guild").id;
         long sondagesId = this.guildIdDAO.get("sondages").id;
@@ -61,8 +60,8 @@ public class PollsManager {
         this.polls.get(userId).finish(channel, true);
     }
 
-    public void removePoll(User user) {
-        this.polls.remove(user.getIdLong());
+    public boolean hasNotPoll(User user) {
+        return !this.polls.containsKey(user.getIdLong());
     }
 
 }

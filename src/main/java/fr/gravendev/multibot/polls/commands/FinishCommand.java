@@ -25,7 +25,8 @@ public class FinishCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
-        this.pollsManager.finish(message.getAuthor());
+        if (this.pollsManager.hasNotPoll(message.getAuthor())) return;
+        this.pollsManager.sendToValidation(message.getAuthor());
 
     }
 
