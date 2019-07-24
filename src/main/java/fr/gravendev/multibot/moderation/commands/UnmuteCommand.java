@@ -8,6 +8,7 @@ import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.GuildUtils;
 import fr.gravendev.multibot.utils.Utils;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 
 import java.awt.*;
@@ -31,6 +32,11 @@ public class UnmuteCommand implements CommandExecutor {
     @Override
     public String getDescription() {
         return "Rendre la parole à un membre";
+    }
+
+    @Override
+    public boolean isAuthorizedMember(Member member) {
+        return member.hasPermission(Permission.ADMINISTRATOR);
     }
 
     @Override

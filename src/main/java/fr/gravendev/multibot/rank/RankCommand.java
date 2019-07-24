@@ -2,9 +2,9 @@ package fr.gravendev.multibot.rank;
 
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.data.ExperienceData;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
+import fr.gravendev.multibot.database.data.ExperienceData;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
@@ -69,7 +69,11 @@ public class RankCommand implements CommandExecutor {
             BufferedImage image = new BufferedImage(950, 300, BufferedImage.TYPE_INT_RGB);
             ImageBuilder builder = new ImageBuilder(image);
 
-            builder.drawImage(new URL(member.getUser().getAvatarUrl()));
+            if (member.getUser().getAvatarUrl() != null) {
+                builder.drawImage(new URL(member.getUser().getAvatarUrl()));
+            } else {
+                builder.drawImage(new URL(member.getUser().getDefaultAvatarUrl()));
+            }
 
             builder.drawProgress(color, experiences, expToLevelUp);
 

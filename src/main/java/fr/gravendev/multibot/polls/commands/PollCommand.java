@@ -34,7 +34,6 @@ public class PollCommand implements CommandExecutor {
     @Override
     public String getDescription() {
         return "Commandes relatives aux sondages. \n"
-                + "!poll (Permet de créer un sondage)\n"
                 + this.argumentsExecutors
                 .stream()
                 .map(executor -> "!poll " + executor.getCommand() + " (" + executor.getDescription() + ")\n")

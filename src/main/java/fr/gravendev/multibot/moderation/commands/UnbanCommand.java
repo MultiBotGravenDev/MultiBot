@@ -6,6 +6,8 @@ import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Utils;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
@@ -31,6 +33,11 @@ public class UnbanCommand implements CommandExecutor {
     @Override
     public String getDescription() {
         return "Débannir un utilisateur";
+    }
+
+    @Override
+    public boolean isAuthorizedMember(Member member) {
+        return member.hasPermission(Permission.ADMINISTRATOR);
     }
 
     @Override
