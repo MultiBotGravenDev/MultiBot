@@ -5,7 +5,7 @@ public class MessageData {
     private String discord_id, message_id, content;
     private long creation;
 
-    public MessageData(net.dv8tion.jda.core.entities.Message message) {
+    MessageData(net.dv8tion.jda.core.entities.Message message) {
         this.discord_id = message.getAuthor().getId();
         this.message_id = message.getId();
         this.content = message.getContentDisplay();

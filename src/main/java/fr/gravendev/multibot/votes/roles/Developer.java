@@ -7,10 +7,10 @@ import java.awt.*;
 
 public class Developer implements Role {
 
-    private final DatabaseConnection databaseConnection;
+    private final GuildIdDAO guildIdDAO;
 
     public Developer(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        this.guildIdDAO = new GuildIdDAO(databaseConnection);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class Developer implements Role {
 
     @Override
     public long getRoleId() {
-        return new GuildIdDAO(this.databaseConnection).get("developpeur").id;
+        return this.guildIdDAO.get("developpeur").id;
     }
 
     @Override

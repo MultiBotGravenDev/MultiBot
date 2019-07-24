@@ -423,9 +423,9 @@ public class EmojiUtils {
             "e0076", "e0077", "e0078", "e0079", "e007a", "e007b", "e007c", "e007d", "e007e", "e007f",
             "fe0f"));
 
-    private static String toHexStr(char c) {
+    /*private static String toHexStr(char c) {
         return Integer.toHexString(c);
-    }
+    }*/
 
     private static String toHexStr(int c) {
         return Integer.toHexString(c);
@@ -446,7 +446,7 @@ public class EmojiUtils {
         return false;
     }
 
-    public static String removeEmoji(String str) {
+    /*public static String removeEmoji(String str) {
         StringBuilder sb = new StringBuilder();
         // unicode can be at most 2 Java Char(utf-16), use code point
         int cpCnt = str.codePointCount(0, str.length());
@@ -460,6 +460,6 @@ public class EmojiUtils {
             }
         }
         return sb.toString();
-    }
+    }*/
 
 }

@@ -8,7 +8,7 @@ public class AskCommand implements CommandExecutor {
 
     private final PollsManager pollsManager;
 
-    public AskCommand(PollsManager pollsManager) {
+    AskCommand(PollsManager pollsManager) {
         this.pollsManager = pollsManager;
     }
 

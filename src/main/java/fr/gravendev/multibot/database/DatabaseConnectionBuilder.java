@@ -11,22 +11,22 @@ public class DatabaseConnectionBuilder {
         return new DatabaseConnectionBuilder();
     }
 
-    public DatabaseConnectionBuilder withhost(String host) {
+    public DatabaseConnectionBuilder withHost(String host) {
         this.host = host;
         return this;
     }
 
-    public DatabaseConnectionBuilder withuser(String user) {
+    public DatabaseConnectionBuilder withUser(String user) {
         this.user = user;
         return this;
     }
 
-    public DatabaseConnectionBuilder withpassword(String password) {
+    public DatabaseConnectionBuilder withPassword(String password) {
         this.password = password;
         return this;
     }
 
-    public DatabaseConnectionBuilder withdatabase(String database) {
+    public DatabaseConnectionBuilder withDatabase(String database) {
         this.database = database;
         return this;
     }

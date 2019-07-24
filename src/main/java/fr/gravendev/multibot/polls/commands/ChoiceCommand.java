@@ -8,7 +8,7 @@ public class ChoiceCommand implements CommandExecutor {
 
     private final PollsManager pollsManager;
 
-    public ChoiceCommand(PollsManager pollsManager) {
+    ChoiceCommand(PollsManager pollsManager) {
         this.pollsManager = pollsManager;
     }
 
