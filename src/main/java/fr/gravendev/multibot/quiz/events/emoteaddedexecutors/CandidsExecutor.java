@@ -33,12 +33,14 @@ public class CandidsExecutor implements EmoteAddedExecutor {
             switch (event.getReactionEmote().getName()) {
 
                 case "\u2705":
-                    validationMessage += ":white_check_mark: accepté ";
+                    validationMessage += ":white_check_mark: acceptée ";
+                    member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Votre candidature a été acceptée ! Bienvenue sur GravenDev").queue());
                     GuildUtils.addRole(member, String.valueOf(memberRoleId)).queue();
                     break;
 
                 case "\u274C":
-                    validationMessage += ":x: refusé ";
+                    validationMessage += ":x: refusée ";
+                    member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Votre candidature a été refusée").queue());
                     break;
 
                 default:
