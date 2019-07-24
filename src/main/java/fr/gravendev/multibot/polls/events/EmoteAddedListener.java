@@ -41,7 +41,7 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
 
                 case "\u2705":
                     validationMessage += ":white_check_mark: accepté ";
-                    this.pollsManager.sendFinalPoll(member.getUser(), message.getEmbeds().get(0).getTitle());
+                    this.pollsManager.send(member.getUser(), message.getEmbeds().get(0).getTitle());
                     this.pollsManager.removePoll(event.getUser());
                     break;
 

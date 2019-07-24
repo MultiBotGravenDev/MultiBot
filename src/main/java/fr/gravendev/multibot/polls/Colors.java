@@ -13,6 +13,7 @@ public enum Colors {
     GRAY(Color.GRAY, "GRAY"),
     MAGENTA(Color.MAGENTA, "MAGENTA"),
     ORANGE(Color.ORANGE, "ORANGE"),
+    BLACK(Color.BLACK, "BLACK"),
     PINK(Color.PINK, "PINK"),
     BLUE(Color.BLUE, "BLUE");
 

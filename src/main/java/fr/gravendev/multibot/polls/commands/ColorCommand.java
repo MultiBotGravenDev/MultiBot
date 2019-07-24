@@ -31,7 +31,7 @@ public class ColorCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-        if (args.length == 0) return;
+        if (args.length == 0 || this.pollsManager.hasNotPoll(message.getAuthor())) return;
         this.pollsManager.setColor(message.getAuthor(), Colors.fromString(args[0]));
     }
 

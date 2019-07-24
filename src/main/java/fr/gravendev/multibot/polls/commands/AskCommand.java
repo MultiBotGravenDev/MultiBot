@@ -25,6 +25,7 @@ public class AskCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
+        if (this.pollsManager.hasNotPoll(message.getAuthor())) return;
         this.pollsManager.setTitle(message.getAuthor(), String.join(" ", args));
 
     }

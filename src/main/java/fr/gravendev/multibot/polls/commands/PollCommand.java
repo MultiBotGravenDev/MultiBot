@@ -3,8 +3,6 @@ package fr.gravendev.multibot.polls.commands;
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.polls.PollsManager;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.util.Arrays;
@@ -14,17 +12,16 @@ import java.util.stream.Collectors;
 
 public class PollCommand implements CommandExecutor {
 
-    private final PollsManager pollsManager;
     private final List<CommandExecutor> argumentsExecutors;
 
     public PollCommand(PollsManager pollsManager) {
-        this.pollsManager = pollsManager;
         argumentsExecutors = Arrays.asList(
-                new ColorCommand(this.pollsManager),
-                new AskCommand(this.pollsManager),
-                new ChoiceCommand(this.pollsManager),
-                new EmoteCommand(this.pollsManager),
-                new FinishCommand(this.pollsManager)
+                new StartCommand(pollsManager),
+                new ColorCommand(pollsManager),
+                new AskCommand(pollsManager),
+                new ChoiceCommand(pollsManager),
+                new EmoteCommand(pollsManager),
+                new FinishCommand(pollsManager)
         );
     }
 
@@ -58,26 +55,17 @@ public class PollCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length == 0) {
-            message.getAuthor().openPrivateChannel().queue(privateChannel ->
-                    new MessageBuilder()
-                            .setContent("!help pour voir la liste des commandes disponible")
-                            .setEmbed(new EmbedBuilder()
-                                    .setTitle(" ")
-                                    .setFooter(message.getAuthor().getName(), message.getAuthor().getAvatarUrl())
-                                    .build())
-                            .sendTo(privateChannel)
-                            .queue(message1 -> this.pollsManager.registerPoll(message.getAuthor(), message1.getIdLong())));
+            message.getChannel().sendMessage("Erreur. "
+                    + "!poll ["
+                    + this.argumentsExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining("/"))
+                    + "]").queue();
             return;
         }
 
         this.argumentsExecutors.stream()
                 .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
                 .findAny()
-                .ifPresentOrElse(commandExecutor -> commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length)),
-                        () -> message.getChannel().sendMessage("Erreur. "
-                                + "!poll ["
-                                + this.argumentsExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining("/"))
-                                + "]").queue());
+                .ifPresent(commandExecutor -> commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length)));
 
     }
 
