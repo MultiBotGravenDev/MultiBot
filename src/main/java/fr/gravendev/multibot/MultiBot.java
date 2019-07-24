@@ -8,6 +8,7 @@ import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.utils.json.Configuration;
+import fr.gravendev.multibot.utils.json.FileWriter;
 import fr.gravendev.multibot.utils.json.Serializer;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -20,7 +21,7 @@ class MultiBot {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiBot.class);
 
-    private final Configuration configuration;
+    private Configuration configuration;
     private final CommandManager commandManager;
     private final DatabaseConnection databaseConnection;
     private final QuizManager quizManager;
@@ -31,6 +32,12 @@ class MultiBot {
 
     MultiBot() {
         this.configuration = new Serializer<Configuration>().deserialize(Configuration.CONFIGURATION_FILE, Configuration.class);
+
+        if (this.configuration == null) {
+            this.configuration = new Configuration();
+            String json = new Serializer<Configuration>().serialize(configuration);
+            FileWriter.writeFile(Configuration.CONFIGURATION_FILE, json);
+        }
 
         this.databaseConnection = DatabaseConnectionBuilder
                 .aDatabaseConnection()
