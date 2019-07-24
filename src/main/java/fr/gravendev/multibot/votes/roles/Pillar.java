@@ -4,14 +4,13 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 
 import java.awt.*;
-import java.sql.SQLException;
 
 public class Pillar implements Role {
 
-    private final DatabaseConnection databaseConnection;
+    private final GuildIdDAO guildIdDAO;
 
     public Pillar(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        this.guildIdDAO = new GuildIdDAO(databaseConnection);
     }
 
     @Override
@@ -26,7 +25,7 @@ public class Pillar implements Role {
 
     @Override
     public long getRoleId() {
-        return new GuildIdDAO(this.databaseConnection).get("pilier").id;
+        return this.guildIdDAO.get("pilier").id;
     }
 
     @Override

@@ -9,7 +9,6 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleAddEvent;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 

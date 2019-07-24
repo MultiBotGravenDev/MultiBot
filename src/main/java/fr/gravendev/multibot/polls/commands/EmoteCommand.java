@@ -6,9 +6,10 @@ import fr.gravendev.multibot.utils.EmojiUtils;
 import net.dv8tion.jda.core.entities.Message;
 
 public class EmoteCommand implements CommandExecutor {
+
     private final PollsManager pollsManager;
 
-    public EmoteCommand(PollsManager pollsManager) {
+    EmoteCommand(PollsManager pollsManager) {
         this.pollsManager = pollsManager;
     }
 

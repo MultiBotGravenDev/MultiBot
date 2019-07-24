@@ -10,7 +10,7 @@ public class ColorCommand implements CommandExecutor {
 
     private PollsManager pollsManager;
 
-    public ColorCommand(PollsManager pollsManager) {
+    ColorCommand(PollsManager pollsManager) {
         this.pollsManager = pollsManager;
     }
 

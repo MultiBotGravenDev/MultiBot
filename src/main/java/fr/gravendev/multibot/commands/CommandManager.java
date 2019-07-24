@@ -7,7 +7,6 @@ import fr.gravendev.multibot.database.data.CustomCommandData;
 import fr.gravendev.multibot.moderation.BanInfoCommand;
 import fr.gravendev.multibot.moderation.commands.*;
 import fr.gravendev.multibot.polls.PollsManager;
-import fr.gravendev.multibot.polls.commands.ColorCommand;
 import fr.gravendev.multibot.polls.commands.PollCommand;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.quiz.commands.QuizCommand;
@@ -23,9 +22,9 @@ import java.util.Optional;
 
 public class CommandManager {
 
-    private List<CommandExecutor> commandExecutors;
     private final DatabaseConnection databaseConnection;
     private final char prefix;
+    private List<CommandExecutor> commandExecutors;
 
     public CommandManager(char prefix, DatabaseConnection databaseConnection, WelcomeMessagesSetManager welcomeMessagesSetManager, PollsManager pollsManager) {
         this.prefix = prefix;

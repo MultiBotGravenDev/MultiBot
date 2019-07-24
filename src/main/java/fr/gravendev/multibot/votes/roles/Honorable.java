@@ -4,14 +4,13 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 
 import java.awt.*;
-import java.sql.SQLException;
 
 public class Honorable implements Role {
 
-    private final DatabaseConnection databaseConnection;
+    private final GuildIdDAO guildIdDAO;
 
     public Honorable(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        this.guildIdDAO = new GuildIdDAO(databaseConnection);
     }
 
     @Override
@@ -26,7 +25,7 @@ public class Honorable implements Role {
 
     @Override
     public long getRoleId() {
-        return new GuildIdDAO(this.databaseConnection).get("honorable").id;
+        return this.guildIdDAO.get("honorable").id;
     }
 
     @Override

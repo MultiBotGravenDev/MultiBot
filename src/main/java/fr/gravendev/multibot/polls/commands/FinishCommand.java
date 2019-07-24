@@ -8,7 +8,7 @@ public class FinishCommand implements CommandExecutor {
 
     private final PollsManager pollsManager;
 
-    public FinishCommand(PollsManager pollsManager) {
+    FinishCommand(PollsManager pollsManager) {
         this.pollsManager = pollsManager;
     }
 

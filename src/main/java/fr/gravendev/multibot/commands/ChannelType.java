@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.commands;
 
 public enum ChannelType {
+    
     ALL(net.dv8tion.jda.core.entities.ChannelType.TEXT),
     GUILD(net.dv8tion.jda.core.entities.ChannelType.TEXT),
     PRIVATE(net.dv8tion.jda.core.entities.ChannelType.PRIVATE);

@@ -5,10 +5,10 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.DatabaseConnectionBuilder;
 import fr.gravendev.multibot.events.MultiBotListener;
 import fr.gravendev.multibot.polls.PollsManager;
+import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.utils.json.Configuration;
 import fr.gravendev.multibot.utils.json.Serializer;
-import fr.gravendev.multibot.quiz.QuizManager;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import org.slf4j.Logger;
@@ -34,10 +34,10 @@ class MultiBot {
 
         this.databaseConnection = DatabaseConnectionBuilder
                 .aDatabaseConnection()
-                .withhost(configuration.getHost())
-                .withuser(configuration.getUser())
-                .withpassword(configuration.getPassword())
-                .withdatabase(configuration.getDatabase())
+                .withHost(configuration.getHost())
+                .withUser(configuration.getUser())
+                .withPassword(configuration.getPassword())
+                .withDatabase(configuration.getDatabase())
                 .build();
 
         this.quizManager = new QuizManager(databaseConnection);

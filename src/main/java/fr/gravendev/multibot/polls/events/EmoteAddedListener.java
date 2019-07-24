@@ -26,11 +26,8 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
     @Override
     public void executeListener(MessageReactionAddEvent event) {
 
-        if (event.getUser().isBot()) return;
-
         long pollVerifChannelId = this.guildIdDAO.get("sondages_verif").id;
-
-        if (event.getChannel().getIdLong() != pollVerifChannelId) return;
+        if (event.getUser().isBot() || event.getChannel().getIdLong() != pollVerifChannelId) return;
 
         event.getChannel().getMessageById(event.getMessageIdLong()).queue(message -> {
 
