@@ -20,7 +20,7 @@ public class EmoteCommand implements CommandExecutor {
 
     @Override
     public String getDescription() {
-        return "Permet de définir l'emot ed'un choix";
+        return "Permet de définir l'emote d'un choix";
     }
 
     @Override
