@@ -6,9 +6,12 @@ public class Configuration {
 
     public static final File CONFIGURATION_FILE = new File("configuration.json");
 
-    private String token;
-    private String host, username, password, database;
-    private char prefix;
+    private String token = " ";
+    private String host = " ";
+    private String username = " ";
+    private String password = " ";
+    private String database = " ";
+    private char prefix = ' ';
 
     public String getToken() {
         return this.token;

@@ -12,9 +12,9 @@ public class Serializer<T> {
             .setPrettyPrinting()
             .create();
 
-    /*public String serialize(T object) {
+    public String serialize(T object) {
         return GSON.toJson(object);
-    }*/
+    }
 
     public T deserialize(File file, Class<T> tClass) {
         String fileContent = FileLoader.load(file);
