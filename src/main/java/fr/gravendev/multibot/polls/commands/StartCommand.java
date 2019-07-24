@@ -26,6 +26,11 @@ public class StartCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
+        if (!this.pollsManager.hasNotPoll(message.getAuthor())) {
+            message.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Annulez la création du sondage avant d'en créer un autre.").queue());
+            return;
+        }
+
         message.getAuthor().openPrivateChannel().queue(privateChannel ->
                 new MessageBuilder()
                         .setContent("!help pour voir la liste des commandes disponible")

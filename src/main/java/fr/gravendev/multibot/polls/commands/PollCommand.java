@@ -21,7 +21,8 @@ public class PollCommand implements CommandExecutor {
                 new AskCommand(pollsManager),
                 new ChoiceCommand(pollsManager),
                 new EmoteCommand(pollsManager),
-                new FinishCommand(pollsManager)
+                new FinishCommand(pollsManager),
+                new CancelCommand(pollsManager)
         );
     }
 
