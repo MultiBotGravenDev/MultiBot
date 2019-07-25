@@ -40,11 +40,13 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
                     validationMessage += ":white_check_mark: accepté ";
                     this.pollsManager.send(member.getUser(), message.getEmbeds().get(0).getTitle());
                     this.pollsManager.removePoll(event.getUser());
+                    member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Votre sondage a été accepté").queue());
                     break;
 
                 case "\u274C":
                     validationMessage += ":x: refusé ";
                     this.pollsManager.removePoll(event.getUser());
+                    member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Votre sondage a été refusé").queue());
                     break;
 
                 default:

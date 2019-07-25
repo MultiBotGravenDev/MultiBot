@@ -2,10 +2,7 @@ package fr.gravendev.multibot.tasks;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
-import fr.gravendev.multibot.moderation.commands.antiroles.AntiMeme;
-import fr.gravendev.multibot.moderation.commands.antiroles.AntiRepost;
-import fr.gravendev.multibot.moderation.commands.antiroles.AntiReview;
-import fr.gravendev.multibot.moderation.commands.antiroles.AntiRole;
+import fr.gravendev.multibot.tasks.antiroles.*;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Guild;
 
@@ -22,7 +19,8 @@ public class AntiRolesTask extends TimerTask {
         this.antiRoles = Arrays.asList(
                 new AntiRepost(databaseConnection),
                 new AntiMeme(databaseConnection),
-                new AntiReview(databaseConnection)
+                new AntiReview(databaseConnection),
+                new AntiImage(databaseConnection)
         );
     }
 

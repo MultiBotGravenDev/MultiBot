@@ -25,6 +25,7 @@ public class CancelCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
         this.pollsManager.removePoll(message.getAuthor());
+        message.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Sondage annulé").queue());
     }
 
 }

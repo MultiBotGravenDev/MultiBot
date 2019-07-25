@@ -27,6 +27,7 @@ public class FinishCommand implements CommandExecutor {
 
         if (this.pollsManager.hasNotPoll(message.getAuthor())) return;
         this.pollsManager.sendToValidation(message.getAuthor());
+        message.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Votre sondage a bien été envoyé, les piliers de la communauté vont maintenant le valider ou non.").queue());
 
     }
 
