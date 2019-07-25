@@ -4,6 +4,7 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
 import fr.gravendev.multibot.database.data.MessageData;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.User;
 
 import java.util.*;
 
@@ -66,4 +67,7 @@ public class WelcomeMessagesSetManager {
         }
     }
 
+    public boolean isWaitingFor(User user) {
+        return this.setters.containsKey(user.getIdLong());
+    }
 }

@@ -8,7 +8,6 @@ import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class SetCommand implements CommandExecutor {
 
@@ -22,17 +21,12 @@ public class SetCommand implements CommandExecutor {
 
     @Override
     public String getCommand() {
-        return "setChoice";
+        return "set";
     }
 
     @Override
     public String getDescription() {
         return "Permet de changer les questions du quizz et le message de bienvenue.";
-    }
-
-    @Override
-    public List<String> getAuthorizedChannelsNames() {
-        return Arrays.asList("lisez-ce-salon", "piliers");
     }
 
     @Override
