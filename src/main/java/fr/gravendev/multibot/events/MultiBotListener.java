@@ -20,6 +20,7 @@ public class MultiBotListener implements EventListener {
                 new fr.gravendev.multibot.commands.MessageReceivedListener(commandManager),
                 new fr.gravendev.multibot.rank.MessageReceivedListener(databaseConnection),
                 new fr.gravendev.multibot.logs.MessageReceivedListener(databaseConnection),
+                new fr.gravendev.multibot.logs.MessageDeleteListener(databaseConnection),
                 new fr.gravendev.multibot.quiz.events.MessageReceivedListener(quizManager, welcomeMessagesSetManager),
                 new fr.gravendev.multibot.quiz.events.EmoteAddedListener(quizManager, databaseConnection),
                 new fr.gravendev.multibot.quiz.events.EmoteRemovedListener(quizManager),
