@@ -7,6 +7,7 @@ import fr.gravendev.multibot.events.MultiBotListener;
 import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
+import fr.gravendev.multibot.spark.SparkAPI;
 import fr.gravendev.multibot.utils.json.Configuration;
 import fr.gravendev.multibot.utils.json.FileWriter;
 import fr.gravendev.multibot.utils.json.Serializer;
@@ -14,6 +15,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.Spark;
 
 import javax.security.auth.login.LoginException;
 
@@ -60,6 +62,9 @@ class MultiBot {
                     .addEventListener(new MultiBotListener(this.commandManager, this.databaseConnection, this.quizManager, this.welcomeMessagesSetManager, pollsManager))
                     .build();
 
+            SparkAPI sparkAPI = new SparkAPI(jda, databaseConnection);
+            sparkAPI.initRoutes();
+
             LOGGER.info("Bot connected");
 
         } catch (LoginException e) {
@@ -73,5 +78,4 @@ class MultiBot {
         LOGGER.info("Bot disconnected");
         System.exit(0);
     }
-
 }
