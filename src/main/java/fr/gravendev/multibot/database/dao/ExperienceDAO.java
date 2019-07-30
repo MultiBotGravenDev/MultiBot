@@ -2,9 +2,14 @@ package fr.gravendev.multibot.database.dao;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.ExperienceData;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import org.json.JSONObject;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ExperienceDAO extends DAO<ExperienceData> {
 
@@ -44,6 +49,38 @@ public class ExperienceDAO extends DAO<ExperienceData> {
             return new ExperienceData(discordID, experience, level, message, lastMessage);
         }
         return null;
+    }
+
+    public List<JSONObject> getALL(Guild guild) {
+        List<JSONObject> experienceData = new ArrayList<>();
+        try (Connection connection = getConnection()) {
+
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM experience ORDER BY level DESC, experience DESC");
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                String discord_id = resultSet.getString("discord_id");
+                int experience = resultSet.getInt("experience");
+                int level = resultSet.getInt("level");
+                int messages = resultSet.getInt("messages_count");
+
+                JSONObject jsonObject = new JSONObject();
+
+                Member member = guild.getMemberById(discord_id);
+                if(member == null) continue;
+
+                jsonObject.put("name", member.getUser().getName());
+                jsonObject.put("avatarURL", member.getUser().getAvatarUrl());
+                jsonObject.put("messages", messages);
+                jsonObject.put("experience", experience);
+                jsonObject.put("level", level);
+
+                experienceData.add(jsonObject);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return experienceData;
     }
 
     @Override
