@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.roles.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
+import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import net.dv8tion.jda.core.Permission;
@@ -41,6 +42,11 @@ public class RolesCommand implements CommandExecutor {
     }
 
     @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.SYSTEM;
+    }
+
+    @Override
     public ChannelType getChannelType() {
         return ChannelType.GUILD;
     }
@@ -66,7 +72,7 @@ public class RolesCommand implements CommandExecutor {
 
     @Override
     public List<String> getAuthorizedChannelsNames() {
-        return Arrays.asList("rôle-langage", "piliers");
+        return Arrays.asList("rôle-langage-test", "piliers");
     }
 
     @Override

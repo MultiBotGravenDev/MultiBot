@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.votes;
 
 import fr.gravendev.multibot.commands.ChannelType;
+import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.VoteDAO;
@@ -43,6 +44,11 @@ public class VoteCommand implements CommandExecutor {
     @Override
     public String getDescription() {
         return "Permet de lancer un vote pour une personne.";
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.SYSTEM;
     }
 
     @Override
