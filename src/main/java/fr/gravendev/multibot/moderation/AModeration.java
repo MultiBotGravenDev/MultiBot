@@ -1,5 +1,6 @@
 package fr.gravendev.multibot.moderation;
 
+import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.core.entities.*;
@@ -15,6 +16,11 @@ import java.util.stream.Stream;
 public abstract class AModeration implements CommandExecutor {
 
     protected abstract boolean isTemporary();
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.MODERATION;
+    }
 
     @Override
     public void execute(Message message, String[] args) {

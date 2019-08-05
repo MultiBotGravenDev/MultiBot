@@ -34,32 +34,41 @@ public class HelpCommand implements CommandExecutor {
     }
 
     @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.UTILS;
+    }
+
+    @Override
     public ChannelType getChannelType() {
-        return ChannelType.ALL;
+        return ChannelType.GUILD;
     }
 
     @Override
     public void execute(Message message, String[] args) {
 
-        SelfUser bot = message.getJDA().getSelfUser();
+        List<MessageEmbed> embeds = new ArrayList<>();
+
+        for (CommandCategory category : CommandCategory.values()) {
+            EmbedBuilder embedBuilder = new EmbedBuilder()
+                    .setColor(category.getColor())
+                    .setTitle(category.getName());
+            this.commandExecutors
+                    .stream()
+                    .filter(command -> command.getCategory() == category && command.isAuthorizedMember(message.getMember()))
+                    .forEach(command -> embedBuilder.addField(command.getCommand(), command.getDescription(), false));
+            embeds.add(embedBuilder.build());
+        }
+
         EmbedBuilder embedBuilder = new EmbedBuilder()
-                .setColor(Color.BLUE)
-                .setTitle("Liste des commandes")
-                .setAuthor(bot.getName(), bot.getAvatarUrl(), bot.getAvatarUrl());
-
-        this.commandExecutors.stream()
-                .filter(commandExecutor -> {
-                    if (message.getMember() == null) {
-                        return commandExecutor.isAuthorizedChannel(message.getChannel());
-                    }
-                    return commandExecutor.isAuthorizedMember(message.getMember());
-                })
-                .forEach(commandExecutor -> embedBuilder.addField(new MessageEmbed.Field(commandExecutor.getCommand(), commandExecutor.getDescription(), false)));
-
+                .setColor(Color.MAGENTA)
+                .setTitle("Commandes personnalisées");
         getCustomCommands().forEach(customCommand -> embedBuilder.addField(customCommand.command, "", false));
+        embeds.add(embedBuilder.build());
 
-        message.getChannel().sendMessage(embedBuilder.build()).queue();
-
+        for (MessageEmbed embed : embeds) {
+            if(embed.getFields().size() == 0) continue;
+            message.getChannel().sendMessage(embed).queue();
+        }
     }
 
     private List<CustomCommandData> getCustomCommands() {
@@ -74,11 +83,7 @@ public class HelpCommand implements CommandExecutor {
             if (customCommandData != null) {
                 customCommands.add(customCommandData);
             }
-
         }
-
-
-
         return customCommands;
     }
 
