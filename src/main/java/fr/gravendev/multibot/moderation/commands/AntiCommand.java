@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
+import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.AntiRolesDAO;
@@ -36,6 +37,11 @@ public class AntiCommand implements CommandExecutor {
     @Override
     public String getDescription() {
         return "Permet de mettre un role anti- (meme, repost...) à une personne pour une durée de 6 mois.";
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.MODERATION;
     }
 
     @Override

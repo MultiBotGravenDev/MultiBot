@@ -23,7 +23,7 @@ public class ReactionAddedListener implements Listener<MessageReactionAddEvent> 
     @Override
     public void executeListener(MessageReactionAddEvent event) {
 
-        if (event.getUser().isBot() || !event.getChannel().getName().equalsIgnoreCase("rôle-langage")) return;
+        if (event.getUser().isBot() || !event.getChannel().getName().equalsIgnoreCase("rôle-langage-test")) return;
 
         RoleData roleData = roleDAO.get(event.getReactionEmote().getId());
 

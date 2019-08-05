@@ -29,6 +29,11 @@ public class CustomCommand implements CommandExecutor {
     }
 
     @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.SYSTEM;
+    }
+
+    @Override
     public String getDescription() {
         return "Permet de créer une command custom \n"
                 + this.argumentsExecutors
