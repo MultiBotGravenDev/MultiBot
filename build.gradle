@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
 group 'fr.gravendev'
@@ -11,9 +12,13 @@ sourceCompatibility = 1.8
 jar {
     manifest {
         attributes(
-                'Main-Class': 'fr.lukam.feryabot.FeryaBot'
+                'Main-Class': 'fr.gravendev.multibot.Main'
         )
     }
+}
+
+shadowJar {
+    shadowJar.setArchiveName("MultiBot.jar")
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -22,16 +27,21 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-archivesBaseName = 'MultiBot.jar'
+archivesBaseName = 'MultiBot'
 
 repositories {
     mavenCentral()
     jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     implementation 'org.slf4j:slf4j-simple:1.7.25'
     implementation "net.dv8tion:JDA:$jdaVersion"
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.3.1'
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
+    implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
+    implementation 'com.sparkjava:spark-core:2.8.0'
 }
 

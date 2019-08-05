@@ -100,6 +100,9 @@ fabric.properties
 # Ignore Gradle GUI config
 gradle-app.setting
 
+# Ignore bot configuration
+configuration.json
+
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 
