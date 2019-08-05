@@ -26,7 +26,7 @@ public class ListCommand implements CommandExecutor {
 
     @Override
     public List<String> getAuthorizedChannelsNames() {
-        return Arrays.asList("rôle-langage", "piliers");
+        return Arrays.asList("rôle-langage-test", "piliers");
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ListCommand implements CommandExecutor {
                 .map(roleData -> guild.getRoleById(roleData.roleId).getAsMention() + " (" + guild.getEmoteById(roleData.emoteId).getAsMention() + ")")
                 .collect(Collectors.joining(" - "));
 
-        message.getChannel().sendMessage("listes des rôles enregistrés : " + roles).queue();
+        message.getChannel().sendMessage("Listes des rôles enregistrés : " + roles).queue();
     }
 
 }

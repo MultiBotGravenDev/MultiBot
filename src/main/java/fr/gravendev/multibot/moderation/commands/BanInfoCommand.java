@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.moderation;
 
 import fr.gravendev.multibot.commands.ChannelType;
+import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
@@ -38,6 +39,11 @@ public class BanInfoCommand implements CommandExecutor {
     @Override
     public ChannelType getChannelType() {
         return ChannelType.GUILD;
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.MODERATION;
     }
 
     @Override

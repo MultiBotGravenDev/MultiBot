@@ -67,7 +67,7 @@ class MultiBot {
 
             LOGGER.info("Bot connected");
 
-        } catch (LoginException e) {
+        } catch (LoginException | InterruptedException e) {
             LOGGER.error("Failed to connect the bot");
             System.exit(0);
         }

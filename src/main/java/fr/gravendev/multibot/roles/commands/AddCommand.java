@@ -31,7 +31,7 @@ public class AddCommand implements CommandExecutor {
 
     @Override
     public List<String> getAuthorizedChannelsNames() {
-        return Arrays.asList("rôle-langage", "piliers");
+        return Arrays.asList("rôle-langage-test", "piliers");
     }
 
     @Override

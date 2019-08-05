@@ -1,5 +1,6 @@
 package fr.gravendev.multibot.moderation.commands;
 
+import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
@@ -32,6 +33,11 @@ public class UnmuteCommand implements CommandExecutor {
     @Override
     public String getDescription() {
         return "Rendre la parole à un membre";
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.MODERATION;
     }
 
     @Override

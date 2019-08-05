@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
+import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
@@ -32,6 +33,11 @@ public class InfractionsCommand implements CommandExecutor {
     @Override
     public String getDescription() {
         return "Afficher les avertissements d'un membre.";
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.MODERATION;
     }
 
     @Override
