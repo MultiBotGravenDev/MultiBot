@@ -31,8 +31,6 @@ public class ExperienceDAO extends DAO<ExperienceData> {
 
         statement.executeUpdate();
 
-        System.out.println(data);
-
         return true;
     }
 
