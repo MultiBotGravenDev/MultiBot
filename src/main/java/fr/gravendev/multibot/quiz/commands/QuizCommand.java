@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.quiz.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
+import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
@@ -38,6 +39,11 @@ public class QuizCommand implements CommandExecutor {
                 .map(executor -> "!quiz " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
                 .reduce((message, executorInfos) -> message += executorInfos)
                 .orElse("");
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.SYSTEM;
     }
 
     @Override

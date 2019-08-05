@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.polls.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
+import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.polls.PollsManager;
 import net.dv8tion.jda.core.entities.Message;
@@ -39,6 +40,11 @@ public class PollCommand implements CommandExecutor {
                 .map(executor -> "!poll " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
                 .reduce((message, executorInfos) -> message += executorInfos)
                 .orElse("");
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.UTILS;
     }
 
     @Override

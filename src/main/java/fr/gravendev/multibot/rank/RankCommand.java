@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.rank;
 
 import fr.gravendev.multibot.commands.ChannelType;
+import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
@@ -36,6 +37,11 @@ public class RankCommand implements CommandExecutor {
     }
 
     @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.EXPERIENCE;
+    }
+
+    @Override
     public ChannelType getChannelType() {
         return ChannelType.GUILD;
     }
@@ -48,6 +54,8 @@ public class RankCommand implements CommandExecutor {
             if (mentionedMembers.size() > 0)
                 member = mentionedMembers.get(0);
             User user = member.getUser();
+
+            if(!user.getName().equals("Nolan")) return;
 
             if (user.isBot()) return;
 

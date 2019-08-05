@@ -26,6 +26,11 @@ public class UserinfoCommand implements CommandExecutor {
     }
 
     @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.UTILS;
+    }
+
+    @Override
     public ChannelType getChannelType() {
         return ChannelType.GUILD;
     }

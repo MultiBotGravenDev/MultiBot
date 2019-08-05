@@ -29,7 +29,6 @@ public class CommandManager {
     public CommandManager(char prefix, DatabaseConnection databaseConnection, WelcomeMessagesSetManager welcomeMessagesSetManager, PollsManager pollsManager) {
         this.prefix = prefix;
         commandExecutors = new ArrayList<>(Arrays.asList(
-                new AboutCommand(),
                 new CustomCommand(databaseConnection),
                 new UserinfoCommand(),
 

@@ -17,11 +17,10 @@ public class DatabaseConnection {
         dataSource.setPassword(builder.password);
         dataSource.addDataSourceProperty("autoReconnect", true);
         dataSource.addDataSourceProperty("tcpKeepAlive", true);
-        dataSource.addDataSourceProperty("serverTimezone", "UTC");
+        dataSource.addDataSourceProperty("serverTimezone", "Europe/Paris");
         dataSource.setMaximumPoolSize(15);
         dataSource.setMinimumIdle(0);
         dataSource.setIdleTimeout(1);
-        dataSource.addDataSourceProperty("serverTimezone", "UTC");
     }
 
     public Connection getConnection() throws SQLException {

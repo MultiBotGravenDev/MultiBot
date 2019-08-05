@@ -14,6 +14,10 @@ public interface CommandExecutor {
 
     String getDescription();
 
+    default CommandCategory getCategory() {
+        return CommandCategory.NONE;
+    }
+
     void execute(Message message, String[] args);
 
     default ChannelType getChannelType() {

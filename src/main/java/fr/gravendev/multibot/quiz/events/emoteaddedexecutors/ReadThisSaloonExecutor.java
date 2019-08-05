@@ -35,7 +35,7 @@ public class ReadThisSaloonExecutor implements EmoteAddedExecutor {
             return;
         }
 
-        if (GuildUtils.hasRole(member, "membre")) return;
+        if (GuildUtils.hasRole(member, "Membre")) return;
 
         this.quizManager.createQuiz(member.getUser());
 

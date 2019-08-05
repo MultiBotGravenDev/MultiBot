@@ -26,6 +26,7 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
     public void executeListener(MessageReceivedEvent event) {
 
         if (event.getAuthor().isBot()) return;
+        if(!event.getAuthor().getName().equals("Nolan")) return;
 
         User author = event.getAuthor();
 
@@ -33,7 +34,6 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
 
         ExperienceDAO experienceDAO = new ExperienceDAO(databaseConnection);
         ExperienceData experienceData = experienceDAO.get(author.getId());
-
         if (experienceData != null) {
             if (experienceData.getLastMessage().getTime() + 60000 < System.currentTimeMillis()) {
                 experienceData.addMessage();
