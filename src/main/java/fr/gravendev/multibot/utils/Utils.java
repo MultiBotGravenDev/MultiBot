@@ -49,11 +49,7 @@ public class Utils {
 
     private static MessageEmbed makeEmbed(User user, String action, String reason){
         String description = makeDescription(user, action, reason);
-
-        return new EmbedBuilder()
-                .setColor(Color.DARK_GRAY)
-                .setDescription(description)
-                .build();
+        return buildEmbed(Color.DARK_GRAY, description);
     }
 
     private static String makeDescription(User user, String action, String reason, Date end){
@@ -69,11 +65,7 @@ public class Utils {
 
     private static MessageEmbed makeEmbed(User user, String action, String reason, Date end){
         String description = makeDescription(user, action, reason, end);
-
-        return new EmbedBuilder()
-                .setColor(Color.DARK_GRAY)
-                .setDescription(description)
-                .build();
+        return buildEmbed(Color.DARK_GRAY, description);
     }
 
     // TODO Put a verb at the beginning of some of those methods (get for example)
