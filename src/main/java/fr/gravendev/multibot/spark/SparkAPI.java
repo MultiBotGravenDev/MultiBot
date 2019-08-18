@@ -2,14 +2,13 @@ package fr.gravendev.multibot.spark;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
-import fr.gravendev.multibot.spark.routes.*;
+import fr.gravendev.multibot.spark.routes.IndexInfos;
+import fr.gravendev.multibot.spark.routes.LeaderboardRoute;
 import fr.gravendev.multibot.spark.routes.admin.AdminInfos;
 import fr.gravendev.multibot.spark.routes.admin.IsAdminRoute;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Guild;
 import spark.Filter;
-
-import java.util.stream.Collectors;
 
 import static spark.Spark.*;
 

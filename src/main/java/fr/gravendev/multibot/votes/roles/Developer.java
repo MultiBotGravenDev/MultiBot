@@ -2,7 +2,6 @@ package fr.gravendev.multibot.votes.roles;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
-import fr.gravendev.multibot.database.data.GuildIdsData;
 
 import java.awt.*;
 

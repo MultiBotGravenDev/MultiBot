@@ -1,6 +1,5 @@
 package fr.gravendev.multibot.spark.routes.admin;
 
-import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;

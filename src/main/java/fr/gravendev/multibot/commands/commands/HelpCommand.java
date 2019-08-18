@@ -7,7 +7,6 @@ import fr.gravendev.multibot.database.data.CustomCommandData;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.SelfUser;
 
 import java.awt.*;
 import java.util.ArrayList;
