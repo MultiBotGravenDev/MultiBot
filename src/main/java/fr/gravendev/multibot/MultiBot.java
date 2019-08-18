@@ -78,4 +78,5 @@ class MultiBot {
         LOGGER.info("Bot disconnected");
         System.exit(0);
     }
+
 }

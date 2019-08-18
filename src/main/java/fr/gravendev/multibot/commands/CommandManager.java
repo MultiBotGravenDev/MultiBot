@@ -80,6 +80,7 @@ public class CommandManager {
 
         } else {
 
+            if (args[0].matches("[0-9]+")) return;
             CustomCommandData customCommandData = new CustomCommandDAO(this.databaseConnection).get(args[0]);
 
             if (customCommandData != null) {
