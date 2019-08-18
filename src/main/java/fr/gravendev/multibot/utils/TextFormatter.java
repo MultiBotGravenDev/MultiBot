@@ -1,5 +1,7 @@
 package fr.gravendev.multibot.utils;
 
+import java.io.PrintStream;
+
 /*
     Class written by Antoine James Tournepiche
     Cames from JASC :
@@ -9,6 +11,7 @@ package fr.gravendev.multibot.utils;
         https://github.com/AntoineJT/jasc/blob/0b854e6d265c88ceb49f3a556f2b01a80b87007f/src/com/github/antoinejt/jasc/util/TextFormat.java
 */
 public class TextFormatter {
+    private static final PrintStream sysout = System.out;
 
     public static final class FormattedText {
         private final String formattedText;
@@ -22,7 +25,7 @@ public class TextFormatter {
         } // It's not needed to call that, implicit call will be done when you print the object (?)
 
         public void print(){
-            System.out.print(formattedText);
+            sysout.print(formattedText);
         }
     }
 
@@ -34,7 +37,8 @@ public class TextFormatter {
                     .append(line)
                     .append(separator);
         }
-        return new FormattedText(stringBuilder.toString());
+        String text = stringBuilder.toString();
+        return new FormattedText(text);
     }
 
     public static FormattedText formatLines(String prefix, String[] lines){
@@ -47,7 +51,8 @@ public class TextFormatter {
     }
 
     public static void printLines(String... lines){
-        System.out.print();
+        FormattedText formattedLines = formatLines(lines);
+        sysout.print(formattedLines);
     }
 
     /*public static FormattedText listThings(String label, String... lines){
