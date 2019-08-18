@@ -1,4 +1,4 @@
-package fr.gravendev.multibot.moderation;
+package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandCategory;

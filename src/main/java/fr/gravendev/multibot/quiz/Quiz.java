@@ -22,26 +22,26 @@ class Quiz {
     }
 
     void send(User user) {
-        String message = this.quizMessageDAO.get(String.valueOf(this.questionIndex++)).message;
+        String message = quizMessageDAO.get(String.valueOf(this.questionIndex++)).message;
         user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
     }
 
     boolean hashNextQuestion() {
-        return this.quizMessageDAO.get(String.valueOf(this.questionIndex)) != null;
+        return quizMessageDAO.get(String.valueOf(this.questionIndex)) != null;
     }
 
     void registerResponse(String contentDisplay) {
-        this.responses.put(this.questionIndex - 1, contentDisplay);
+        responses.put(this.questionIndex - 1, contentDisplay);
     }
 
     boolean hasNextAnswer() {
-        return this.responses.get(++this.answerIndex) != null;
+        return responses.get(++answerIndex) != null;
     }
 
     MessageEmbed.Field getCurrentAnswer() {
         return new MessageEmbed.Field(
-                this.quizMessageDAO.get(this.answerIndex + "").message,
-                this.responses.get(this.answerIndex),
+                quizMessageDAO.get(String.valueOf(this.answerIndex)).message,
+                responses.get(this.answerIndex),
                 false);
     }
 

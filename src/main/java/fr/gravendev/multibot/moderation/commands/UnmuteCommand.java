@@ -52,13 +52,15 @@ public class UnmuteCommand implements CommandExecutor {
         Guild guild = message.getGuild();
 
         if (mentionedMembers.size() == 0) {
-            messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: unmute @membre")).queue();
+            MessageEmbed embed = Utils.buildEmbed(Color.RED, "Utilisation: unmute @membre");
+
+            messageChannel.sendMessage(embed).queue();
             return;
         }
 
         Member member = mentionedMembers.get(0);
         if (!GuildUtils.hasRole(member, "Muted")) {
-            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Ce membre n'est pas mute")).queue();
+            messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Ce membre n'est pas mute")).queue();
             return;
         }
 

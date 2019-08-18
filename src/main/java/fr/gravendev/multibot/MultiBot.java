@@ -52,14 +52,14 @@ class MultiBot {
         this.quizManager = new QuizManager(databaseConnection);
         this.welcomeMessagesSetManager = new WelcomeMessagesSetManager(databaseConnection);
         this.pollsManager = new PollsManager(databaseConnection);
-        this.commandManager = new CommandManager(this.configuration.getPrefix(), databaseConnection, welcomeMessagesSetManager, pollsManager);
+        this.commandManager = new CommandManager(configuration.getPrefix(), databaseConnection, welcomeMessagesSetManager, pollsManager);
     }
 
     void start() {
         try {
 
             this.jda = new JDABuilder(configuration.getToken())
-                    .addEventListener(new MultiBotListener(this.commandManager, this.databaseConnection, this.quizManager, this.welcomeMessagesSetManager, pollsManager))
+                    .addEventListener(new MultiBotListener(commandManager, databaseConnection, quizManager, welcomeMessagesSetManager, pollsManager))
                     .build();
 
             SparkAPI sparkAPI = new SparkAPI(jda, databaseConnection);
@@ -68,6 +68,8 @@ class MultiBot {
             LOGGER.info("Bot connected");
 
         } catch (LoginException | InterruptedException e) {
+            // TODO : Display error because it can help for troubleshooting
+            // e.printStackTrace();
             LOGGER.error("Failed to connect the bot");
             System.exit(0);
         }

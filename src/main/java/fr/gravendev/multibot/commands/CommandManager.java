@@ -14,12 +14,14 @@ import fr.gravendev.multibot.rank.RankCommand;
 import fr.gravendev.multibot.roles.commands.RolesCommand;
 import fr.gravendev.multibot.votes.VoteCommand;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageChannel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+// TODO Refactor to remove else and to have 1 level of indentation, etc.
 public class CommandManager {
 
     private final DatabaseConnection databaseConnection;
@@ -53,42 +55,51 @@ public class CommandManager {
                 new PollCommand(pollsManager)
         ));
         this.databaseConnection = databaseConnection;
-        this.commandExecutors.add(new HelpCommand(this.commandExecutors, databaseConnection));
+        this.commandExecutors.add(new HelpCommand(commandExecutors, databaseConnection));
     }
 
     void executeCommand(Message message) {
-
         String content = message.getContentRaw();
+        char firstContentChar = content.charAt(0);
 
-        if (content.length() == 0 || content.charAt(0) != this.prefix) return;
+        if (firstContentChar != prefix){
+            return;
+        }
 
-        String[] args = content.substring(1).split(" +");
+        String contentWithoutFirstChar = content.substring(1);
+        String[] args = contentWithoutFirstChar.split(" +");
 
         Optional<CommandExecutor> optionalCommandExecutor = this.commandExecutors.stream()
                 .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
                 .findAny();
 
-        if (optionalCommandExecutor.isPresent()) {
+        MessageChannel channel = message.getChannel();
 
+        if (optionalCommandExecutor.isPresent()) {
             CommandExecutor commandExecutor = optionalCommandExecutor.get();
 
             if (commandExecutor.canExecute(message)) {
-                commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length));
-            } else {
-                message.getChannel().sendMessage("Mauvais channel ou permission manquante.").queue();
+                int argsLength = args.length;
+                // TODO Find a better name for that
+                String[] stringArray = Arrays.copyOfRange(args, 1, argsLength);
+
+                commandExecutor.execute(message, stringArray);
+                return;
             }
-
-        } else {
-
-            if (args[0].matches("[0-9]+")) return;
-            CustomCommandData customCommandData = new CustomCommandDAO(this.databaseConnection).get(args[0]);
-
-            if (customCommandData != null) {
-                message.getChannel().sendMessage(customCommandData.text).queue();
-            }
-
+            channel.sendMessage("Mauvais channel ou permission manquante.").queue();
+            return;
+        }
+        if (args[0].matches("[0-9]+")){
+            return;
         }
 
-    }
+        CustomCommandDAO customCommandDAO = new CustomCommandDAO(databaseConnection);
+        CustomCommandData customCommandData = customCommandDAO.get(args[0]);
 
+        if (customCommandData != null) {
+            String customCommandDataText = customCommandData.text;
+
+            channel.sendMessage(customCommandDataText).queue();
+        }
+    }
 }

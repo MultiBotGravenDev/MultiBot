@@ -14,7 +14,10 @@ import java.util.List;
 
 public class RoleAddedEvent implements Listener<GuildMemberRoleAddEvent> {
 
-    private static final List<String> ROLES_NAMES = Arrays.asList("Honorable", "Développeur", "Pilier de la Commu");
+    private static final List<String> ROLES_NAMES = Arrays.asList(
+            "Honorable",
+            "Développeur",
+            "Pilier de la Commu");
 
     private final DatabaseConnection databaseConnection;
 
@@ -30,7 +33,7 @@ public class RoleAddedEvent implements Listener<GuildMemberRoleAddEvent> {
     @Override
     public void executeListener(GuildMemberRoleAddEvent event) {
 
-        VoteDAO voteDAO = new VoteDAO(this.databaseConnection);
+        VoteDAO voteDAO = new VoteDAO(databaseConnection);
         VoteData voteData = voteDAO.get(event.getUser().getId());
 
         Role role = event.getRoles().get(0);

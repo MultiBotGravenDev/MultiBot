@@ -21,7 +21,7 @@ class ImageBuilder {
     ImageBuilder(BufferedImage image) {
         this.image = image;
 
-        assert image != null;
+        assert image != null; // TODO wtf??? is that normal? assert may be used only for internal things!!
         graphics = image.getGraphics();
 
         Font font = new Font(FONT_NAME, FONT_STYLE, FONT_SIZE);
@@ -65,8 +65,12 @@ class ImageBuilder {
 
     InputStream toInputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
+
         ImageIO.write(image, "png", os);
-        return new ByteArrayInputStream(os.toByteArray());
+
+        byte[] byteArray = os.toByteArray();
+
+        return new ByteArrayInputStream(byteArray);
     }
 
 }

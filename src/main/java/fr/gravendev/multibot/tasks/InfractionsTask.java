@@ -38,7 +38,9 @@ public class InfractionsTask extends TimerTask {
                         break;
                     case MUTE:
                         Member member = guild.getMemberById(infraction.getPunished_id());
-                        if (member == null) break;
+                        if (member == null){
+                            break;
+                        }
                         GuildUtils.removeRole(member, guildIdDAO.get("muted").id + "").queue();
                         break;
                 }

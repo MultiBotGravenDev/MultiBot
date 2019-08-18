@@ -6,6 +6,9 @@ import fr.gravendev.multibot.database.dao.LogsDAO;
 import fr.gravendev.multibot.database.data.GuildIdsData;
 import fr.gravendev.multibot.events.Listener;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
@@ -28,29 +31,54 @@ public class MessageDeleteListener implements Listener<MessageDeleteEvent> {
         return MessageDeleteEvent.class;
     }
 
+    // TODO Refactor that by splitting it in different methods
     @Override
     public void executeListener(MessageDeleteEvent event) {
+        TextChannel channel = event.getTextChannel();
+        String channelName = channel.getName();
 
-        if (!event.getTextChannel().getName().startsWith("présentation")) return;
+        if (!channelName.startsWith("présentation")){
+            return;
+        }
 
-        MessageData messageData = this.logsDAO.get(event.getMessageId());
+        String messageId = event.getMessageId();
+        MessageData messageData = logsDAO.get(messageId);
 
-        if (messageData == null) return;
+        if (messageData == null){
+            return;
+        }
 
-        GuildIdsData logs = this.guildIdDAO.get("logs");
-        User user = event.getJDA().getUserById(messageData.getDiscordID());
-
+        GuildIdsData logs = guildIdDAO.get("logs");
+        JDA jda = event.getJDA();
+        String discordID = messageData.getDiscordID();
+        User user = jda.getUserById(discordID);
         String content = messageData.getContent();
-        EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.ORANGE)
-                .setAuthor(user.getName(), user.getAvatarUrl())
-                .setDescription("Projet supprimé dans " + event.getTextChannel().getAsMention())
-                .addField("Date de création :", new Date(messageData.getCreation()).toString(), false)
-                .addField("Contenu :", content.substring(0, Math.min(content.length(), 20)), false)
-                .setFooter("User ID: " + user.getId(), user.getAvatarUrl());
+        String userName = user.getName();
+        String userAvatarUrl = user.getAvatarUrl();
+        String channelAsMention = channel.getAsMention();
+        String description = "Projet supprimé dans " + channelAsMention;
+        long messageCreation = messageData.getCreation();
+        Date messageCreationDate = new Date(messageCreation);
+        // TODO Find a better name for this
+        String stringifiedMessageCreationDate = messageCreationDate.toString();
+        int contentLength = content.length();
+        int contentSize = Math.min(contentLength, 20);
+        String displayedContent = content.substring(0, contentSize);
+        String userId = user.getId();
 
-        TextChannel logsChannel = event.getGuild().getTextChannelById(logs.id);
-        logsChannel.sendMessage(embedBuilder.build()).queue();
+        EmbedBuilder embedBuilder = new EmbedBuilder()
+                .setColor(Color.ORANGE)
+                .setAuthor(userName, userAvatarUrl)
+                .setDescription(description)
+                .addField("Date de création :", stringifiedMessageCreationDate, false)
+                .addField("Contenu :", displayedContent, false)
+                .setFooter("User ID: " + userId, userAvatarUrl);
 
+        Guild guild = event.getGuild();
+        long logsId = logs.id;
+        MessageEmbed embed = embedBuilder.build();
+
+        TextChannel logsChannel = guild.getTextChannelById(logsId);
+        logsChannel.sendMessage(embed).queue();
     }
-
 }

@@ -2,6 +2,7 @@ package fr.gravendev.multibot.votes.roles;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
+import fr.gravendev.multibot.database.data.GuildIdsData;
 
 import java.awt.*;
 
@@ -25,7 +26,7 @@ public class Developer implements Role {
 
     @Override
     public long getRoleId() {
-        return this.guildIdDAO.get("developpeur").id;
+        return guildIdDAO.get("developpeur").id;
     }
 
     @Override

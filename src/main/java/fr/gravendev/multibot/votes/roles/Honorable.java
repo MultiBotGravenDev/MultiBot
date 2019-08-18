@@ -25,7 +25,7 @@ public class Honorable implements Role {
 
     @Override
     public long getRoleId() {
-        return this.guildIdDAO.get("honorable").id;
+        return guildIdDAO.get("honorable").id;
     }
 
     @Override

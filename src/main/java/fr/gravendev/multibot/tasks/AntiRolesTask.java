@@ -26,9 +26,7 @@ public class AntiRolesTask extends TimerTask {
 
     @Override
     public void run() {
-
-        this.antiRoles.forEach(antiRole -> antiRole.deleteRoles(this.guild));
-
+        antiRoles
+                .forEach(antiRole -> antiRole.deleteRoles(guild));
     }
-
 }

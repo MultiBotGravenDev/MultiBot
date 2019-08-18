@@ -5,10 +5,13 @@ import fr.gravendev.multibot.database.dao.VoteDAO;
 import fr.gravendev.multibot.database.data.VoteData;
 import fr.gravendev.multibot.database.data.VoteDataBuilder;
 import fr.gravendev.multibot.events.Listener;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
@@ -24,46 +27,52 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
         return MessageReactionAddEvent.class;
     }
 
+    // TODO Refactor this in multiples methods
     @Override
     public void executeListener(MessageReactionAddEvent event) {
-
-        if (event.getUser().isBot()) return;
-
-        if (!Arrays.asList("vote-honorable", "vote-developpeur", "votes-piliers").contains(event.getChannel().getName()))
+        User user = event.getUser();
+        MessageChannel channel = event.getChannel();
+        List<String> staffRoles = Arrays.asList("vote-honorable", "vote-developpeur", "votes-piliers");
+        if (user.isBot()){
             return;
-        event.getReaction().removeReaction(event.getUser()).queue();
+        }
 
-        if (event.getChannel().getMessageById(event.getMessageIdLong()).complete().getCreationTime().isBefore(OffsetDateTime.now().minusDays(1)))
+        // TODO Check with Luka if staffRoles is a great name for this variable
+        if (!staffRoles.contains(channel.getName())){
             return;
+        }
+        event.getReaction().removeReaction(user).queue();
+
+        if (channel.getMessageById(event.getMessageIdLong()).complete().getCreationTime().isBefore(OffsetDateTime.now().minusDays(1))){
+            return;
+        }
 
         VoteData voteData = voteDAO.get(event.getMessageId());
 
-        if (voteData == null) return;
+        if (voteData == null){
+            return;
+        }
 
-        Arrays.asList(voteData.yes, voteData.no, voteData.white).forEach(longs -> longs.remove(event.getUser().getIdLong()));
+        long userId = user.getIdLong();
+        Arrays.asList(voteData.yes, voteData.no, voteData.white)
+                .forEach(longs -> longs.remove(userId));
 
         VoteDataBuilder voteDataBuilder = VoteDataBuilder.fromVoteData(voteData);
 
-        long userId = event.getUser().getIdLong();
         switch (event.getReactionEmote().getName()) {
-
             case "\u2705":
                 voteDataBuilder.addYes(userId);
                 break;
-
             case "\u274C":
                 voteDataBuilder.addNo(userId);
                 break;
-
             case "\u2B1C":
                 voteDataBuilder.addWhite(userId);
-                break;
-
         }
 
         voteDAO.save(voteDataBuilder.build());
 
-        event.getChannel().sendMessage(event.getUser().getAsMention() + ", votre vote a bien été pris en compte")
+        channel.sendMessage(user.getAsMention() + ", votre vote a bien été pris en compte")
                 .queue(message -> message.delete().queueAfter(3, TimeUnit.SECONDS));
 
     }
