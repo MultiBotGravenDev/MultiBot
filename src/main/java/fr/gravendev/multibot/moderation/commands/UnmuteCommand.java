@@ -9,8 +9,8 @@ import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.GuildUtils;
 import fr.gravendev.multibot.utils.Utils;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -83,7 +83,7 @@ public class UnmuteCommand implements CommandExecutor {
         long mutedID = guildIdDAO.get("muted").id;
         Role muted = guild.getRoleById(mutedID);
 
-        guild.getController().removeSingleRoleFromMember(member, muted).queue();
+        guild.removeRoleFromMember(member, muted).queue();
         message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, member.getUser().getAsTag() + " vient d'être unmute")).queue();
 
     }

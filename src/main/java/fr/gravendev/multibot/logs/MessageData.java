@@ -5,11 +5,11 @@ public class MessageData {
     private String discord_id, message_id, content;
     private long creation;
 
-    MessageData(net.dv8tion.jda.core.entities.Message message) {
+    MessageData(net.dv8tion.jda.api.entities.Message message) {
         this.discord_id = message.getAuthor().getId();
         this.message_id = message.getId();
         this.content = message.getContentDisplay();
-        this.creation = message.getCreationTime().toInstant().toEpochMilli();
+        this.creation = message.getTimeCreated().toInstant().toEpochMilli();
     }
 
     public MessageData(String discord_id, String message_id, String content, long creation) {

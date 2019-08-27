@@ -3,7 +3,7 @@ package fr.gravendev.multibot.polls.commands;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.utils.EmojiUtils;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.entities.Message;
 
 public class EmoteCommand implements CommandExecutor {
 

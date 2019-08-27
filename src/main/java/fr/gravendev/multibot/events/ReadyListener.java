@@ -3,8 +3,8 @@ package fr.gravendev.multibot.events;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.tasks.AntiRolesTask;
 import fr.gravendev.multibot.tasks.InfractionsTask;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.events.ReadyEvent;
 
 import java.util.Timer;
 

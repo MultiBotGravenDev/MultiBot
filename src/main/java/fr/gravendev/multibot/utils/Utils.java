@@ -1,8 +1,8 @@
 package fr.gravendev.multibot.utils;
 
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -53,12 +53,11 @@ public class Utils {
     }
 
     private static String makeDescription(User user, String action, String reason, Date end){
-        // TODO Find a better name than beginning if possible
-        String beginning = makeDescription(user, action, reason);
+        String description = makeDescription(user, action, reason);
         String endDate = stringifyEndDate(end);
 
         return TextFormatter.formatLines(
-                beginning,
+                description,
                 "Fin le: " + endDate
         ).toString();
     }
@@ -68,20 +67,19 @@ public class Utils {
         return buildEmbed(Color.DARK_GRAY, description);
     }
 
-    // TODO Put a verb at the beginning of some of those methods (get for example)
-    public static MessageEmbed banEmbed(User user, String reason, Date end) {
+    public static MessageEmbed getBanEmbed(User user, String reason, Date end) {
         return makeEmbed(user, "banni", reason, end);
     }
 
-    public static MessageEmbed kickEmbed(User user, String reason) {
+    public static MessageEmbed getKickEmbed(User user, String reason) {
         return makeEmbed(user, "éjecté", reason);
     }
 
-    public static MessageEmbed muteEmbed(User user, String reason, Date end) {
+    public static MessageEmbed getMuteEmbed(User user, String reason, Date end) {
         return makeEmbed(user, "rendu muet", reason, end);
     }
 
-    public static MessageEmbed warnEmbed(User user, String reason) {
+    public static MessageEmbed getWarnEmbed(User user, String reason) {
         return makeEmbed(user, "averti", reason);
     }
 

@@ -1,10 +1,12 @@
 package fr.gravendev.multibot.commands;
 
-import fr.gravendev.multibot.commands.commands.*;
+import fr.gravendev.multibot.commands.commands.CommandExecutor;
+import fr.gravendev.multibot.commands.commands.CustomCommand;
+import fr.gravendev.multibot.commands.commands.HelpCommand;
+import fr.gravendev.multibot.commands.commands.UserinfoCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.database.data.CustomCommandData;
-import fr.gravendev.multibot.moderation.BanInfoCommand;
 import fr.gravendev.multibot.moderation.commands.*;
 import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.polls.commands.PollCommand;
@@ -13,8 +15,8 @@ import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.rank.RankCommand;
 import fr.gravendev.multibot.roles.commands.RolesCommand;
 import fr.gravendev.multibot.votes.VoteCommand;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +62,10 @@ public class CommandManager {
 
     void executeCommand(Message message) {
         String content = message.getContentRaw();
+        if(content.length() == 0) {
+            return;
+        }
+
         char firstContentChar = content.charAt(0);
 
         if (firstContentChar != prefix){

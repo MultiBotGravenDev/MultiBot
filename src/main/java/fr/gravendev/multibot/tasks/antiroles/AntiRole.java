@@ -4,9 +4,9 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.AntiRolesDAO;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.data.AntiRoleData;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 
 import java.time.Instant;
 import java.util.Date;
@@ -33,7 +33,9 @@ public abstract class AntiRole {
                     .anyMatch(entry -> entry.getKey().before(Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 30 * 6))));
 
             if (removeRole) {
-                guild.getController().removeRolesFromMember(member, role).queue();
+                if(role != null) {
+                    guild.removeRoleFromMember(member, role).queue();
+                }
                 this.antiRolesDAO.delete(antiRoleData);
             }
 

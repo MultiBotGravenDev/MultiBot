@@ -2,7 +2,7 @@ package fr.gravendev.multibot.spark.routes;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
-import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.api.entities.Guild;
 import spark.Request;
 import spark.Response;
 import spark.Route;

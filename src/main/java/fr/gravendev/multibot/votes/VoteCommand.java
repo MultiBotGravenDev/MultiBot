@@ -11,12 +11,12 @@ import fr.gravendev.multibot.votes.roles.Developer;
 import fr.gravendev.multibot.votes.roles.Honorable;
 import fr.gravendev.multibot.votes.roles.Pillar;
 import fr.gravendev.multibot.votes.roles.Role;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.util.Arrays;
 import java.util.List;
@@ -127,7 +127,7 @@ public class VoteCommand implements CommandExecutor {
                     .isAccepted(false)
                     .build());
 
-            sentMessage.getChannel().getMessageById(sentMessage.getIdLong()).queueAfter(10, TimeUnit.SECONDS, sentMessage2 -> {
+            sentMessage.getChannel().retrieveMessageById(sentMessage.getIdLong()).queueAfter(10, TimeUnit.SECONDS, sentMessage2 -> {
 
                 VoteData voteData = voteDAO.get(sentMessage.getId());
                 boolean accepted = voteData.yes.size() > voteData.no.size();
@@ -149,9 +149,9 @@ public class VoteCommand implements CommandExecutor {
                 voteDAO.save(voteData);
 
                 if (accepted) {
-
-                    message.getGuild().getController().addSingleRoleToMember(member, message.getGuild().getRoleById(role.getRoleId())).queue();
-
+                    net.dv8tion.jda.api.entities.Role voteRole = message.getGuild().getRoleById(role.getRoleId());
+                    if(voteRole != null)
+                        message.getGuild().addRoleToMember(member, voteRole).queue();
                 }
 
                 sentMessage2.editMessage(finalEmbed).queue();

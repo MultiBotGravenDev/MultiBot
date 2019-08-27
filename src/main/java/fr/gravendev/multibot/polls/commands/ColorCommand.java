@@ -4,7 +4,7 @@ import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.polls.Colors;
 import fr.gravendev.multibot.polls.PollsManager;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.entities.Message;
 
 public class ColorCommand implements CommandExecutor {
 

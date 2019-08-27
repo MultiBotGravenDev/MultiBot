@@ -6,10 +6,11 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
+import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Utils;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -58,7 +59,7 @@ public class BanInfoCommand implements CommandExecutor {
         message.getJDA().retrieveUserById(id).queue(user -> {
             Guild guild = message.getGuild();
 
-            guild.getBanList().queue((banList) -> {
+            guild.retrieveBanList().queue((banList) -> {
 
                 MessageEmbed embed;
 

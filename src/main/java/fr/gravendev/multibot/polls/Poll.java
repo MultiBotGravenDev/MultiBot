@@ -1,10 +1,10 @@
 package fr.gravendev.multibot.polls;
 
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.requests.RestAction;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.requests.RestAction;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -58,7 +58,7 @@ class Poll {
 
     private void update() {
         this.user.openPrivateChannel().queue(privateChannel ->
-                privateChannel.getMessageById(this.messageId).queue(message -> {
+                privateChannel.retrieveMessageById(this.messageId).queue(message -> {
                     User selfUser = message.getJDA().getSelfUser();
                     message.getReactions().forEach(messageReaction -> {
                         if (!this.emotes.values().contains(messageReaction.getReactionEmote().getName())) {

@@ -4,9 +4,9 @@ import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.customs.RemoveCommand;
 import fr.gravendev.multibot.commands.commands.customs.SetCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 
 import java.util.Arrays;
 import java.util.List;

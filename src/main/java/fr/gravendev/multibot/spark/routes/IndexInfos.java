@@ -7,8 +7,8 @@ import fr.gravendev.multibot.database.data.ExperienceData;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Utils;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
@@ -49,14 +49,14 @@ public class IndexInfos implements Route {
         long bans = allInfractions.stream().filter(infraction -> infraction.getType() == InfractionType.BAN).count();
         long mutes = allInfractions.stream().filter(infraction -> infraction.getType() == InfractionType.MUTE).count();
 
-        object.put("joinDate", member.getJoinDate().format(Utils.getDateTimeFormatter()));
+        object.put("joinDate", member.getTimeJoined().format(Utils.getDateTimeFormatter()));
         object.put("userLevel", experienceData.getLevels());
         object.put("infractions", infractions);
         object.put("bans", bans);
         object.put("mutes", mutes);
 
         object.put("members", guild.getMembers().size());
-        object.put("age", guild.getCreationTime().format(Utils.getDateTimeFormatter()));
+        object.put("age", guild.getTimeCreated().format(Utils.getDateTimeFormatter()));
 
         return object;
     }

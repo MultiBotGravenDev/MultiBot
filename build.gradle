@@ -5,7 +5,7 @@ plugins {
 
 group 'fr.gravendev'
 version '1.0-SNAPSHOT'
-def jdaVersion = '3.8.3_460'
+def jdaVersion = '4.0.0_39'
 
 sourceCompatibility = 1.8
 
@@ -43,5 +43,6 @@ dependencies {
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
     implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
     implementation 'com.sparkjava:spark-core:2.8.0'
+    implementation group: 'org.json', name: 'json', version: '20190722'
 }
 

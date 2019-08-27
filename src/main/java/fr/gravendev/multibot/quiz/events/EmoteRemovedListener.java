@@ -2,7 +2,7 @@ package fr.gravendev.multibot.quiz.events;
 
 import fr.gravendev.multibot.events.Listener;
 import fr.gravendev.multibot.quiz.QuizManager;
-import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 
 public class EmoteRemovedListener implements Listener<MessageReactionRemoveEvent> {
 

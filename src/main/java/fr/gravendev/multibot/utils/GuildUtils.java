@@ -1,12 +1,12 @@
 package fr.gravendev.multibot.utils;
 
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.managers.GuildController;
-import net.dv8tion.jda.core.requests.restaction.AuditableRestAction;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
 
 import java.util.List;
+import java.util.Objects;
 
 public class GuildUtils {
 
@@ -23,16 +23,13 @@ public class GuildUtils {
         Guild guild = member.getGuild();
         Role roleToAdd = guild.getRoleById(roleId);
 
-        GuildController guildController = guild.getController();
-        return guildController.addSingleRoleToMember(member, roleToAdd);
+        return guild.addRoleToMember(member, Objects.requireNonNull(roleToAdd));
     }
 
     public static AuditableRestAction<Void> removeRole(Member member, String roleId) {
         Guild guild = member.getGuild();
         Role roleToRemove = guild.getRoleById(roleId);
-
-        GuildController guildController = guild.getController();
-        return guildController.removeSingleRoleFromMember(member, roleToRemove);
+        return guild.removeRoleFromMember(member, Objects.requireNonNull(roleToRemove));
     }
 
 }

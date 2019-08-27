@@ -2,11 +2,8 @@ package fr.gravendev.multibot.commands.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.utils.Utils;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -43,12 +40,12 @@ public class UserinfoCommand implements CommandExecutor {
             member = mentionedMembers.get(0);
         User user = member.getUser();
 
-        String joinDate = member.getJoinDate().format(Utils.getDateTimeFormatter());
-        String createdDate = user.getCreationTime().format(Utils.getDateTimeFormatter());
+        String joinDate = member.getTimeJoined().format(Utils.getDateTimeFormatter());
+        String createdDate = user.getTimeCreated().format(Utils.getDateTimeFormatter());
         String roles = member.getRoles().stream().map(Role::getName).collect(Collectors.joining(", "));
 
         String nickname = member.getNickname() == null ? "N/A" : member.getNickname();
-        String game = member.getGame() == null ? "N/A" : member.getGame().getName();
+        String game = member.getActivities().size() == 0 ? "N/A" : member.getActivities().stream().map(Activity::getName).collect(Collectors.joining(", "));
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.magenta)
                 .setAuthor(user.getName(), user.getAvatarUrl(), user.getAvatarUrl())

@@ -5,9 +5,9 @@ import fr.gravendev.multibot.database.dao.VoteDAO;
 import fr.gravendev.multibot.database.data.VoteData;
 import fr.gravendev.multibot.database.data.VoteDataBuilder;
 import fr.gravendev.multibot.events.Listener;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
@@ -43,7 +43,8 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
         }
         event.getReaction().removeReaction(user).queue();
 
-        if (channel.getMessageById(event.getMessageIdLong()).complete().getCreationTime().isBefore(OffsetDateTime.now().minusDays(1))){
+
+        if (channel.retrieveMessageById(event.getMessageIdLong()).complete().getTimeCreated().isBefore(OffsetDateTime.now().minusDays(1))){
             return;
         }
 

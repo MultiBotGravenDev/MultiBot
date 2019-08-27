@@ -1,8 +1,8 @@
 package fr.gravendev.multibot.spark.routes.admin;
 
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import spark.Request;
 import spark.Response;
 import spark.Route;

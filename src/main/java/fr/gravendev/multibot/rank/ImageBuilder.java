@@ -20,8 +20,10 @@ class ImageBuilder {
 
     ImageBuilder(BufferedImage image) {
         this.image = image;
+        if(image == null) {
+            throw new IllegalArgumentException("Image cannot be null");
+        }
 
-        assert image != null; // TODO wtf??? is that normal? assert may be used only for internal things!!
         graphics = image.getGraphics();
 
         Font font = new Font(FONT_NAME, FONT_STYLE, FONT_SIZE);
