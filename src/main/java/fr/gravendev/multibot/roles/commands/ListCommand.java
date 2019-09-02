@@ -3,8 +3,10 @@ package fr.gravendev.multibot.roles.commands;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.RoleDAO;
+import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +44,15 @@ public class ListCommand implements CommandExecutor {
         String roles = guild.getRoles().stream()
                 .map(role -> roleDAO.get(role.getId()))
                 .filter(Objects::nonNull)
-                .map(roleData -> guild.getRoleById(roleData.roleId).getAsMention() + " (" + guild.getEmoteById(roleData.emoteId).getAsMention() + ")")
+                .map(roleData -> {
+                    Role role = guild.getRoleById(roleData.roleId);
+                    String roleName = role == null ? "INVALID(" + roleData.roleId + ")" : role.getAsMention();
+
+                    Emote emote = guild.getEmoteById(roleData.emoteId);
+                    String emoteName = emote == null ? "INVALID(" + roleData.emoteId + ")" : emote.getAsMention();
+
+                    return roleName + " (" + emoteName + ")";
+                })
                 .collect(Collectors.joining(" - "));
 
         message.getChannel().sendMessage("Listes des rôles enregistrés : " + roles).queue();
