@@ -11,10 +11,7 @@ import fr.gravendev.multibot.utils.GuildUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.sql.Date;
@@ -72,12 +69,21 @@ public class AntiCommand implements CommandExecutor {
 
         Member member = mentionedMembers.get(0);
         Guild guild = message.getGuild();
-        guild.addRoleToMember(member, guild.getRoleById(guildIdDAO.get("anti-" + args[0]).id)).queue(unused -> {
+        Role role = guild.getRoleById(guildIdDAO.get("anti-" + args[0]).id);
+        if (role == null) {
+            return;
+        }
+
+        guild.addRoleToMember(member, role).queue(unused -> {
 
             saveInDatabase(args[0], member);
 
             long duration = 60 * 60 * 24 * 30 * 6; // 6 months hardcoded here
-            guild.getTextChannelById(guildIdDAO.get("logs").id).sendMessage(new EmbedBuilder()
+            TextChannel logsTextChannel = guild.getTextChannelById(guildIdDAO.get("logs").id);
+            if (logsTextChannel == null) {
+                return;
+            }
+            logsTextChannel.sendMessage(new EmbedBuilder()
                     .setColor(Color.ORANGE)
                     .setTitle("[ANTI-" + args[0].toUpperCase() + "] " + member.getUser().getAsTag())
                     .addField("Utilisateur :", member.getAsMention(), true)
@@ -89,7 +95,7 @@ public class AntiCommand implements CommandExecutor {
 
     }
 
-    private Date getCurrentDate(){
+    private Date getCurrentDate() {
         long currentTimeMillis = System.currentTimeMillis();
         return new Date(currentTimeMillis);
     }

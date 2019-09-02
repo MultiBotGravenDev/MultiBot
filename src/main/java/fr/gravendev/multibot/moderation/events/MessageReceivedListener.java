@@ -74,7 +74,10 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
                     .addField("Raison:", "Bad word usage", true);
 
             TextChannel logsChannel = guild.getTextChannelById(logs.id);
-            logsChannel.sendMessage(embedBuilder.build()).queue();
+            if (logsChannel != null) {
+                logsChannel.sendMessage(embedBuilder.build()).queue();
+            }
+
 
             message.getChannel().sendMessage(Utils.getWarnEmbed(user, "Bad word usage")).queue();
 

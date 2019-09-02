@@ -49,7 +49,9 @@ public class TempbanCommand extends AModeration {
                 .addField("Jusqu'à:", Utils.getDateFormat().format(end), true);
 
         TextChannel logsChannel = guild.getTextChannelById(logs.id);
-        logsChannel.sendMessage(embedBuilder.build()).queue();
+        if(logsChannel != null) {
+            logsChannel.sendMessage(embedBuilder.build()).queue();
+        }
 
         guild.ban(victim, 0, reason).queue();
         message.getChannel().sendMessage(Utils.getBanEmbed(victim, reason, end)).queue();
