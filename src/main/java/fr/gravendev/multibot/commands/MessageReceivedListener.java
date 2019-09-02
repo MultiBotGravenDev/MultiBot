@@ -21,7 +21,7 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
     @Override
     public void executeListener(MessageReceivedEvent event) {
         User messageAuthor = event.getAuthor();
-        if (messageAuthor.isBot()){
+        if (messageAuthor.isBot()) {
             return;
         }
 

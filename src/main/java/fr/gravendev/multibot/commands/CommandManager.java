@@ -65,13 +65,13 @@ public class CommandManager {
     void executeCommand(Message message) {
         String content = message.getContentRaw();
 
-        if(content.length() == 0) {
+        if (content.length() == 0) {
             return;
         }
 
         char firstContentChar = content.charAt(0);
 
-        if (firstContentChar != prefix){
+        if (firstContentChar != prefix) {
             return;
         }
 
@@ -98,7 +98,7 @@ public class CommandManager {
             channel.sendMessage("Mauvais channel ou permission manquante.").queue();
             return;
         }
-        if (args[0].matches("[0-9]+")){
+        if (args[0].matches("[0-9]+")) {
             return;
         }
 

@@ -65,7 +65,7 @@ public class HelpCommand implements CommandExecutor {
         embeds.add(embedBuilder.build());
 
         for (MessageEmbed embed : embeds) {
-            if(embed.getFields().size() == 0) continue;
+            if (embed.getFields().size() == 0) continue;
             message.getChannel().sendMessage(embed).queue();
         }
     }
