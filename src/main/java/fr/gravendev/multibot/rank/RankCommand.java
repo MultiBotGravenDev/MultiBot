@@ -55,8 +55,6 @@ public class RankCommand implements CommandExecutor {
                 member = mentionedMembers.get(0);
             User user = member.getUser();
 
-            if(!user.getName().equals("Nolan")) return;
-
             if (user.isBot()) return;
 
             List<Role> roles = member.getRoles();
@@ -77,11 +75,8 @@ public class RankCommand implements CommandExecutor {
             BufferedImage image = new BufferedImage(950, 300, BufferedImage.TYPE_INT_RGB);
             ImageBuilder builder = new ImageBuilder(image);
 
-            if (member.getUser().getAvatarUrl() != null) {
-                builder.drawImage(new URL(member.getUser().getAvatarUrl()));
-            } else {
-                builder.drawImage(new URL(member.getUser().getDefaultAvatarUrl()));
-            }
+            String url = user.getAvatarUrl() != null ? user.getAvatarUrl() : user.getDefaultAvatarUrl();
+            builder.drawImage(new URL(url));
 
             builder.drawProgress(color, experiences, expToLevelUp);
 
