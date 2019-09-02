@@ -108,5 +108,7 @@ public class CommandManager {
 
             channel.sendMessage(customCommandDataText).queue();
         }
+
     }
+
 }
