@@ -28,7 +28,7 @@ public class EmoteCommand implements CommandExecutor {
 
         if (this.pollsManager.hasNotPoll(message.getAuthor())) return;
 
-        if (args.length != 2 || !args[0].matches("[0-9]+") || ! EmojiUtils.containsEmoji(args[1])) {
+        if (args.length != 2 || !args[0].matches("[0-9]+") || !EmojiUtils.containsEmoji(args[1])) {
             message.getChannel().sendMessage("Erreur. !poll emote <numéro du choix> <:emote:>").queue();
             return;
         }
