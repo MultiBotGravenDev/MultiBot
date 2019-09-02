@@ -10,8 +10,8 @@ public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-        MultiBot multiBot = new MultiBot();
 
+        MultiBot multiBot = new MultiBot();
         multiBot.start();
 
         Scanner scanner = new Scanner(System.in);
