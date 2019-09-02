@@ -62,6 +62,7 @@ public class CommandManager {
 
     void executeCommand(Message message) {
         String content = message.getContentRaw();
+
         if(content.length() == 0) {
             return;
         }

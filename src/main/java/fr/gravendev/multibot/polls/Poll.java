@@ -62,7 +62,7 @@ class Poll {
                 privateChannel.retrieveMessageById(this.messageId).queue(message -> {
                     User selfUser = message.getJDA().getSelfUser();
                     message.getReactions().forEach(messageReaction -> {
-                        if (!this.emotes.values().contains(messageReaction.getReactionEmote().getName())) {
+                        if (!this.emotes.containsValue(messageReaction.getReactionEmote().getName())) {
                             messageReaction.removeReaction(selfUser).queue();
                         }
                     });
