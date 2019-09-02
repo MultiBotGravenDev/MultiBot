@@ -45,11 +45,11 @@ public class ListCommand implements CommandExecutor {
                 .map(role -> roleDAO.get(role.getId()))
                 .filter(Objects::nonNull)
                 .map(roleData -> {
-                    Role role = guild.getRoleById(roleData.roleId);
-                    String roleName = role == null ? "INVALID(" + roleData.roleId + ")" : role.getAsMention();
+                    Role role = guild.getRoleById(roleData.getRoleId());
+                    String roleName = role == null ? "INVALID(" + roleData.getRoleId() + ")" : role.getAsMention();
 
-                    Emote emote = guild.getEmoteById(roleData.emoteId);
-                    String emoteName = emote == null ? "INVALID(" + roleData.emoteId + ")" : emote.getAsMention();
+                    Emote emote = guild.getEmoteById(roleData.getEmoteId());
+                    String emoteName = emote == null ? "INVALID(" + roleData.getEmoteId() + ")" : emote.getAsMention();
 
                     return roleName + " (" + emoteName + ")";
                 })

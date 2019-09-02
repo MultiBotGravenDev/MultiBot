@@ -29,7 +29,7 @@ class MemberJoinListener implements Listener<GuildMemberJoinEvent> {
         Member member = event.getMember();
 
         AntiRoleData antiRoleData = this.antiRolesDAO.get(member.getId());
-        antiRoleData.roles.forEach((date, roleName) -> GuildUtils.addRole(member, String.valueOf(this.guildIdDAO.get(roleName).id)).queue());
+        antiRoleData.getRoles().forEach((date, roleName) -> GuildUtils.addRole(member, String.valueOf(this.guildIdDAO.get(roleName).id)).queue());
 
     }
 

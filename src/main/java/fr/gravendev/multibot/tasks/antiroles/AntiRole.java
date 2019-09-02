@@ -46,7 +46,7 @@ public abstract class AntiRole {
     }
 
     private boolean mustRemoveRole(AntiRoleData antiRoleData) {
-        return antiRoleData.roles.entrySet().stream()
+        return antiRoleData.getRoles().entrySet().stream()
                 .filter(entry -> entry.getValue().contains(this.roleName))
                 .anyMatch(entry -> entry.getKey().before(Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 30 * 6))));
     }

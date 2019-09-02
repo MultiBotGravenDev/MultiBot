@@ -105,7 +105,7 @@ public class AntiCommand implements CommandExecutor {
         User sanctionedUser = member.getUser();
         String sanctionedUserId = sanctionedUser.getId();
         AntiRoleData antiRoleData = antiRolesDAO.get(sanctionedUserId);
-        Map<java.util.Date, String> sanctionedUserRoles = antiRoleData.roles;
+        Map<java.util.Date, String> sanctionedUserRoles = antiRoleData.getRoles();
         String antiRoleName = "anti-" + roleName;
         Date currentDate = getCurrentDate();
 

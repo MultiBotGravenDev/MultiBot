@@ -75,14 +75,14 @@ public class SetCommand implements CommandExecutor {
         args = Arrays.copyOfRange(args, 1, args.length);
         String question = String.join(" ", args);
 
-        messageData = new MessageData(messageData.id, question);
+        messageData = new MessageData(messageData.getId(), question);
 
-        if (!messageData.message.equalsIgnoreCase("")) {
+        if (!messageData.getMessage().equalsIgnoreCase("")) {
             quizMessageDAO.save(messageData);
-            message.getChannel().sendMessage("La question numéro " + messageData.id + " a bien été changée en :\n" + messageData.message).queue();
+            message.getChannel().sendMessage("La question numéro " + messageData.getId() + " a bien été changée en :\n" + messageData.getMessage()).queue();
         } else {
             quizMessageDAO.delete(messageData);
-            message.getChannel().sendMessage("La question numéro " + messageData.id + " a bien été supprimée").queue();
+            message.getChannel().sendMessage("La question numéro " + messageData.getId() + " a bien été supprimée").queue();
         }
 
     }

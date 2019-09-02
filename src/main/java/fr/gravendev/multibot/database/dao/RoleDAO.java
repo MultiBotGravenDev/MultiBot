@@ -16,11 +16,11 @@ public class RoleDAO extends DAO<RoleData> {
     }
 
     @Override
-    protected boolean save(RoleData obj, Connection connection) throws SQLException {
+    protected boolean save(RoleData roleData, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO roles VALUES(?, ?) ON DUPLICATE KEY UPDATE emote_id = ?");
-        preparedStatement.setString(1, obj.roleId);
-        preparedStatement.setString(2, obj.emoteId);
-        preparedStatement.setString(3, obj.emoteId);
+        preparedStatement.setString(1, roleData.getRoleId());
+        preparedStatement.setString(2, roleData.getEmoteId());
+        preparedStatement.setString(3, roleData.getEmoteId());
 
         preparedStatement.execute();
         return true;
@@ -45,7 +45,7 @@ public class RoleDAO extends DAO<RoleData> {
     @Override
     protected void delete(RoleData roleData, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM roles WHERE role_id = ?");
-        preparedStatement.setString(1, roleData.roleId + "");
+        preparedStatement.setString(1, roleData.getRoleId() + "");
 
         preparedStatement.execute();
     }

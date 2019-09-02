@@ -106,7 +106,7 @@ public class CommandManager {
         CustomCommandData customCommandData = customCommandDAO.get(args[0]);
 
         if (customCommandData != null) {
-            String customCommandDataText = customCommandData.text;
+            String customCommandDataText = customCommandData.getText();
 
             channel.sendMessage(customCommandDataText).queue();
         }

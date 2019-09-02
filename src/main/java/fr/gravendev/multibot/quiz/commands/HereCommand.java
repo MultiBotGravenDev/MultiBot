@@ -45,7 +45,7 @@ public class HereCommand implements CommandExecutor {
         MessageChannel channel = message.getChannel();
 
         Queue<Message> builtMessages = new MessageBuilder()
-                .append(this.welcomeMessageDAO.get(String.valueOf(1)).message)
+                .append(this.welcomeMessageDAO.get(String.valueOf(1)).getMessage())
                 .buildAll(MessageBuilder.SplitPolicy.NEWLINE);
 
         List<Message> messages = new ArrayList<>(builtMessages);

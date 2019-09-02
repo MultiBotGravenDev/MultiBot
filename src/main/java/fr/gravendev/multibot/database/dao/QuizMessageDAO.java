@@ -17,9 +17,9 @@ public class QuizMessageDAO extends DAO<MessageData> {
     @Override
     protected boolean save(MessageData data, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO quiz_messages VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?");
-        preparedStatement.setString(1, data.id);
-        preparedStatement.setString(2, data.message);
-        preparedStatement.setString(3, data.message);
+        preparedStatement.setString(1, data.getId());
+        preparedStatement.setString(2, data.getMessage());
+        preparedStatement.setString(3, data.getMessage());
 
         preparedStatement.executeUpdate();
 
@@ -46,7 +46,7 @@ public class QuizMessageDAO extends DAO<MessageData> {
     protected void delete(MessageData obj, Connection connection) throws SQLException {
 
         PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM quiz_messages WHERE id = ?");
-        preparedStatement.setString(1, obj.id);
+        preparedStatement.setString(1, obj.getId());
 
         preparedStatement.execute();
 

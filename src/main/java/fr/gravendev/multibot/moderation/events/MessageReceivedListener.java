@@ -45,7 +45,7 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
         if (event.getGuild().getIdLong() == 238975753969074177L) return;
         if (event.getMember() != null && event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
 
-        for (String badWord : this.badWordsDAO.get("").badWords.split(" ")) {
+        for (String badWord : this.badWordsDAO.get("").getBadWords().split(" ")) {
 
             if (badWord.isEmpty()) continue;
 

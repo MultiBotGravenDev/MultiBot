@@ -29,7 +29,7 @@ public class ReactionRemovedListener implements Listener<MessageReactionRemoveEv
         RoleData roleData = roleDAO.get(event.getReactionEmote().getId());
         Member member = event.getMember();
         if (roleData != null && member != null) {
-            GuildUtils.removeRole(event.getMember(), roleData.roleId).queue();
+            GuildUtils.removeRole(event.getMember(), roleData.getRoleId()).queue();
         }
 
     }

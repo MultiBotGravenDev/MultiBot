@@ -6,12 +6,19 @@ import java.util.Map;
 
 public class AntiRoleData {
 
-    public final long userId;
-    public final Map<Date, String> roles;
+    private final long userId;
+    private final Map<Date, String> roles;
 
     public AntiRoleData(long userId, Map<Date, String> roles) {
         this.userId = userId;
         this.roles = new HashMap<>(roles);
     }
 
+    public long getUserId() {
+        return userId;
+    }
+
+    public Map<Date, String> getRoles() {
+        return roles;
+    }
 }

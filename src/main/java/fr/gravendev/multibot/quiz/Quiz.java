@@ -22,7 +22,7 @@ class Quiz {
     }
 
     void send(User user) {
-        String message = quizMessageDAO.get(String.valueOf(this.questionIndex++)).message;
+        String message = quizMessageDAO.get(String.valueOf(this.questionIndex++)).getMessage();
         user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
     }
 
@@ -40,7 +40,7 @@ class Quiz {
 
     MessageEmbed.Field getCurrentAnswer() {
         return new MessageEmbed.Field(
-                quizMessageDAO.get(String.valueOf(this.answerIndex)).message,
+                quizMessageDAO.get(String.valueOf(this.answerIndex)).getMessage(),
                 responses.get(this.answerIndex),
                 false);
     }

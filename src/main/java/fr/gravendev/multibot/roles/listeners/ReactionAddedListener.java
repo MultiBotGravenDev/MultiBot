@@ -29,7 +29,7 @@ public class ReactionAddedListener implements Listener<MessageReactionAddEvent> 
 
         Member member = event.getMember();
         if (roleData != null && member != null) {
-            GuildUtils.addRole(member, roleData.roleId).queue();
+            GuildUtils.addRole(member, roleData.getRoleId()).queue();
         } else {
             event.getReaction().removeReaction(event.getUser()).queue();
         }

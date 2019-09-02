@@ -16,12 +16,12 @@ public class AntiRolesDAO extends DAO<AntiRoleData> {
     }
 
     @Override
-    public boolean save(AntiRoleData obj, Connection connection) throws SQLException {
+    public boolean save(AntiRoleData antiRoleData, Connection connection) throws SQLException {
 
-        for (Map.Entry<Date, String> entry : obj.roles.entrySet()) {
+        for (Map.Entry<Date, String> entry : antiRoleData.getRoles().entrySet()) {
 
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT IGNORE INTO anti_roles VALUES(?, ?, NOW())");
-            preparedStatement.setString(1, String.valueOf(obj.userId));
+            preparedStatement.setString(1, String.valueOf(antiRoleData.getUserId()));
             preparedStatement.setString(2, entry.getValue());
 
             preparedStatement.execute();
@@ -56,12 +56,12 @@ public class AntiRolesDAO extends DAO<AntiRoleData> {
     @Override
     public void delete(AntiRoleData obj, Connection connection) throws SQLException {
 
-        for (Map.Entry<Date, String> entry : obj.roles.entrySet()) {
+        for (Map.Entry<Date, String> entry : obj.getRoles().entrySet()) {
 
             if (entry.getKey().before(Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 30 * 6)))) {
 
                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM anti_roles WHERE user_id = ? AND role = ?");
-                preparedStatement.setString(1, String.valueOf(obj.userId));
+                preparedStatement.setString(1, String.valueOf(obj.getUserId()));
                 preparedStatement.setString(2, entry.getValue());
 
                 preparedStatement.execute();

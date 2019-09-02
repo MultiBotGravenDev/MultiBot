@@ -19,7 +19,7 @@ public class BadWordsDAO extends DAO<BadWordsData> {
 
         connection.prepareStatement("TRUNCATE TABLE bad_words").execute();
 
-        for (String badWord : obj.badWords.split(" ")) {
+        for (String badWord : obj.getBadWords().split(" ")) {
 
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO bad_words(word) VALUE(?)");
             preparedStatement.setString(1, badWord);
@@ -51,7 +51,9 @@ public class BadWordsDAO extends DAO<BadWordsData> {
     protected void delete(BadWordsData obj, Connection connection) throws SQLException {
 
         BadWordsData badWords = this.get("", connection);
-        BadWordsData finalBadWords = new BadWordsData(badWords.badWords.replace(obj.badWords, ""));
+        String words = badWords.getBadWords();
+        // Error ? words.replace(words, "")
+        BadWordsData finalBadWords = new BadWordsData(words.replace(words, ""));
 
         this.save(finalBadWords, connection);
 
