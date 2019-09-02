@@ -79,4 +79,5 @@ public class WarnCommand extends AModeration {
 
         message.getChannel().sendMessage(Utils.getWarnEmbed(victim, reason)).queue();
     }
+
 }

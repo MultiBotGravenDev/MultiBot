@@ -7,6 +7,7 @@ import fr.gravendev.multibot.commands.commands.UserinfoCommand;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.database.data.CustomCommandData;
+import fr.gravendev.multibot.moderation.commands.BadWordCommand;
 import fr.gravendev.multibot.moderation.commands.*;
 import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.polls.commands.PollCommand;
@@ -48,6 +49,7 @@ public class CommandManager {
                 new UnbanCommand(databaseConnection),
                 new UnmuteCommand(databaseConnection),
                 new WarnCommand(databaseConnection),
+                new BadWordCommand(databaseConnection),
 
                 new QuizCommand(databaseConnection, welcomeMessagesSetManager),
                 new RankCommand(databaseConnection),
