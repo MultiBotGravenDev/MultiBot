@@ -16,7 +16,7 @@ public abstract class AntiRole {
 
     private final AntiRolesDAO antiRolesDAO;
     private final String roleName;
-    private long roleId;
+    private final long roleId;
 
     AntiRole(DatabaseConnection databaseConnection, String roleName) {
         this.antiRolesDAO = new AntiRolesDAO(databaseConnection);
