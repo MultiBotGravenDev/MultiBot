@@ -35,13 +35,19 @@ public class InfractionsTask extends TimerTask {
                         guild.unban(infraction.getPunished_id()).queue(success -> {
                         }, throwable -> {
                         });
-                        break;
-                    case MUTE:
                         Member member = guild.getMemberById(infraction.getPunished_id());
                         if (member == null){
                             break;
                         }
+                        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unmute").queue());
+                        break;
+                    case MUTE:
+                        member = guild.getMemberById(infraction.getPunished_id());
+                        if (member == null){
+                            break;
+                        }
                         GuildUtils.removeRole(member, guildIdDAO.get("muted").id + "").queue();
+                        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unmute").queue());
                         break;
                 }
                 infraction.setFinished(true);

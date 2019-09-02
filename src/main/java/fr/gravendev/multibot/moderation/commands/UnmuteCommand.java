@@ -85,6 +85,7 @@ public class UnmuteCommand implements CommandExecutor {
 
         guild.removeRoleFromMember(member, muted).queue();
         message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, member.getUser().getAsTag() + " vient d'être unmute")).queue();
+        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unmute").queue());
 
     }
 }

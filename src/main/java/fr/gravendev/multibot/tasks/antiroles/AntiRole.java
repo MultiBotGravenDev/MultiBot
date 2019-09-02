@@ -39,6 +39,7 @@ public abstract class AntiRole {
 
             GuildUtils.removeRole(member, role.getName());
             this.antiRolesDAO.delete(antiRoleData);
+            member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Le rôle " + role.getName() + " vous a été retiré").queue());
 
         }
 

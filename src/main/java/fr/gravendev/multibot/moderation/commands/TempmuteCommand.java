@@ -83,5 +83,6 @@ public class TempmuteCommand extends AModeration {
         guild.addRoleToMember(memberVictim, muted).queue();
 
         message.getChannel().sendMessage(Utils.getMuteEmbed(victim, reason, end)).queue();
+
     }
 }

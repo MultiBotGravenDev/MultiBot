@@ -48,6 +48,7 @@ public class UnbanCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
+
         if (args.length == 0 || extractId(args[0]) == null) {
             message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: unban @utilisateur")).queue();
             return;
@@ -78,6 +79,7 @@ public class UnbanCommand implements CommandExecutor {
 
             message.getGuild().unban(id).queue();
             message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, id + " vient d'être unban")).queue();
+            message.getMentionedMembers().get(0).getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unban").queue());
 
         });
     }
