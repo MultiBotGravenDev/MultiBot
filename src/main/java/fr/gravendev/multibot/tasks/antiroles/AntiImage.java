@@ -5,7 +5,7 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 public class AntiImage extends AntiRole {
 
     public AntiImage(DatabaseConnection databaseConnection) {
-        super(databaseConnection, "anti_image");
+        super(databaseConnection, "anti-image");
     }
 
 }

@@ -35,7 +35,6 @@ public class AntiCommand implements CommandExecutor {
         return "anti";
     }
 
-    // TODO When duration will be putted into config file don't forget to change text here
     @Override
     public String getDescription() {
         return "Permet de mettre un role anti- (meme, repost...) à une personne pour une durée de 6 mois.";
@@ -60,11 +59,12 @@ public class AntiCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         List<Member> mentionedMembers = message.getMentionedMembers();
-        if (args.length != 2 ||
-            mentionedMembers.size() != 1 ||
-            !args[0].contains("repost review meme") || // TODO WTF?? Check it it seems to be an error
-            GuildUtils.hasRole(mentionedMembers.get(0), "anti-" + args[0]))
-        {
+        boolean isCommandInvalid = args.length != 2 ||
+                mentionedMembers.size() != 1 ||
+                !"repost review meme".contains(args[0]) ||
+                GuildUtils.hasRole(mentionedMembers.get(0), "anti-" + args[0]);
+
+        if (isCommandInvalid) {
             return;
         }
 
@@ -72,7 +72,7 @@ public class AntiCommand implements CommandExecutor {
 
         Member member = mentionedMembers.get(0);
         Guild guild = message.getGuild();
-        guild.addRoleToMember(member, guild.getRoleById(guildIdDAO.get("anti_" + args[0]).id)).queue(unused -> {
+        guild.addRoleToMember(member, guild.getRoleById(guildIdDAO.get("anti-" + args[0]).id)).queue(unused -> {
 
             saveInDatabase(args[0], member);
 
