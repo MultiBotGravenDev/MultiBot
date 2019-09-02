@@ -49,7 +49,9 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
                     .setFooter("User ID: " + user.getId(), user.getAvatarUrl());
 
             TextChannel logsChannel = message.getGuild().getTextChannelById(logs.id);
-            logsChannel.sendMessage(embedBuilder.build()).queue();
+            if (logsChannel != null) {
+                logsChannel.sendMessage(embedBuilder.build()).queue();
+            }
         }
 
         List<Role> mentionedRoles = message.getMentionedRoles();
@@ -66,7 +68,9 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
                     .setFooter("User ID: " + user.getId(), user.getAvatarUrl());
 
             TextChannel logsChannel = message.getGuild().getTextChannelById(logs.id);
-            logsChannel.sendMessage(embedBuilder.build()).queue();
+            if (logsChannel != null) {
+                logsChannel.sendMessage(embedBuilder.build()).queue();
+            }
 
         }
 
