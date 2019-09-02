@@ -6,7 +6,7 @@ import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.events.emoteaddedexecutors.CandidsExecutor;
 import fr.gravendev.multibot.quiz.events.emoteaddedexecutors.EmoteAddedExecutor;
 import fr.gravendev.multibot.quiz.events.emoteaddedexecutors.ReadThisSaloonExecutor;
-import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 import java.util.Arrays;
 import java.util.List;

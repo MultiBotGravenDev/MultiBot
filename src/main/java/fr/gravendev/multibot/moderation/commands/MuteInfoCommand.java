@@ -8,11 +8,11 @@ import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.GuildUtils;
 import fr.gravendev.multibot.utils.Utils;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.awt.*;
 import java.sql.SQLException;

@@ -5,7 +5,7 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.QuizMessageDAO;
 import fr.gravendev.multibot.database.data.MessageData;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.entities.Message;
 
 import java.util.Arrays;
 

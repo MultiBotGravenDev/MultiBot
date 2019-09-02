@@ -1,7 +1,9 @@
 package fr.gravendev.multibot.commands;
 
 import fr.gravendev.multibot.events.Listener;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
 
@@ -18,8 +20,12 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
 
     @Override
     public void executeListener(MessageReceivedEvent event) {
-        if (event.getAuthor().isBot()) return;
-        this.commandManager.executeCommand(event.getMessage());
-    }
+        User messageAuthor = event.getAuthor();
+        if (messageAuthor.isBot()){
+            return;
+        }
 
+        Message message = event.getMessage();
+        commandManager.executeCommand(message);
+    }
 }

@@ -3,10 +3,11 @@ package fr.gravendev.multibot.events;
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.polls.PollsManager;
-import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.quiz.QuizManager;
-import net.dv8tion.jda.core.events.Event;
-import net.dv8tion.jda.core.hooks.EventListener;
+import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.hooks.EventListener;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,12 +30,14 @@ public class MultiBotListener implements EventListener {
                 new fr.gravendev.multibot.votes.events.EmoteAddedListener(databaseConnection),
                 new fr.gravendev.multibot.votes.events.RoleAddedEvent(databaseConnection),
                 new fr.gravendev.multibot.polls.events.EmoteAddedListener(databaseConnection, pollsManager),
-                new ReadyListener(databaseConnection)
+                new fr.gravendev.multibot.moderation.events.MessageReceivedListener(databaseConnection),
+                new ReadyListener(databaseConnection),
+                new MemberJoinListener(databaseConnection)
         );
     }
 
     @Override
-    public void onEvent(Event event) {
+    public void onEvent(@NotNull GenericEvent event) {
 
         events.stream()
                 .filter(listener -> listener.getEventClass().equals(event.getClass()))

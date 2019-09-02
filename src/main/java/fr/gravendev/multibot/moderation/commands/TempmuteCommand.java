@@ -9,9 +9,9 @@ import fr.gravendev.multibot.moderation.AModeration;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.GuildUtils;
 import fr.gravendev.multibot.utils.Utils;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.util.Date;
@@ -80,8 +80,9 @@ public class TempmuteCommand extends AModeration {
         TextChannel logsChannel = guild.getTextChannelById(logs.id);
         logsChannel.sendMessage(embedBuilder.build()).queue();
 
-        guild.getController().addSingleRoleToMember(memberVictim, muted).queue();
+        guild.addRoleToMember(memberVictim, muted).queue();
 
-        message.getChannel().sendMessage(Utils.muteEmbed(victim, reason, end)).queue();
+        message.getChannel().sendMessage(Utils.getMuteEmbed(victim, reason, end)).queue();
+
     }
 }

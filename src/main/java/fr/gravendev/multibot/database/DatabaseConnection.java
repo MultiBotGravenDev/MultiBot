@@ -18,6 +18,8 @@ public class DatabaseConnection {
         dataSource.addDataSourceProperty("autoReconnect", true);
         dataSource.addDataSourceProperty("tcpKeepAlive", true);
         dataSource.addDataSourceProperty("serverTimezone", "Europe/Paris");
+        dataSource.addDataSourceProperty("characterEncoding","utf8");
+        dataSource.addDataSourceProperty("useUnicode","true");
         dataSource.setMaximumPoolSize(15);
         dataSource.setMinimumIdle(0);
         dataSource.setIdleTimeout(1);

@@ -4,9 +4,9 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.events.Listener;
 import fr.gravendev.multibot.polls.PollsManager;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
 
@@ -29,7 +29,7 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
         long pollVerifChannelId = this.guildIdDAO.get("sondages_verif").id;
         if (event.getUser().isBot() || event.getChannel().getIdLong() != pollVerifChannelId) return;
 
-        event.getChannel().getMessageById(event.getMessageIdLong()).queue(message -> {
+        event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(message -> {
 
             Member member = message.getMentionedMembers().get(0);
             String validationMessage = member.getAsMention() + "\n\n";

@@ -12,26 +12,25 @@ class FileLoader {
 
     static String load(File file) {
 
-        final StringBuilder text = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder();
 
         try {
             file.createNewFile();
-
             BufferedReader reader = new BufferedReader(new FileReader(file));
 
             String line;
-
             while ((line = reader.readLine()) != null) {
-                text.append(line).append("\n");
+                stringBuilder
+                        .append(line)
+                        .append("\n");
             }
 
             reader.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return text.toString();
+        return stringBuilder.toString();
 
     }
 

@@ -3,8 +3,8 @@ package fr.gravendev.multibot.moderation;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.utils.Utils;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.utils.PermissionUtil;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.internal.utils.PermissionUtil;
 
 import java.awt.*;
 import java.util.Calendar;
@@ -22,12 +22,13 @@ public abstract class AModeration implements CommandExecutor {
         return CommandCategory.MODERATION;
     }
 
+    // TODO Refactor it : split it into differents methods, etc.
     @Override
     public void execute(Message message, String[] args) {
         List<Member> mentionedMembers = message.getMentionedMembers();
         MessageChannel messageChannel = message.getChannel();
         if (mentionedMembers.size() == 0) {
-            messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: "+getCommand()+" @membre " +
+            messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: " + getCommand() + " @membre " +
                     (isTemporary() ? "durée " : "") + "raison")).queue();
             return;
         }

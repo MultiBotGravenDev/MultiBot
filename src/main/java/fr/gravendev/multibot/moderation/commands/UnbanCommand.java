@@ -7,9 +7,9 @@ import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Utils;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -48,6 +48,7 @@ public class UnbanCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
+
         if (args.length == 0 || extractId(args[0]) == null) {
             message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: unban @utilisateur")).queue();
             return;
@@ -55,7 +56,7 @@ public class UnbanCommand implements CommandExecutor {
 
         String id = extractId(args[0]);
 
-        message.getGuild().getBanList().queue((banList) -> {
+        message.getGuild().retrieveBanList().queue((banList) -> {
             if (banList.stream().noneMatch(ban -> ban.getUser().getId().equals(id))) {
                 message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Cet utilisateur n'est pas bannis")).queue();
                 return;
@@ -76,8 +77,9 @@ public class UnbanCommand implements CommandExecutor {
                 infractionDAO.save(data);
             }
 
-            message.getGuild().getController().unban(id).queue();
+            message.getGuild().unban(id).queue();
             message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, id + " vient d'être unban")).queue();
+            message.getMentionedMembers().get(0).getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unban").queue());
 
         });
     }

@@ -5,9 +5,9 @@ import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.utils.GuildUtils;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -32,14 +32,22 @@ public class InfractionsTask extends TimerTask {
             allUnfinished.forEach(infraction -> {
                 switch (infraction.getType()) {
                     case BAN:
-                        guild.getController().unban(infraction.getPunished_id()).queue(success -> {
+                        guild.unban(infraction.getPunished_id()).queue(success -> {
                         }, throwable -> {
                         });
+                        Member member = guild.getMemberById(infraction.getPunished_id());
+                        if (member == null){
+                            break;
+                        }
+                        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unmute").queue());
                         break;
                     case MUTE:
-                        Member member = guild.getMemberById(infraction.getPunished_id());
-                        if (member == null) break;
+                        member = guild.getMemberById(infraction.getPunished_id());
+                        if (member == null){
+                            break;
+                        }
                         GuildUtils.removeRole(member, guildIdDAO.get("muted").id + "").queue();
+                        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unmute").queue());
                         break;
                 }
                 infraction.setFinished(true);

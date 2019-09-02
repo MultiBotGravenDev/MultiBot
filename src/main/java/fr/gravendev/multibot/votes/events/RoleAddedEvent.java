@@ -5,16 +5,19 @@ import fr.gravendev.multibot.database.dao.VoteDAO;
 import fr.gravendev.multibot.database.data.VoteData;
 import fr.gravendev.multibot.events.Listener;
 import fr.gravendev.multibot.utils.GuildUtils;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleAddEvent;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class RoleAddedEvent implements Listener<GuildMemberRoleAddEvent> {
 
-    private static final List<String> ROLES_NAMES = Arrays.asList("Honorable", "Développeur", "Pilier de la Commu");
+    private static final List<String> ROLES_NAMES = Arrays.asList(
+            "Honorable",
+            "Développeur",
+            "Pilier de la Commu");
 
     private final DatabaseConnection databaseConnection;
 
@@ -30,7 +33,7 @@ public class RoleAddedEvent implements Listener<GuildMemberRoleAddEvent> {
     @Override
     public void executeListener(GuildMemberRoleAddEvent event) {
 
-        VoteDAO voteDAO = new VoteDAO(this.databaseConnection);
+        VoteDAO voteDAO = new VoteDAO(databaseConnection);
         VoteData voteData = voteDAO.get(event.getUser().getId());
 
         Role role = event.getRoles().get(0);
@@ -41,7 +44,7 @@ public class RoleAddedEvent implements Listener<GuildMemberRoleAddEvent> {
         }
 
         if (ROLES_NAMES.contains(role.getName()) && !voteData.accepted) {
-            event.getGuild().getController().removeRolesFromMember(member, role).queue();
+            event.getGuild().removeRoleFromMember(member, role).queue();
         }
 
     }

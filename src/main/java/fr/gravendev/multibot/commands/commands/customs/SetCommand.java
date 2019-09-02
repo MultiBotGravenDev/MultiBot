@@ -4,7 +4,7 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.database.data.CustomCommandData;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.entities.Message;
 
 import java.util.Arrays;
 
@@ -18,7 +18,7 @@ public class SetCommand implements CommandExecutor {
 
     @Override
     public String getCommand() {
-        return "setChoice";
+        return "set";
     }
 
     @Override

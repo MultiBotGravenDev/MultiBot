@@ -25,7 +25,7 @@ public class Developer implements Role {
 
     @Override
     public long getRoleId() {
-        return this.guildIdDAO.get("developpeur").id;
+        return guildIdDAO.get("developpeur").id;
     }
 
     @Override

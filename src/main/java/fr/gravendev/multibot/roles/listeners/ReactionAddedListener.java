@@ -5,7 +5,7 @@ import fr.gravendev.multibot.database.dao.RoleDAO;
 import fr.gravendev.multibot.database.data.RoleData;
 import fr.gravendev.multibot.events.Listener;
 import fr.gravendev.multibot.utils.GuildUtils;
-import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class ReactionAddedListener implements Listener<MessageReactionAddEvent> {
 

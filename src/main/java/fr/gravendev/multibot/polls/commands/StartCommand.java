@@ -2,8 +2,8 @@ package fr.gravendev.multibot.polls.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.polls.PollsManager;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 
 public class StartCommand implements CommandExecutor {
     private final PollsManager pollsManager;

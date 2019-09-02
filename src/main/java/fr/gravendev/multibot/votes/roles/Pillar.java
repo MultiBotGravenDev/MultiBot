@@ -25,7 +25,7 @@ public class Pillar implements Role {
 
     @Override
     public long getRoleId() {
-        return this.guildIdDAO.get("pilier").id;
+        return guildIdDAO.get("pilier").id;
     }
 
     @Override

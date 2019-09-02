@@ -1,5 +1,6 @@
 package fr.gravendev.multibot.moderation.commands;
 
+
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
@@ -9,9 +10,9 @@ import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.AModeration;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Utils;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.util.Date;
@@ -34,7 +35,7 @@ public class BanCommand extends AModeration {
         User moderator = message.getAuthor();
         Guild guild = message.getGuild();
 
-        guild.getController().ban(victim, 0, reason).queue();
+        guild.ban(victim, 0, reason).queue();
 
         InfractionData data = new InfractionData(
                 victim.getId(), moderator.getId(), InfractionType.BAN, reason, new Date(), null);
@@ -53,7 +54,7 @@ public class BanCommand extends AModeration {
         TextChannel logsChannel = guild.getTextChannelById(logs.id);
         logsChannel.sendMessage(embedBuilder.build()).queue();
 
-        message.getChannel().sendMessage(Utils.banEmbed(victim, reason, null)).queue();
+        message.getChannel().sendMessage(Utils.getBanEmbed(victim, reason, null)).queue();
     }
 
     @Override

@@ -11,11 +11,10 @@ import fr.gravendev.multibot.spark.SparkAPI;
 import fr.gravendev.multibot.utils.json.Configuration;
 import fr.gravendev.multibot.utils.json.FileWriter;
 import fr.gravendev.multibot.utils.json.Serializer;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.Spark;
 
 import javax.security.auth.login.LoginException;
 
@@ -52,14 +51,14 @@ class MultiBot {
         this.quizManager = new QuizManager(databaseConnection);
         this.welcomeMessagesSetManager = new WelcomeMessagesSetManager(databaseConnection);
         this.pollsManager = new PollsManager(databaseConnection);
-        this.commandManager = new CommandManager(this.configuration.getPrefix(), databaseConnection, welcomeMessagesSetManager, pollsManager);
+        this.commandManager = new CommandManager(configuration.getPrefix(), databaseConnection, welcomeMessagesSetManager, pollsManager);
     }
 
     void start() {
         try {
 
             this.jda = new JDABuilder(configuration.getToken())
-                    .addEventListener(new MultiBotListener(this.commandManager, this.databaseConnection, this.quizManager, this.welcomeMessagesSetManager, pollsManager))
+                    .addEventListeners(new MultiBotListener(commandManager, databaseConnection, quizManager, welcomeMessagesSetManager, pollsManager))
                     .build();
 
             SparkAPI sparkAPI = new SparkAPI(jda, databaseConnection);
@@ -67,7 +66,8 @@ class MultiBot {
 
             LOGGER.info("Bot connected");
 
-        } catch (LoginException | InterruptedException e) {
+        } catch (LoginException | InterruptedException ex) {
+            ex.printStackTrace();
             LOGGER.error("Failed to connect the bot");
             System.exit(0);
         }

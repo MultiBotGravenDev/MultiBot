@@ -2,8 +2,8 @@ package fr.gravendev.multibot.database.dao;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.ExperienceData;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import org.json.JSONObject;
 
 import java.sql.*;
