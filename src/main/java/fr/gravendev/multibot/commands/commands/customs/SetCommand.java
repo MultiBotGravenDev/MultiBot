@@ -18,7 +18,7 @@ public class SetCommand implements CommandExecutor {
 
     @Override
     public String getCommand() {
-        return "setChoice";
+        return "set";
     }
 
     @Override

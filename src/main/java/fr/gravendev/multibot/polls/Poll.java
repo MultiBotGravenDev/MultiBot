@@ -34,13 +34,14 @@ class Poll {
 
     void setTitle(String title) {
         this.title = title;
+        if (title.isEmpty()) this.title = " ";
         update();
     }
 
     void setChoice(int choiceNumber, String choice) {
         if (!choice.isEmpty()) {
             this.choices.put(choiceNumber, choice);
-            String emote = EMOTES.length >= choiceNumber ? EMOTES[choiceNumber - 1] : " ";
+            String emote = EMOTES.length >= choiceNumber && choiceNumber > 0 ? EMOTES[choiceNumber - 1] : " ";
             this.emotes.put(choiceNumber, emote);
         } else {
             this.choices.remove(choiceNumber);
