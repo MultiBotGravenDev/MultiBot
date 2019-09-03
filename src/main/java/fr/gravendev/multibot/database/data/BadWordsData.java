@@ -11,4 +11,5 @@ public class BadWordsData {
     public String getBadWords() {
         return badWords;
     }
+
 }

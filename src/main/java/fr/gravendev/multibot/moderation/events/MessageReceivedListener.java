@@ -3,6 +3,7 @@ package fr.gravendev.multibot.moderation.events;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.BadWordsDAO;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
+import fr.gravendev.multibot.database.dao.ImmunisedIdDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.GuildIdsData;
 import fr.gravendev.multibot.database.data.InfractionData;
@@ -11,10 +12,7 @@ import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.awt.*;
@@ -25,11 +23,13 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
     private final BadWordsDAO badWordsDAO;
     private final InfractionDAO infractionDAO;
     private final GuildIdDAO guildIdDAO;
+    private final ImmunisedIdDAO immunisedIdsDAO;
 
     public MessageReceivedListener(DatabaseConnection databaseConnection) {
         this.badWordsDAO = new BadWordsDAO(databaseConnection);
         this.infractionDAO = new InfractionDAO(databaseConnection);
         this.guildIdDAO = new GuildIdDAO(databaseConnection);
+        this.immunisedIdsDAO = new ImmunisedIdDAO(databaseConnection);
     }
 
 
@@ -41,7 +41,7 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
     @Override
     public void executeListener(GuildMessageReceivedEvent event) {
 
-        if (event.getAuthor().isBot() || event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
+        if (isImmunised(event.getMessage().getMember())) return;
         if (event.getGuild().getIdLong() == 238975753969074177L) return;
 
         Message message = event.getMessage();
@@ -50,6 +50,13 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
         warnForCapitalsLetters(message);
         warnForDiscordInvite(message);
 
+    }
+
+    private boolean isImmunised(Member member) {
+        if (member == null) return true;
+        if (member.getUser().isBot()) return true;
+        if (member.getRoles().stream().anyMatch(role ->this.immunisedIdsDAO.get("").immunisedIds.contains(role.getIdLong()))) return true;
+        return member.hasPermission(Permission.ADMINISTRATOR);
     }
 
     private void warnForDiscordInvite(Message message) {

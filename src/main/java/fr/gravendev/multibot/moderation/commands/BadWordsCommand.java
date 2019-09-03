@@ -12,11 +12,11 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.util.Arrays;
 
-public class BadWordCommand implements CommandExecutor {
+public class BadWordsCommand implements CommandExecutor {
 
     private final BadWordsDAO badWordsDAO;
 
-    public BadWordCommand(DatabaseConnection databaseConnection) {
+    public BadWordsCommand(DatabaseConnection databaseConnection) {
         this.badWordsDAO = new BadWordsDAO(databaseConnection);
     }
 
