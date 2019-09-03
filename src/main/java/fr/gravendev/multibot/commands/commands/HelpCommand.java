@@ -61,11 +61,11 @@ public class HelpCommand implements CommandExecutor {
         EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setColor(Color.MAGENTA)
                 .setTitle("Commandes personnalisées");
-        getCustomCommands().forEach(customCommand -> embedBuilder.addField(customCommand.command, "", false));
+        getCustomCommands().forEach(customCommand -> embedBuilder.addField(customCommand.getCommand(), "", false));
         embeds.add(embedBuilder.build());
 
         for (MessageEmbed embed : embeds) {
-            if(embed.getFields().size() == 0) continue;
+            if (embed.getFields().size() == 0) continue;
             message.getChannel().sendMessage(embed).queue();
         }
     }

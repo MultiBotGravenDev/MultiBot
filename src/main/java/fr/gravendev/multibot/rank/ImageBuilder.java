@@ -20,7 +20,7 @@ class ImageBuilder {
 
     ImageBuilder(BufferedImage image) {
         this.image = image;
-        if(image == null) {
+        if (image == null) {
             throw new IllegalArgumentException("Image cannot be null");
         }
 

@@ -1,19 +1,18 @@
 package fr.gravendev.multibot.database.data;
 
+import fr.gravendev.multibot.votes.Vote;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public final class VoteDataBuilder {
 
-    int voteId;
-    long messageId;
-    String role;
-    long userId;
-    boolean accepted;
+    private int voteId;
+    private long userId, messageId;
+    private String role;
+    private boolean accepted;
 
-    List<Long> yes = new ArrayList<>();
-    List<Long> no = new ArrayList<>();
-    List<Long> white = new ArrayList<>();
+    private List<Vote> votes = new ArrayList<>();
 
     private VoteDataBuilder() {
     }
@@ -25,13 +24,12 @@ public final class VoteDataBuilder {
     public static VoteDataBuilder fromVoteData(VoteData voteData) {
         VoteDataBuilder voteDataBuilder = new VoteDataBuilder();
 
-        voteDataBuilder.voteId = voteData.voteId;
-        voteDataBuilder.messageId = voteData.messageId;
-        voteDataBuilder.role = voteData.role;
-
-        voteDataBuilder.yes = new ArrayList<>(voteData.yes);
-        voteDataBuilder.no = new ArrayList<>(voteData.no);
-        voteDataBuilder.white = new ArrayList<>(voteData.white);
+        voteDataBuilder.voteId = voteData.getVoteId();
+        voteDataBuilder.userId = voteData.getUserId();
+        voteDataBuilder.messageId = voteData.getMessageId();
+        voteDataBuilder.role = voteData.getRole();
+        voteDataBuilder.accepted = voteData.isAccepted();
+        voteDataBuilder.votes = voteData.getVotes();
 
         return voteDataBuilder;
     }
@@ -61,20 +59,35 @@ public final class VoteDataBuilder {
         return this;
     }
 
-    public void addYes(long yes) {
-        this.yes.add(yes);
-    }
-
-    public void addNo(long no) {
-        this.no.add(no);
-    }
-
-    public void addWhite(long white) {
-        this.white.add(white);
+    public void addVote(Vote vote) {
+        this.votes.add(vote);
     }
 
     public VoteData build() {
         return new VoteData(this);
     }
 
+    public int getVoteId() {
+        return voteId;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public long getMessageId() {
+        return messageId;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
 }

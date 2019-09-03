@@ -15,10 +15,10 @@ public class WelcomeMessageDAO extends DAO<MessageData> {
     protected boolean save(MessageData obj, Connection connection) throws SQLException {
 
         PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO welcome_messages VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?");
-        preparedStatement.setString(1, obj.id);
-        preparedStatement.setString(2, obj.message);
+        preparedStatement.setString(1, obj.getId());
+        preparedStatement.setString(2, obj.getMessage());
 
-        preparedStatement.setString(3, obj.message);
+        preparedStatement.setString(3, obj.getMessage());
 
         preparedStatement.execute();
 

@@ -62,6 +62,10 @@ public class MuteCommand extends AModeration {
         Guild guild = message.getGuild();
 
         Member memberVictim = guild.getMember(victim);
+        if(memberVictim == null) {
+            return;
+        }
+
         if (GuildUtils.hasRole(memberVictim, "Muted")) {
             message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Ce membre est déjà mute")).queue();
             return;
@@ -70,8 +74,9 @@ public class MuteCommand extends AModeration {
         GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
         long mutedID = guildIdDAO.get("muted").id;
         Role muted = guild.getRoleById(mutedID);
-
-        guild.addRoleToMember(memberVictim, muted).queue();
+        if(muted != null) {
+            guild.addRoleToMember(memberVictim, muted).queue();
+        }
 
         InfractionData data = new InfractionData(
                 victim.getId(), moderator.getId(), InfractionType.MUTE, reason, new Date(), null);
@@ -87,8 +92,9 @@ public class MuteCommand extends AModeration {
                 .addField("Raison:", reason, true);
 
         TextChannel logsChannel = guild.getTextChannelById(logs.id);
-        logsChannel.sendMessage(embedBuilder.build()).queue();
-
+        if(logsChannel != null) {
+            logsChannel.sendMessage(embedBuilder.build()).queue();
+        }
         message.getChannel().sendMessage(Utils.getMuteEmbed(victim, reason, null)).queue();
     }
 }

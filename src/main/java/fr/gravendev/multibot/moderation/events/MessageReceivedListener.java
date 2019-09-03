@@ -10,16 +10,17 @@ import fr.gravendev.multibot.events.Listener;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.awt.*;
 import java.util.Date;
 
-public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
+public class MessageReceivedListener implements Listener<GuildMessageReceivedEvent> {
 
     private final BadWordsDAO badWordsDAO;
     private final InfractionDAO infractionDAO;
@@ -33,18 +34,16 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
 
 
     @Override
-    public Class<MessageReceivedEvent> getEventClass() {
-        return MessageReceivedEvent.class;
+    public Class<GuildMessageReceivedEvent> getEventClass() {
+        return GuildMessageReceivedEvent.class;
     }
 
     @Override
-    public void executeListener(MessageReceivedEvent event) {
+    public void executeListener(GuildMessageReceivedEvent event) {
 
-        if (event.getAuthor().isBot()) return;
-        if (event.getGuild().getIdLong() == 238975753969074177L) return;
-        if (event.getMember() != null && event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
+        if (event.getAuthor().isBot() || event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
 
-        for (String badWord : this.badWordsDAO.get("").badWords.split(" ")) {
+        for (String badWord : this.badWordsDAO.get("").getBadWords().split(" ")) {
 
             if (badWord.isEmpty()) continue;
 
@@ -69,11 +68,14 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
             EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                     .setAuthor("[WARN] " + user.getAsTag(), user.getAvatarUrl())
                     .addField("Utilisateur:", user.getAsMention(), true)
-                    .addField("Modérateur:", "MultiBot", true)
+                    .addField("Modérateur:", message.getJDA().getSelfUser().getAsMention(), true)
                     .addField("Raison:", "Bad word usage", true);
 
             TextChannel logsChannel = guild.getTextChannelById(logs.id);
-            logsChannel.sendMessage(embedBuilder.build()).queue();
+            if (logsChannel != null) {
+                logsChannel.sendMessage(embedBuilder.build()).queue();
+            }
+
 
             message.getChannel().sendMessage(Utils.getWarnEmbed(user, "Bad word usage")).queue();
 

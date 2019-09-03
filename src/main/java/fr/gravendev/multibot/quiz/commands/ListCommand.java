@@ -41,7 +41,7 @@ public class ListCommand implements CommandExecutor {
             messageBuilder
                     .append(String.valueOf(i))
                     .append(" - ")
-                    .append(messageData.message)
+                    .append(messageData.getMessage())
                     .append("\n");
 
         }

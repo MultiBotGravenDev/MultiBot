@@ -67,7 +67,7 @@ public class BadWordCommand implements CommandExecutor {
 
         if (args.length < 2) return;
 
-        this.badWordsDAO.save(new BadWordsData(this.badWordsDAO.get("").badWords + args[1]));
+        this.badWordsDAO.save(new BadWordsData(this.badWordsDAO.get("").getBadWords() + args[1]));
         message.getChannel().sendMessage("Le mot " + args[1] + " a bien été ajouté aux bad words.").queue();
 
     }
@@ -82,7 +82,7 @@ public class BadWordCommand implements CommandExecutor {
     }
 
     private void list(MessageChannel channel) {
-        channel.sendMessage(Arrays.toString(this.badWordsDAO.get("").badWords.split(" "))).queue();
+        channel.sendMessage(Arrays.toString(this.badWordsDAO.get("").getBadWords().split(" "))).queue();
     }
 
 }

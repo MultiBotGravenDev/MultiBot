@@ -55,7 +55,7 @@ public class TempmuteCommand extends AModeration {
         Guild guild = message.getGuild();
         Member memberVictim = guild.getMember(victim);
 
-        if (GuildUtils.hasRole(memberVictim, "Muted")) {
+        if (memberVictim != null && GuildUtils.hasRole(memberVictim, "Muted")) {
             message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Ce membre est déjà mute")).queue();
             return;
         }
@@ -78,11 +78,14 @@ public class TempmuteCommand extends AModeration {
                 .addField("Jusqu'à:", Utils.getDateFormat().format(end), true);
 
         TextChannel logsChannel = guild.getTextChannelById(logs.id);
-        logsChannel.sendMessage(embedBuilder.build()).queue();
+        if(logsChannel != null) {
+            logsChannel.sendMessage(embedBuilder.build()).queue();
+        }
 
-        guild.addRoleToMember(memberVictim, muted).queue();
+        if(memberVictim != null && muted != null) {
+            guild.addRoleToMember(memberVictim, muted).queue();
+        }
 
         message.getChannel().sendMessage(Utils.getMuteEmbed(victim, reason, end)).queue();
-
     }
 }

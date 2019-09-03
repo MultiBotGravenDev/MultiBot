@@ -5,11 +5,15 @@ import fr.gravendev.multibot.database.dao.VoteDAO;
 import fr.gravendev.multibot.database.data.VoteData;
 import fr.gravendev.multibot.database.data.VoteDataBuilder;
 import fr.gravendev.multibot.events.Listener;
+import fr.gravendev.multibot.votes.Vote;
+import fr.gravendev.multibot.votes.VoteType;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -43,33 +47,28 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
         }
         event.getReaction().removeReaction(user).queue();
 
-
         if (channel.retrieveMessageById(event.getMessageIdLong()).complete().getTimeCreated().isBefore(OffsetDateTime.now().minusDays(1))){
             return;
         }
 
         VoteData voteData = voteDAO.get(event.getMessageId());
-
         if (voteData == null){
             return;
         }
 
         long userId = user.getIdLong();
-        Arrays.asList(voteData.yes, voteData.no, voteData.white)
-                .forEach(longs -> longs.remove(userId));
+        List<Vote> removeVote = new ArrayList<>();
+        voteData.getVotes().stream().filter(vote -> vote.getUserId() == userId)
+                .forEach(removeVote::add);
+        voteData.getVotes().removeAll(removeVote);
 
         VoteDataBuilder voteDataBuilder = VoteDataBuilder.fromVoteData(voteData);
+        MessageReaction.ReactionEmote reactionEmote = event.getReactionEmote();
+        VoteType voteType = VoteType.getVoteTypeByReaction(reactionEmote.getName());
+        if(voteType == null)
+            return;
 
-        switch (event.getReactionEmote().getName()) {
-            case "\u2705":
-                voteDataBuilder.addYes(userId);
-                break;
-            case "\u274C":
-                voteDataBuilder.addNo(userId);
-                break;
-            case "\u2B1C":
-                voteDataBuilder.addWhite(userId);
-        }
+        voteDataBuilder.addVote(new Vote(userId, voteType));
 
         voteDAO.save(voteDataBuilder.build());
 

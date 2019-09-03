@@ -30,7 +30,7 @@ public class ReadThisSaloonExecutor implements EmoteAddedExecutor {
         Member member = event.getMember();
         MessageReaction.ReactionEmote reactionEmote = event.getReactionEmote();
 
-        if (!reactionEmote.getName().equalsIgnoreCase("\u2705")) {
+        if (!reactionEmote.getName().equalsIgnoreCase("\u2705") && member != null) {
             event.getReaction().removeReaction(member.getUser()).queue();
             return;
         }

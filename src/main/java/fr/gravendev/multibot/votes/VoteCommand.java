@@ -12,11 +12,9 @@ import fr.gravendev.multibot.votes.roles.Honorable;
 import fr.gravendev.multibot.votes.roles.Pillar;
 import fr.gravendev.multibot.votes.roles.Role;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -127,23 +125,28 @@ public class VoteCommand implements CommandExecutor {
                     .isAccepted(false)
                     .build());
 
-            sentMessage.getChannel().retrieveMessageById(sentMessage.getIdLong()).queueAfter(10, TimeUnit.SECONDS, sentMessage2 -> {
+            sentMessage.getChannel().retrieveMessageById(sentMessage.getIdLong()).queueAfter(24, TimeUnit.HOURS, sentMessage2 -> {
 
                 VoteData voteData = voteDAO.get(sentMessage.getId());
-                boolean accepted = voteData.yes.size() > voteData.no.size();
 
+                List<Long> voteYes = voteData.getVotersByType(VoteType.YES);
+                List<Long> voteNo = voteData.getVotersByType(VoteType.NO);
+                List<Long> voteWhite = voteData.getVotersByType(VoteType.WHITE);
 
-                MessageEmbed finalEmbed = new EmbedBuilder()
+                boolean accepted = voteYes.size() > voteNo.size();
+
+                JDA jda = message.getJDA();
+
+                EmbedBuilder embedBuilder = new EmbedBuilder()
                         .setColor(role.getColor())
                         .setAuthor(member.getUser().getAsTag(), member.getUser().getAvatarUrl(), member.getUser().getAvatarUrl())
                         .setTitle("Vote " + role.getRoleName())
                         .addField("Présentation :", presentation, false)
-                        .addField("Oui :", voteData.yes.stream().map(userId -> message.getJDA().getUserById(userId).getName()).collect(Collectors.joining("\n")), true)
-                        .addField("Non :", voteData.no.stream().map(userId -> message.getJDA().getUserById(userId).getName()).collect(Collectors.joining("\n")), true)
-                        .addField("Blanc :", voteData.white.stream().map(userId -> message.getJDA().getUserById(userId).getName()).collect(Collectors.joining("\n")), true)
-                        .addField(accepted ? "Accepté :" : "Refusé :", "(" + voteData.yes.size() + "/" + voteData.no.size() + ")", false)
-                        .setFooter("Proposé par " + message.getAuthor().getAsTag(), message.getAuthor().getAvatarUrl())
-                        .build();
+                        .addField("Oui :", formatVoters(jda, voteYes), true)
+                        .addField("Non :", formatVoters(jda, voteNo), true)
+                        .addField("Blanc :", formatVoters(jda, voteWhite), true)
+                        .addField(accepted ? "Accepté :" : "Refusé :", "(" + voteYes.size() + "/" + voteNo.size() + ")", false)
+                        .setFooter("Proposé par " + message.getAuthor().getAsTag(), message.getAuthor().getAvatarUrl());
 
                 voteData = VoteDataBuilder.fromVoteData(voteData).isAccepted(accepted).build();
                 voteDAO.save(voteData);
@@ -154,7 +157,7 @@ public class VoteCommand implements CommandExecutor {
                         message.getGuild().addRoleToMember(member, voteRole).queue();
                 }
 
-                sentMessage2.editMessage(finalEmbed).queue();
+                sentMessage2.editMessage(embedBuilder.build()).queue();
                 sentMessage2.clearReactions().queue();
 
                 voteDAO.delete(voteData);
@@ -163,8 +166,17 @@ public class VoteCommand implements CommandExecutor {
         });
 
         message.delete().queue();
+    }
 
-
+    private String formatVoters(JDA jda, List<Long> voters) {
+        return voters.stream()
+                .map(userId -> {
+                    User user = jda.getUserById(userId);
+                    if(user == null)
+                        return "";
+                    return user.getName();
+                })
+                .collect(Collectors.joining("\n"));
     }
 
 }

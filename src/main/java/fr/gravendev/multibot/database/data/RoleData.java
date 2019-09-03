@@ -2,12 +2,19 @@ package fr.gravendev.multibot.database.data;
 
 public class RoleData {
 
-    public final String roleId;
-    public final String emoteId;
+    private final String roleId;
+    private final String emoteId;
 
     public RoleData(String roleId, String emoteId) {
         this.roleId = roleId;
         this.emoteId = emoteId;
     }
 
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public String getEmoteId() {
+        return emoteId;
+    }
 }

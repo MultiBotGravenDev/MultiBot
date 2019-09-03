@@ -36,7 +36,7 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
             this.quizManager.registerResponse(author, message.getContentDisplay());
             this.quizManager.send(author);
 
-        } else if (this.welcomeMessagesSetManager.isWaitingFor(message.getAuthor())){
+        } else if (this.welcomeMessagesSetManager.isWaitingFor(message.getAuthor())) {
 
             this.welcomeMessagesSetManager.registerMessage(message);
 

@@ -4,6 +4,7 @@ import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -45,7 +46,11 @@ class CandidatureSender {
         long guildId = guildIdDAO.get("guild").id;
         long candidsChannelId = guildIdDAO.get("candids").id;
 
-        return user.getJDA().getGuildById(guildId).getTextChannelById(candidsChannelId);
+        Guild guild = user.getJDA().getGuildById(guildId);
+        if (guild == null) {
+            return null;
+        }
+        return guild.getTextChannelById(candidsChannelId);
     }
 
 }

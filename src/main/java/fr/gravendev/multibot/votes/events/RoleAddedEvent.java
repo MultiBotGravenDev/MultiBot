@@ -43,7 +43,7 @@ public class RoleAddedEvent implements Listener<GuildMemberRoleAddEvent> {
             return;
         }
 
-        if (ROLES_NAMES.contains(role.getName()) && !voteData.accepted) {
+        if (ROLES_NAMES.contains(role.getName()) && !voteData.isAccepted()) {
             event.getGuild().removeRoleFromMember(member, role).queue();
         }
 

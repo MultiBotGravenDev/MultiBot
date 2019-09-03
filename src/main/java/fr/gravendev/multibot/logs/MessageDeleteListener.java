@@ -37,14 +37,14 @@ public class MessageDeleteListener implements Listener<MessageDeleteEvent> {
         TextChannel channel = event.getTextChannel();
         String channelName = channel.getName();
 
-        if (!channelName.startsWith("présentation")){
+        if (!channelName.startsWith("présentation")) {
             return;
         }
 
         String messageId = event.getMessageId();
         MessageData messageData = logsDAO.get(messageId);
 
-        if (messageData == null){
+        if (messageData == null) {
             return;
         }
 

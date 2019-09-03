@@ -83,7 +83,10 @@ public class UnmuteCommand implements CommandExecutor {
         long mutedID = guildIdDAO.get("muted").id;
         Role muted = guild.getRoleById(mutedID);
 
-        guild.removeRoleFromMember(member, muted).queue();
+        if (muted != null) {
+            guild.removeRoleFromMember(member, muted).queue();
+        }
+
         message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, member.getUser().getAsTag() + " vient d'être unmute")).queue();
         member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unmute").queue());
 

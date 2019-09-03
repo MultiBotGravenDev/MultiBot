@@ -31,14 +31,14 @@ public class Utils {
                 .build();
     }
 
-    private static String stringifyEndDate(Date end){
-        if (end != null){
+    private static String stringifyEndDate(Date end) {
+        if (end != null) {
             return getDateFormat().format(end);
         }
         return "Jamais";
     }
 
-    private static String makeDescription(User user, String action, String reason){
+    private static String makeDescription(User user, String action, String reason) {
         String userTag = user.getAsTag();
 
         return TextFormatter.formatLines(
@@ -47,12 +47,12 @@ public class Utils {
         ).toString();
     }
 
-    private static MessageEmbed makeEmbed(User user, String action, String reason){
+    private static MessageEmbed makeEmbed(User user, String action, String reason) {
         String description = makeDescription(user, action, reason);
         return buildEmbed(Color.DARK_GRAY, description);
     }
 
-    private static String makeDescription(User user, String action, String reason, Date end){
+    private static String makeDescription(User user, String action, String reason, Date end) {
         String description = makeDescription(user, action, reason);
         String endDate = stringifyEndDate(end);
 
@@ -62,7 +62,7 @@ public class Utils {
         ).toString();
     }
 
-    private static MessageEmbed makeEmbed(User user, String action, String reason, Date end){
+    private static MessageEmbed makeEmbed(User user, String action, String reason, Date end) {
         String description = makeDescription(user, action, reason, end);
         return buildEmbed(Color.DARK_GRAY, description);
     }
@@ -107,7 +107,7 @@ public class Utils {
         long time = 0;
 
         for (int i = 0; i < chars.length; i++) {
-            if (Character.isDigit(chars[i])){
+            if (Character.isDigit(chars[i])) {
                 timeBuilder.append(chars[i]);
             } else {
                 keyBuilder.append(chars[i]);
@@ -125,7 +125,7 @@ public class Utils {
             }
         }
 
-        if (keyBuilder.length() > 0 || timeBuilder.length() > 0){
+        if (keyBuilder.length() > 0 || timeBuilder.length() > 0) {
             return -1;
         }
 

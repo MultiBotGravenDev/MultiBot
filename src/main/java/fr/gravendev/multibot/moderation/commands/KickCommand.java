@@ -66,8 +66,9 @@ public class KickCommand extends AModeration {
                 .addField("Raison:", reason, true);
 
         TextChannel logsChannel = guild.getTextChannelById(logs.id);
-        logsChannel.sendMessage(embedBuilder.build()).queue();
-
+        if(logsChannel != null) {
+            logsChannel.sendMessage(embedBuilder.build()).queue();
+        }
 
         message.getChannel().sendMessage(Utils.getKickEmbed(victim, reason)).queue();
     }

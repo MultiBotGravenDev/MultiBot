@@ -26,7 +26,6 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
     public void executeListener(MessageReceivedEvent event) {
 
         if (event.getAuthor().isBot()) return;
-        if(!event.getAuthor().getName().equals("Nolan")) return;
 
         User author = event.getAuthor();
 
@@ -51,9 +50,7 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
             experienceData = new ExperienceData(author.getId());
             experienceDAO.save(experienceData);
         }
-
     }
-
 
     private int levelToExp(int level) {
         return (5 * level) * 2 + (50 * level + 100);

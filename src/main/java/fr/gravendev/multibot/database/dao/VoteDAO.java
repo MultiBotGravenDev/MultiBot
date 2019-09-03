@@ -3,6 +3,8 @@ package fr.gravendev.multibot.database.dao;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.VoteData;
 import fr.gravendev.multibot.database.data.VoteDataBuilder;
+import fr.gravendev.multibot.votes.Vote;
+import fr.gravendev.multibot.votes.VoteType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,58 +20,40 @@ public class VoteDAO extends DAO<VoteData> {
     @Override
     public boolean save(VoteData voteData, Connection connection) throws SQLException {
 
-        if (get(String.valueOf(voteData.messageId), connection).role == null) {
+        if (get(String.valueOf(voteData.getMessageId()), connection).getRole() == null) {
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO votes (message_id, role, user_id, accepted) VALUES(?, ?, ?, ?)");
 
-            preparedStatement.setString(1, String.valueOf(voteData.messageId));
-            preparedStatement.setString(2, String.valueOf(voteData.role));
-            preparedStatement.setString(3, String.valueOf(voteData.userId));
-            preparedStatement.setBoolean(4, voteData.accepted);
+            preparedStatement.setString(1, String.valueOf(voteData.getMessageId()));
+            preparedStatement.setString(2, String.valueOf(voteData.getRole()));
+            preparedStatement.setString(3, String.valueOf(voteData.getUserId()));
+            preparedStatement.setBoolean(4, voteData.isAccepted());
 
             preparedStatement.execute();
         }
 
-        if (get(String.valueOf(voteData.messageId)).accepted != voteData.accepted) {
+        if (get(String.valueOf(voteData.getMessageId())).isAccepted() != voteData.isAccepted()) {
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE votes SET accepted = ? WHERE message_id = ?");
 
-            preparedStatement.setBoolean(1, voteData.accepted);
-            preparedStatement.setString(2, String.valueOf(voteData.messageId));
+            preparedStatement.setBoolean(1, voteData.isAccepted());
+            preparedStatement.setString(2, String.valueOf(voteData.isAccepted()));
 
             preparedStatement.execute();
         }
 
-        for (Long voter : voteData.yes) {
+        for (Vote vote : voteData.getVotes()) {
+            VoteType type = vote.getType();
+            long voter = vote.getUserId();
+
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?");
-            preparedStatement.setInt(1, voteData.voteId);
+            preparedStatement.setInt(1, voteData.getVoteId());
             preparedStatement.setString(2, String.valueOf(voter));
-            preparedStatement.setString(3, "yes");
+            preparedStatement.setString(3, type.name().toLowerCase());
 
             preparedStatement.setString(4, "yes");
 
             preparedStatement.execute();
         }
 
-        for (Long voter : voteData.no) {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?");
-            preparedStatement.setInt(1, voteData.voteId);
-            preparedStatement.setString(2, String.valueOf(voter));
-            preparedStatement.setString(3, "no");
-
-            preparedStatement.setString(4, "no");
-
-            preparedStatement.execute();
-        }
-
-        for (Long voter : voteData.white) {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?");
-            preparedStatement.setInt(1, voteData.voteId);
-            preparedStatement.setString(2, String.valueOf(voter));
-            preparedStatement.setString(3, "white");
-
-            preparedStatement.setString(4, "white");
-
-            preparedStatement.execute();
-        }
         return false;
     }
 
@@ -109,22 +93,8 @@ public class VoteDAO extends DAO<VoteData> {
             }
 
             String choice = resultSet.getString("choice");
-
-            switch (choice) {
-
-                case "yes":
-                    voteDataBuilder.addYes(voterId);
-                    break;
-
-                case "no":
-                    voteDataBuilder.addNo(voterId);
-                    break;
-
-                case "white":
-                    voteDataBuilder.addWhite(voterId);
-                    break;
-
-            }
+            VoteType voteType = VoteType.valueOf(choice.toUpperCase());
+            voteDataBuilder.addVote(new Vote(voterId, voteType));
 
         }
 

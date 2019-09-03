@@ -31,7 +31,7 @@ public class MessageData {
         return content;
     }
 
-    public long getCreation() {
+    long getCreation() {
         return creation;
     }
 }

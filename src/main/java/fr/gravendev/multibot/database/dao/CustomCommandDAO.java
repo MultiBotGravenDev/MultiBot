@@ -18,10 +18,10 @@ public class CustomCommandDAO extends DAO<CustomCommandData> {
     public boolean save(CustomCommandData obj, Connection connection) throws SQLException {
 
         PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO custom_commands(command, text) VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?");
-        preparedStatement.setString(1, obj.command);
-        preparedStatement.setString(2, obj.text);
+        preparedStatement.setString(1, obj.getCommand());
+        preparedStatement.setString(2, obj.getText());
 
-        preparedStatement.setString(3, obj.text);
+        preparedStatement.setString(3, obj.getText());
 
         preparedStatement.execute();
         return true;
@@ -49,7 +49,7 @@ public class CustomCommandDAO extends DAO<CustomCommandData> {
     public void delete(CustomCommandData obj, Connection connection) throws SQLException {
 
         PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM custom_commands WHERE command = ?");
-        preparedStatement.setString(1, obj.command);
+        preparedStatement.setString(1, obj.getCommand());
 
         preparedStatement.execute();
 

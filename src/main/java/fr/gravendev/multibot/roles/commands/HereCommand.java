@@ -31,7 +31,7 @@ public class HereCommand implements CommandExecutor {
 
     @Override
     public List<String> getAuthorizedChannelsNames() {
-        return Collections.singletonList("rôle-langage-test");
+        return Collections.singletonList("rôle-langage");
     }
 
     @Override
@@ -41,11 +41,11 @@ public class HereCommand implements CommandExecutor {
         channel.getHistoryBefore(message, 100).queue(messageHistory -> messageHistory.getRetrievedHistory().forEach(oldMessage -> oldMessage.delete().queue()));
 
         Guild guild = message.getGuild();
-        channel.sendMessage(roleDAO.get("message").emoteId)
+        channel.sendMessage(roleDAO.get("message").getEmoteId())
                 .queue(sentMessage -> guild.getRoles().stream()
                         .map(role -> roleDAO.get(role.getId()))
                         .filter(Objects::nonNull)
-                        .forEach(role -> sentMessage.addReaction(guild.getEmoteById(role.emoteId)).queue())
+                        .forEach(role -> sentMessage.addReaction(guild.getEmoteById(role.getEmoteId())).queue())
                 );
 
         message.delete().queue();
