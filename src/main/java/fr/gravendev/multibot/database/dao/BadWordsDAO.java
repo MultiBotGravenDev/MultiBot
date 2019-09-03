@@ -52,8 +52,7 @@ public class BadWordsDAO extends DAO<BadWordsData> {
 
         BadWordsData badWords = this.get("", connection);
         String words = badWords.getBadWords();
-        // Error ? words.replace(words, "")
-        BadWordsData finalBadWords = new BadWordsData(words.replace(words, ""));
+        BadWordsData finalBadWords = new BadWordsData(words.replace(obj.getBadWords(), ""));
 
         this.save(finalBadWords, connection);
 

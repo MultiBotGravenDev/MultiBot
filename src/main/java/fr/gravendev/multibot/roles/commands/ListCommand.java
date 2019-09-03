@@ -28,7 +28,7 @@ public class ListCommand implements CommandExecutor {
 
     @Override
     public List<String> getAuthorizedChannelsNames() {
-        return Arrays.asList("rôle-langage-test", "piliers");
+        return Arrays.asList("rôle-langage", "piliers", "commandes");
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ListCommand implements CommandExecutor {
                 .filter(Objects::nonNull)
                 .map(roleData -> {
                     Role role = guild.getRoleById(roleData.getRoleId());
-                    String roleName = role == null ? "INVALID(" + roleData.getRoleId() + ")" : role.getAsMention();
+                    String roleName = role == null ? "INVALID(" + roleData.getRoleId() + ")" : role.getName();
 
                     Emote emote = guild.getEmoteById(roleData.getEmoteId());
                     String emoteName = emote == null ? "INVALID(" + roleData.getEmoteId() + ")" : emote.getAsMention();

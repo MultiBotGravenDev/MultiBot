@@ -53,7 +53,7 @@ public class QuizCommand implements CommandExecutor {
 
     @Override
     public List<String> getAuthorizedChannelsNames() {
-        return Arrays.asList("lisez-ce-salon", "piliers");
+        return Arrays.asList("réglement", "lisez-ce-salon", "piliers");
     }
 
     @Override

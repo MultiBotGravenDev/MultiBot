@@ -72,7 +72,7 @@ public class RolesCommand implements CommandExecutor {
 
     @Override
     public List<String> getAuthorizedChannelsNames() {
-        return Arrays.asList("rôle-langage-test", "piliers");
+        return Arrays.asList("rôle-langage", "piliers", "commandes");
     }
 
     @Override
