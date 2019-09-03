@@ -45,6 +45,26 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
         if (event.getGuild().getIdLong() == 238975753969074177L) return;
 
         Message message = event.getMessage();
+
+        warnForBadWord(message);
+        warnForCapitalsLetters(message);
+        warnForDiscordInvite(message);
+
+    }
+
+    private void warnForDiscordInvite(Message message) {
+
+        if (message.getContentDisplay().contains("discord.gg")) {
+
+            warn(message, "Posted invite");
+            message.delete().queue();
+
+        }
+
+    }
+
+    private void warnForBadWord(Message message) {
+
         for (String badWord : this.badWordsDAO.get("").getBadWords().split(" ")) {
 
             if (badWord.isEmpty()) continue;
@@ -52,8 +72,6 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
             computeBadWord(badWord, message);
 
         }
-
-        warnForCapitalsLetters(message);
 
     }
 
@@ -72,27 +90,7 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
 
         if (isCapital) {
 
-            User user = message.getAuthor();
-            Guild guild = message.getGuild();
-
-            InfractionData data = new InfractionData(user.getId(), user.getId(), InfractionType.WARN, "Bad word usage", new Date(), null);
-
-            infractionDAO.save(data);
-            GuildIdsData logs = guildIdDAO.get("logs");
-
-            EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
-                    .setAuthor("[WARN] " + user.getAsTag(), user.getAvatarUrl())
-                    .addField("Utilisateur:", user.getAsMention(), true)
-                    .addField("Modérateur:", message.getJDA().getSelfUser().getAsMention(), true)
-                    .addField("Raison:", "Capitals letters", true);
-
-            TextChannel logsChannel = guild.getTextChannelById(logs.id);
-            if (logsChannel != null) {
-                logsChannel.sendMessage(embedBuilder.build()).queue();
-            }
-
-
-            message.getChannel().sendMessage(Utils.getWarnEmbed(user, "Capitals letters")).queue();
+            warn(message, "Capital letters");
 
         }
     }
@@ -101,29 +99,35 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
 
         if (message.getContentDisplay().toLowerCase().contains(badWord.toLowerCase())) {
 
-            User user = message.getAuthor();
-            Guild guild = message.getGuild();
-
-            InfractionData data = new InfractionData(user.getId(), user.getId(), InfractionType.WARN, "Bad word usage", new Date(), null);
-
-            infractionDAO.save(data);
-            GuildIdsData logs = guildIdDAO.get("logs");
-
-            EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
-                    .setAuthor("[WARN] " + user.getAsTag(), user.getAvatarUrl())
-                    .addField("Utilisateur:", user.getAsMention(), true)
-                    .addField("Modérateur:", message.getJDA().getSelfUser().getAsMention(), true)
-                    .addField("Raison:", "Bad word usage", true);
-
-            TextChannel logsChannel = guild.getTextChannelById(logs.id);
-            if (logsChannel != null) {
-                logsChannel.sendMessage(embedBuilder.build()).queue();
-            }
-
-
-            message.getChannel().sendMessage(Utils.getWarnEmbed(user, "Bad word usage")).queue();
+            warn(message, "Bad word");
 
         }
+
+    }
+
+    private void warn(Message message, String reason) {
+
+        User user = message.getAuthor();
+        Guild guild = message.getGuild();
+
+        InfractionData data = new InfractionData(user.getId(), user.getId(), InfractionType.WARN, "Bad word usage", new Date(), null);
+
+        infractionDAO.save(data);
+        GuildIdsData logs = guildIdDAO.get("logs");
+
+        EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
+                .setAuthor("[WARN] " + user.getAsTag(), user.getAvatarUrl())
+                .addField("Utilisateur:", user.getAsMention(), true)
+                .addField("Modérateur:", message.getJDA().getSelfUser().getAsMention(), true)
+                .addField("Raison:", reason, true);
+
+        TextChannel logsChannel = guild.getTextChannelById(logs.id);
+        if (logsChannel != null) {
+            logsChannel.sendMessage(embedBuilder.build()).queue();
+        }
+
+
+        message.getChannel().sendMessage(Utils.getWarnEmbed(user, reason)).queue();
 
     }
 
