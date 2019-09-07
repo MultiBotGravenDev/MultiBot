@@ -37,7 +37,7 @@ public class InfractionsTask extends TimerTask {
                         if (member == null) {
                             break;
                         }
-                        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unmute").queue());
+                        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été débanni du discord GravenDev").queue(), throwable -> {});
                         break;
                     case MUTE:
                         member = guild.getMemberById(infraction.getPunished_id());
@@ -45,7 +45,7 @@ public class InfractionsTask extends TimerTask {
                             break;
                         }
                         GuildUtils.removeRole(member, guildIdDAO.get("muted").id + "").queue();
-                        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unmute").queue());
+                        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unmute du discord GravenDev").queue(), throwable -> {});
                         break;
                 }
                 infraction.setFinished(true);
