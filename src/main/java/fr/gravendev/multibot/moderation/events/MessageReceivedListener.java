@@ -42,14 +42,12 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
     public void executeListener(GuildMessageReceivedEvent event) {
 
         if (isImmunised(event.getMessage().getMember())) return;
-        if (event.getGuild().getIdLong() == 238975753969074177L) return;
 
         Message message = event.getMessage();
 
         warnForBadWord(message);
         warnForCapitalsLetters(message);
         warnForDiscordInvite(message);
-
     }
 
     private boolean isImmunised(Member member) {
@@ -73,32 +71,29 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
     private void warnForBadWord(Message message) {
 
         for (String badWord : this.badWordsDAO.get("").getBadWords().split(" ")) {
-
             if (badWord.isEmpty()) continue;
-
             computeBadWord(badWord, message);
-
         }
 
     }
 
     private void warnForCapitalsLetters(Message message) {
 
-        String contentDisplay = message.getContentDisplay();
-        boolean isCapital = false;
-        int capitalLettersCount = 0;
-
-        for (String letter : contentDisplay.split("")) {
-            if (letter.matches("[A-Z]")) ++capitalLettersCount;
+        String content = message.getContentDisplay();
+        for (Emote emote : message.getEmotes()) {
+            content = content.replace(":" + emote.getName() + ":", "");
         }
 
-        int length = contentDisplay.length();
-        if (capitalLettersCount * 100 / length >= 75 && length >= 3) isCapital = true;
+        int capitalLettersCount = 0;
 
-        if (isCapital) {
+        for (char letter : content.toCharArray()) {
+            if(Character.isUpperCase(letter)) ++capitalLettersCount;
+        }
 
+        int length = content.length();
+
+        if (length >= 8 && capitalLettersCount * 100 / length >= 75) {
             warn(message, "Capital letters");
-
         }
     }
 

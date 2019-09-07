@@ -22,7 +22,6 @@ public class DatabaseConnection {
         dataSource.addDataSourceProperty("useUnicode","true");
         dataSource.setMaximumPoolSize(15);
         dataSource.setMinimumIdle(0);
-        dataSource.setIdleTimeout(1);
     }
 
     public Connection getConnection() throws SQLException {

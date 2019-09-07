@@ -7,7 +7,6 @@ import fr.gravendev.multibot.events.MultiBotListener;
 import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
-import fr.gravendev.multibot.spark.SparkAPI;
 import fr.gravendev.multibot.utils.json.Configuration;
 import fr.gravendev.multibot.utils.json.FileWriter;
 import fr.gravendev.multibot.utils.json.Serializer;
@@ -61,12 +60,13 @@ class MultiBot {
                     .addEventListeners(new MultiBotListener(commandManager, databaseConnection, quizManager, welcomeMessagesSetManager, pollsManager))
                     .build();
 
-            SparkAPI sparkAPI = new SparkAPI(jda, databaseConnection);
-            sparkAPI.initRoutes();
+            //SparkAPI sparkAPI = new SparkAPI(jda, databaseConnection);
+            //sparkAPI.initRoutes();
+            // TODO: Finish the website kappa
 
             LOGGER.info("Bot connected");
 
-        } catch (LoginException | InterruptedException ex) {
+        } catch (LoginException ex) {
             ex.printStackTrace();
             LOGGER.error("Failed to connect the bot");
             System.exit(0);
