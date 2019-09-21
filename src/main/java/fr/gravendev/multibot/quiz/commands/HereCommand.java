@@ -55,8 +55,11 @@ public class HereCommand implements CommandExecutor {
         }
 
         if(channel.getName().equals("réglement")) {
+            channel.sendMessage("Bonne continuation sur GravenDev - Community !").queue();
             return;
         }
+        channel.sendMessage("Pour devenir membre, il vous suffit de cocher le petit :white_check_mark: présent sous ce message et de suivre les instructions fournies par <@572396802008154112>  !\n" +
+                ":warning: Vous vous devez de répondre a toutes les questions ! Une candidature avec une question non répondue ne sera pas acceptée ! :warning:").queue();
 
         channel.sendMessage(new EmbedBuilder().setTitle("Règles lues et acceptées.")
                 .setColor(Color.GREEN)

@@ -35,11 +35,15 @@ public class MessageCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
+        MessageChannel channel = message.getChannel();
+        if(args.length == 0) {
+            channel.sendMessage("Message: "+roleDAO.get("message").getEmoteId()).queue();
+            return;
+        }
         String roleMessage = String.join(" ", args);
         RoleData roleData = new RoleData("message", roleMessage);
         roleDAO.save(roleData);
 
-        MessageChannel channel = message.getChannel();
         channel.sendMessage("Le message a bien été changé en :\n" + roleMessage).queue();
     }
 

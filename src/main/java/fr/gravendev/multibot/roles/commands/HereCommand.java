@@ -31,7 +31,7 @@ public class HereCommand implements CommandExecutor {
 
     @Override
     public List<String> getAuthorizedChannelsNames() {
-        return Collections.singletonList("rôle-langagele");
+        return Collections.singletonList("rôle-langage");
     }
 
     @Override

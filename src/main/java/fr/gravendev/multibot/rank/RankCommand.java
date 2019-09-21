@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class RankCommand implements CommandExecutor {
 
@@ -58,7 +59,7 @@ public class RankCommand implements CommandExecutor {
             if (user.isBot()) return;
 
             List<Role> roles = member.getRoles();
-            Color color = roles.size() > 0 ? roles.get(0).getColor() : Color.WHITE;
+            Color color = roles.size() > 0 ? getColor(roles) : Color.WHITE;
 
             ExperienceDAO dao = new ExperienceDAO(databaseConnection);
             ExperienceData data = dao.get(user.getId());
@@ -101,7 +102,14 @@ public class RankCommand implements CommandExecutor {
     }
 
     private int levelToExp(int level) {
-        return (5 * level) * 2 + (50 * level + 100);
+        return 5 * level * level + 50 * level + 100;
+    }
+
+    private Color getColor(List<Role> roles) {
+        Optional<Role> optionalRole = roles.stream()
+                .filter(c -> c != null && c.getColor() != Color.BLACK)
+                .findFirst();
+        return optionalRole.isPresent() ? optionalRole.get().getColor() : Color.WHITE;
     }
 
 }
