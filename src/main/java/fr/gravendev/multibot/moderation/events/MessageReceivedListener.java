@@ -19,7 +19,6 @@ import java.awt.*;
 import java.util.Date;
 
 public class MessageReceivedListener implements Listener<GuildMessageReceivedEvent> {
-
     private final BadWordsDAO badWordsDAO;
     private final InfractionDAO infractionDAO;
     private final GuildIdDAO guildIdDAO;
@@ -40,56 +39,67 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
 
     @Override
     public void executeListener(GuildMessageReceivedEvent event) {
-
-        if (isImmunised(event.getMessage().getMember())) return;
+        if (isImmunised(event.getMessage().getMember())) {
+            return;
+        }
 
         Message message = event.getMessage();
 
-        warnForBadWord(message);
-        warnForCapitalsLetters(message);
-        warnForDiscordInvite(message);
+        warnForBadWordIfNeeded(message);
+        warnForCapitalsLettersIfNeeded(message);
+        warnForDiscordInviteIfNeeded(message);
     }
 
     private boolean isImmunised(Member member) {
-        if (member == null) return true;
-        if (member.getUser().isBot()) return true;
-        if (member.getRoles().stream().anyMatch(role ->this.immunisedIdsDAO.get("").immunisedIds.contains(role.getIdLong()))) return true;
+        if (member == null
+         || member.getUser().isBot()
+         || member.getRoles().stream().anyMatch(role ->this.immunisedIdsDAO.get("").immunisedIds.contains(role.getIdLong())))
+        {
+            return true;
+        }
         return member.hasPermission(Permission.ADMINISTRATOR);
     }
 
-    private void warnForDiscordInvite(Message message) {
-
+    private void warnForDiscordInviteIfNeeded(Message message) {
         if (message.getContentDisplay().contains("discord.gg")) {
-
             warn(message, "Posted invite");
             message.delete().queue();
-
         }
-
     }
 
-    private void warnForBadWord(Message message) {
-
+    private void warnForBadWordIfNeeded(Message message) {
         for (String badWord : this.badWordsDAO.get("").getBadWords().split(" ")) {
-            if (badWord.isEmpty()) continue;
+            if (badWord.isEmpty()) {
+                continue;
+            }
             computeBadWord(badWord, message);
         }
-
     }
 
-    private void warnForCapitalsLetters(Message message) {
-
+    private String removeEmojisFromMessage(Message message) {
         String content = message.getContentDisplay();
+
         for (Emote emote : message.getEmotes()) {
             content = content.replace(":" + emote.getName() + ":", "");
         }
+        return content;
+    }
 
+    // TODO Try to refactor this using regex
+    private int countCapitalLetters(String text){
         int capitalLettersCount = 0;
 
-        for (char letter : content.toCharArray()) {
-            if(Character.isUpperCase(letter)) ++capitalLettersCount;
+        for (char letter : text.toCharArray()) {
+            if (Character.isUpperCase(letter)) {
+                ++capitalLettersCount;
+            }
         }
+        return capitalLettersCount;
+    }
 
+    private void warnForCapitalsLettersIfNeeded(Message message) {
+        String content = removeEmojisFromMessage(message);
+        int capitalLettersCount = countCapitalLetters(content);
         int length = content.length();
 
         if (length >= 8 && capitalLettersCount * 100 / length >= 75) {
@@ -98,17 +108,12 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
     }
 
     private void computeBadWord(String badWord, Message message) {
-
         if (message.getContentDisplay().toLowerCase().contains(badWord.toLowerCase())) {
-
             warn(message, "Bad word");
-
         }
-
     }
 
     private void warn(Message message, String reason) {
-
         User user = message.getAuthor();
         Guild guild = message.getGuild();
 
@@ -128,9 +133,6 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
             logsChannel.sendMessage(embedBuilder.build()).queue();
         }
 
-
         message.getChannel().sendMessage(Utils.getWarnEmbed(user, reason)).queue();
-
     }
-
 }
