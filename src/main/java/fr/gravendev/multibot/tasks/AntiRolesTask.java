@@ -6,7 +6,9 @@ import fr.gravendev.multibot.tasks.antiroles.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TimerTask;
 
 public class AntiRolesTask extends TimerTask {
 

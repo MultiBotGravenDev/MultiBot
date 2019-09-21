@@ -3,7 +3,10 @@ package fr.gravendev.multibot.database.dao;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.MessageData;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class WelcomeMessageDAO extends DAO<MessageData> {
 
