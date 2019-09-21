@@ -6,7 +6,7 @@ public enum ChannelType {
     GUILD(net.dv8tion.jda.api.entities.ChannelType.TEXT),
     PRIVATE(net.dv8tion.jda.api.entities.ChannelType.PRIVATE);
 
-    private net.dv8tion.jda.api.entities.ChannelType channelType;
+    private final net.dv8tion.jda.api.entities.ChannelType channelType;
 
     ChannelType(net.dv8tion.jda.api.entities.ChannelType channelType) {
         this.channelType = channelType;
@@ -16,8 +16,9 @@ public enum ChannelType {
         return channelType;
     }
 
-    public boolean isEqualsTo(net.dv8tion.jda.api.entities.ChannelType targetType) {
-        return this == ChannelType.ALL || this.getChannelType() == targetType;
+    public boolean equalsTo(net.dv8tion.jda.api.entities.ChannelType targetType) {
+        return this == ChannelType.ALL
+                || this.getChannelType() == targetType;
     }
 
 }

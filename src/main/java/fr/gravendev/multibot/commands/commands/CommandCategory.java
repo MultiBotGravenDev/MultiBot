@@ -10,8 +10,8 @@ public enum CommandCategory {
     EXPERIENCE("Expériences", Color.YELLOW),
     NONE("Non définies", Color.DARK_GRAY);
 
-    private String name;
-    private Color color;
+    private final String name;
+    private final Color color;
 
     CommandCategory(String name, Color color) {
         this.name = name;

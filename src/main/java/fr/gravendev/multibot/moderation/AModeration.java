@@ -27,6 +27,7 @@ public abstract class AModeration implements CommandExecutor {
     public void execute(Message message, String[] args) {
         List<Member> mentionedMembers = message.getMentionedMembers();
         MessageChannel messageChannel = message.getChannel();
+
         if (mentionedMembers.size() == 0) {
             messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: " + getCommand() + " @membre " +
                     (isTemporary() ? "durée " : "") + "raison")).queue();
@@ -34,10 +35,8 @@ public abstract class AModeration implements CommandExecutor {
         }
 
         Guild guild = message.getGuild();
-
         Member member = mentionedMembers.get(0);
         Member bot = guild.getMember(message.getJDA().getSelfUser());
-
         User victim = member.getUser();
 
         String reason = "Non définie";
