@@ -51,13 +51,10 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
     }
 
     private boolean isImmunised(Member member) {
-        if (member == null
-         || member.getUser().isBot()
-         || member.getRoles().stream().anyMatch(role ->this.immunisedIdsDAO.get("").immunisedIds.contains(role.getIdLong())))
-        {
-            return true;
-        }
-        return member.hasPermission(Permission.ADMINISTRATOR);
+        return member == null
+                || member.getUser().isBot()
+                || member.getRoles().stream().anyMatch(role -> this.immunisedIdsDAO.get("").immunisedIds.contains(role.getIdLong()))
+                || member.hasPermission(Permission.ADMINISTRATOR);
     }
 
     private void warnForDiscordInviteIfNeeded(Message message) {
@@ -86,7 +83,7 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
     }
 
     // TODO Try to refactor this using regex
-    private int countCapitalLetters(String text){
+    private int countCapitalLetters(String text) {
         int capitalLettersCount = 0;
 
         for (char letter : text.toCharArray()) {
@@ -113,6 +110,7 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
         }
     }
 
+    // TODO Refactor this, that's a too long and messy
     private void warn(Message message, String reason) {
         User user = message.getAuthor();
         Guild guild = message.getGuild();
