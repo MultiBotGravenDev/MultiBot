@@ -27,6 +27,7 @@ import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.rank.RankCommand;
 import fr.gravendev.multibot.roles.commands.RolesCommand;
+import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.votes.VoteCommand;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -43,8 +44,8 @@ public class CommandManager {
     private List<CommandExecutor> commandExecutors;
     private final CustomCommandDAO customCommandDAO;
 
-    public CommandManager(char prefix, DAOManager daoManager, WelcomeMessagesSetManager welcomeMessagesSetManager, PollsManager pollsManager) {
-        this.prefix = prefix;
+    public CommandManager(DAOManager daoManager, WelcomeMessagesSetManager welcomeMessagesSetManager, PollsManager pollsManager) {
+        this.prefix = Configuration.PREFIX.getValue().charAt(0);
         commandExecutors = new ArrayList<>(Arrays.asList(
                 new CustomCommand(daoManager),
                 new UserinfoCommand(),

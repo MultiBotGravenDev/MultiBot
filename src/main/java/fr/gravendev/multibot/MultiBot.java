@@ -1,5 +1,6 @@
 package fr.gravendev.multibot;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.DatabaseConnectionBuilder;
@@ -8,9 +9,7 @@ import fr.gravendev.multibot.events.MultiBotListener;
 import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
-import fr.gravendev.multibot.utils.json.Configuration;
-import fr.gravendev.multibot.utils.json.FileWriter;
-import fr.gravendev.multibot.utils.json.Serializer;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.slf4j.Logger;
@@ -22,7 +21,6 @@ class MultiBot {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiBot.class);
 
-    private Configuration configuration;
     private final DAOManager daoManager;
     private final CommandManager commandManager;
     private final QuizManager quizManager;
@@ -32,20 +30,21 @@ class MultiBot {
     private JDA jda;
 
     MultiBot() {
-        this.configuration = new Serializer<Configuration>().deserialize(Configuration.CONFIGURATION_FILE, Configuration.class);
-
-        if (this.configuration == null) {
-            this.configuration = new Configuration();
-            String json = new Serializer<Configuration>().serialize(configuration);
-            FileWriter.writeFile(Configuration.CONFIGURATION_FILE, json);
+        CommentedFileConfig config = CommentedFileConfig.builder("configuration.toml")
+                .defaultResource("/configuration.toml")
+                .autosave()
+                .build();
+        config.load();
+        for (Configuration configuration : Configuration.values()) {
+            configuration.setValue(config.get(configuration.getPath()));
         }
 
         DatabaseConnection databaseConnection = DatabaseConnectionBuilder
                 .aDatabaseConnection()
-                .withHost(configuration.getHost())
-                .withUser(configuration.getUser())
-                .withPassword(configuration.getPassword())
-                .withDatabase(configuration.getDatabase())
+                .withHost(Configuration.DB_HOST.getValue())
+                .withUser(Configuration.DB_USERNAME.getValue())
+                .withPassword(Configuration.DB_PASSWORD.getValue())
+                .withDatabase(Configuration.DB_DATABASE.getValue())
                 .build();
 
         this.daoManager = new DAOManager(databaseConnection);
@@ -53,13 +52,13 @@ class MultiBot {
         this.quizManager = new QuizManager(daoManager);
         this.welcomeMessagesSetManager = new WelcomeMessagesSetManager(daoManager);
         this.pollsManager = new PollsManager(daoManager);
-        this.commandManager = new CommandManager(configuration.getPrefix(), daoManager, welcomeMessagesSetManager, pollsManager);
+        this.commandManager = new CommandManager(daoManager, welcomeMessagesSetManager, pollsManager);
     }
 
     void start() {
         try {
 
-            this.jda = new JDABuilder(configuration.getToken())
+            this.jda = new JDABuilder(Configuration.TOKEN.getValue())
                     .addEventListeners(new MultiBotListener(commandManager, daoManager, quizManager, welcomeMessagesSetManager, pollsManager))
                     .build();
 
