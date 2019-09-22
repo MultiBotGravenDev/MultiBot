@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.events;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.AntiRolesDAO;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.data.AntiRoleData;
 import fr.gravendev.multibot.utils.GuildUtils;
@@ -13,9 +13,9 @@ class MemberJoinListener implements Listener<GuildMemberJoinEvent> {
     private final AntiRolesDAO antiRolesDAO;
     private final GuildIdDAO guildIdDAO;
 
-    MemberJoinListener(DatabaseConnection databaseConnection) {
-        this.antiRolesDAO = new AntiRolesDAO(databaseConnection);
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
+    MemberJoinListener(DAOManager daoManager) {
+        this.antiRolesDAO = daoManager.getAntiRolesDAO();
+        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     @Override

@@ -1,11 +1,11 @@
 package fr.gravendev.multibot.tasks.antiroles;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 
 public class AntiMeme extends AntiRole {
 
-    public AntiMeme(DatabaseConnection databaseConnection) {
-        super(databaseConnection, "anti-meme");
+    public AntiMeme(DAOManager daoManager) {
+        super(daoManager, "anti-meme");
     }
 
 }

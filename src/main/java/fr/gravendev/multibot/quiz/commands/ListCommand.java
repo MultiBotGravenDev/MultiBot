@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.quiz.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.QuizMessageDAO;
 import fr.gravendev.multibot.database.data.MessageData;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -12,8 +12,8 @@ public class ListCommand implements CommandExecutor {
 
     private final QuizMessageDAO quizMessageDAO;
 
-    ListCommand(DatabaseConnection databaseConnection) {
-        this.quizMessageDAO = new QuizMessageDAO(databaseConnection);
+    ListCommand(DAOManager daoManager) {
+        this.quizMessageDAO = daoManager.getQuizMessageDAO();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.quiz.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.data.GuildIdsData;
 import net.dv8tion.jda.api.entities.Message;
@@ -14,8 +14,8 @@ public class ChannelCommand implements CommandExecutor {
 
     private final GuildIdDAO guildIdDAO;
 
-    ChannelCommand(DatabaseConnection databaseConnection) {
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
+    ChannelCommand(DAOManager daoManager) {
+        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     @Override

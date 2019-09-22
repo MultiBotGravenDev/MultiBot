@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.tasks;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
@@ -19,10 +19,10 @@ public class InfractionsTask extends TimerTask {
     private final InfractionDAO infractionDAO;
     private final GuildIdDAO guildIdDAO;
 
-    public InfractionsTask(JDA jda, DatabaseConnection databaseConnection) {
-        this.guild = jda.getGuildById(new GuildIdDAO(databaseConnection).get("guild").id);
-        this.infractionDAO = new InfractionDAO(databaseConnection);
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
+    public InfractionsTask(JDA jda, DAOManager daoManager) {
+        this.infractionDAO = daoManager.getInfractionDAO();
+        this.guildIdDAO = daoManager.getGuildIdDAO();
+        this.guild = jda.getGuildById(this.guildIdDAO.get("guild").id);
     }
 
     @Override

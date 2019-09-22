@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.votes.roles;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 
 import java.awt.*;
@@ -9,8 +9,8 @@ public class Pillar implements Role {
 
     private final GuildIdDAO guildIdDAO;
 
-    public Pillar(DatabaseConnection databaseConnection) {
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
+    public Pillar(DAOManager daoManager) {
+        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.roles.listeners;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.RoleDAO;
 import fr.gravendev.multibot.database.data.RoleData;
 import fr.gravendev.multibot.events.Listener;
@@ -12,8 +13,8 @@ public class ReactionRemovedListener implements Listener<MessageReactionRemoveEv
 
     private final RoleDAO roleDAO;
 
-    public ReactionRemovedListener(DatabaseConnection databaseConnection) {
-        this.roleDAO = new RoleDAO(databaseConnection);
+    public ReactionRemovedListener(DAOManager daoManager) {
+        this.roleDAO = daoManager.getRoleDAO();
     }
 
     @Override

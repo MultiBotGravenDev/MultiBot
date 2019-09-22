@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.quiz.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.QuizMessageDAO;
 import fr.gravendev.multibot.database.data.MessageData;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
@@ -14,8 +14,8 @@ public class SetCommand implements CommandExecutor {
     private final QuizMessageDAO quizMessageDAO;
     private WelcomeMessagesSetManager welcomeMessagesSetManager;
 
-    SetCommand(DatabaseConnection databaseConnection, WelcomeMessagesSetManager welcomeMessagesSetManager) {
-        quizMessageDAO = new QuizMessageDAO(databaseConnection);
+    SetCommand(DAOManager daoManager, WelcomeMessagesSetManager welcomeMessagesSetManager) {
+        quizMessageDAO = daoManager.getQuizMessageDAO();
         this.welcomeMessagesSetManager = welcomeMessagesSetManager;
     }
 

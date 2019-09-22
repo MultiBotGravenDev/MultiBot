@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.quiz.events;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.events.Listener;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.events.emoteaddedexecutors.CandidsExecutor;
@@ -15,10 +15,10 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
 
     private final List<EmoteAddedExecutor> executors;
 
-    public EmoteAddedListener(QuizManager quizManager, DatabaseConnection databaseConnection) {
+    public EmoteAddedListener(QuizManager quizManager, DAOManager daoManager) {
         this.executors = Arrays.asList(
-                new ReadThisSaloonExecutor(quizManager, databaseConnection),
-                new CandidsExecutor(databaseConnection)
+                new ReadThisSaloonExecutor(quizManager, daoManager),
+                new CandidsExecutor(daoManager)
         );
     }
 

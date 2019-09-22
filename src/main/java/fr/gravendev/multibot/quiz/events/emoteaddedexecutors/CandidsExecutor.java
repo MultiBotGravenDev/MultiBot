@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.quiz.events.emoteaddedexecutors;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -11,8 +11,8 @@ public class CandidsExecutor implements EmoteAddedExecutor {
 
     private final GuildIdDAO guildIdDAO;
 
-    public CandidsExecutor(DatabaseConnection databaseConnection) {
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
+    public CandidsExecutor(DAOManager daoManager) {
+        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     @Override

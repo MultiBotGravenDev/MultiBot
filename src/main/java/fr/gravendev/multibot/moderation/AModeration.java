@@ -2,6 +2,8 @@ package fr.gravendev.multibot.moderation;
 
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
+import fr.gravendev.multibot.database.dao.DAOManager;
+import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.internal.utils.PermissionUtil;
@@ -14,6 +16,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class AModeration implements CommandExecutor {
+
+    protected final InfractionDAO infractionDAO;
+
+    public AModeration(DAOManager daoManager) {
+        this.infractionDAO = daoManager.getInfractionDAO();
+    }
 
     protected abstract boolean isTemporary();
 

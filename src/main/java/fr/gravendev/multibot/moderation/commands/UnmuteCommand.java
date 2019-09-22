@@ -2,7 +2,7 @@ package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
@@ -10,7 +10,12 @@ import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.GuildUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.Role;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -19,10 +24,12 @@ import java.util.List;
 
 public class UnmuteCommand implements CommandExecutor {
 
-    private DatabaseConnection databaseConnection;
+    private final GuildIdDAO guildIdDAO;
+    private final InfractionDAO infractionDAO;
 
-    public UnmuteCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    public UnmuteCommand(DAOManager daoManager) {
+        this.infractionDAO = daoManager.getInfractionDAO();
+        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     @Override
@@ -64,7 +71,6 @@ public class UnmuteCommand implements CommandExecutor {
             return;
         }
 
-        InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
         InfractionData data;
         try {
             data = infractionDAO.getLast(member.getUser().getId(), InfractionType.MUTE);
@@ -79,7 +85,6 @@ public class UnmuteCommand implements CommandExecutor {
             infractionDAO.save(data);
         }
 
-        GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
         long mutedID = guildIdDAO.get("muted").id;
         Role muted = guild.getRoleById(mutedID);
 

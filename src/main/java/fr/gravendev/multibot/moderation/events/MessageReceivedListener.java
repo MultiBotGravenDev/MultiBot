@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.moderation.events;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.BadWordsDAO;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.ImmunisedIdDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
@@ -12,7 +12,12 @@ import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.awt.*;
@@ -24,11 +29,11 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
     private final GuildIdDAO guildIdDAO;
     private final ImmunisedIdDAO immunisedIdsDAO;
 
-    public MessageReceivedListener(DatabaseConnection databaseConnection) {
-        this.badWordsDAO = new BadWordsDAO(databaseConnection);
-        this.infractionDAO = new InfractionDAO(databaseConnection);
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
-        this.immunisedIdsDAO = new ImmunisedIdDAO(databaseConnection);
+    public MessageReceivedListener(DAOManager daoManager) {
+        this.badWordsDAO = daoManager.getBadWordsDAO();
+        this.infractionDAO = daoManager.getInfractionDAO();
+        this.guildIdDAO = daoManager.getGuildIdDAO();
+        this.immunisedIdsDAO = daoManager.getImmunisedIdDAO();
     }
 
 

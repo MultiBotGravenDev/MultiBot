@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.quiz.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -18,8 +18,8 @@ public class HereCommand implements CommandExecutor {
 
     private final WelcomeMessageDAO welcomeMessageDAO;
 
-    HereCommand(DatabaseConnection databaseConnection) {
-        this.welcomeMessageDAO = new WelcomeMessageDAO(databaseConnection);
+    HereCommand(DAOManager daoManager) {
+        this.welcomeMessageDAO = daoManager.getWelcomeMessageDAO();
     }
 
     @Override

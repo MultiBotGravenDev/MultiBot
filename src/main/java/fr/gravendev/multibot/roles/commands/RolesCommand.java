@@ -3,7 +3,7 @@ package fr.gravendev.multibot.roles.commands;
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -16,13 +16,13 @@ public class RolesCommand implements CommandExecutor {
 
     private final List<CommandExecutor> argumentExecutors;
 
-    public RolesCommand(DatabaseConnection databaseConnection) {
+    public RolesCommand(DAOManager daoManager) {
         this.argumentExecutors = Arrays.asList(
-                new AddCommand(databaseConnection),
-                new RemoveCommand(databaseConnection),
-                new ListCommand(databaseConnection),
-                new HereCommand(databaseConnection),
-                new MessageCommand(databaseConnection)
+                new AddCommand(daoManager),
+                new RemoveCommand(daoManager),
+                new ListCommand(daoManager),
+                new HereCommand(daoManager),
+                new MessageCommand(daoManager)
         );
     }
 

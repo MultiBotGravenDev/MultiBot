@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.logs;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.LogsDAO;
 import fr.gravendev.multibot.database.data.GuildIdsData;
@@ -15,10 +15,12 @@ import java.util.stream.Collectors;
 
 public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
 
-    private final DatabaseConnection databaseConnection;
+    private final LogsDAO logsDAO;
+    private final GuildIdDAO guildIdDAO;
 
-    public MessageReceivedListener(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    public MessageReceivedListener(DAOManager daoManager) {
+        this.logsDAO = daoManager.getLogsDAO();
+        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     @Override
@@ -35,11 +37,9 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
 
         if (channel.getName().startsWith("présentation-")) {
 
-            LogsDAO logsDAO = new LogsDAO(databaseConnection);
             MessageData messageData = new MessageData(message);
             logsDAO.save(messageData);
 
-            GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
             GuildIdsData logs = guildIdDAO.get("logs");
 
             EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.ORANGE)
@@ -57,7 +57,6 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
         List<Role> mentionedRoles = message.getMentionedRoles();
         if (mentionedRoles.size() > 0) {
 
-            GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
             GuildIdsData logs = guildIdDAO.get("logs");
 
             EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.MAGENTA)

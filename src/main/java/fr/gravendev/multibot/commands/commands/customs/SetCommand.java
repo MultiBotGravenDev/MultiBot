@@ -1,8 +1,8 @@
 package fr.gravendev.multibot.commands.commands.customs;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.data.CustomCommandData;
 import net.dv8tion.jda.api.entities.Message;
 
@@ -12,8 +12,8 @@ public class SetCommand implements CommandExecutor {
 
     private final CustomCommandDAO CustomCommandDAO;
 
-    public SetCommand(DatabaseConnection databaseConnection) {
-        this.CustomCommandDAO = new CustomCommandDAO(databaseConnection);
+    public SetCommand(DAOManager daoManager) {
+        this.CustomCommandDAO = daoManager.getCustomCommandDAO();
     }
 
     @Override

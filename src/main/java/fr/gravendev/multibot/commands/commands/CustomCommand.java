@@ -3,7 +3,7 @@ package fr.gravendev.multibot.commands.commands;
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.customs.RemoveCommand;
 import fr.gravendev.multibot.commands.commands.customs.SetCommand;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -16,10 +16,10 @@ public class CustomCommand implements CommandExecutor {
 
     private final List<CommandExecutor> argumentsExecutors;
 
-    public CustomCommand(DatabaseConnection databaseConnection) {
+    public CustomCommand(DAOManager daoManager) {
         this.argumentsExecutors = Arrays.asList(
-                new SetCommand(databaseConnection),
-                new RemoveCommand(databaseConnection)
+                new SetCommand(daoManager),
+                new RemoveCommand(daoManager)
         );
     }
 

@@ -3,14 +3,18 @@ package fr.gravendev.multibot.moderation.commands;
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -21,10 +25,10 @@ import java.util.regex.Pattern;
 public class BanInfoCommand implements CommandExecutor {
 
     private static final Pattern mentionUserPattern = Pattern.compile("<@!?([0-9]{8,})>");
-    private final DatabaseConnection databaseConnection;
+    private final InfractionDAO infractionDAO;
 
-    public BanInfoCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    public BanInfoCommand(DAOManager daoManager) {
+        this.infractionDAO = daoManager.getInfractionDAO();
     }
 
     @Override
@@ -65,7 +69,6 @@ public class BanInfoCommand implements CommandExecutor {
 
                 if (banList.stream().anyMatch(ban -> ban.getUser().getId().equals(user.getId()))) {
 
-                    InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
                     InfractionData data;
                     try {
                         data = infractionDAO.getLast(id, InfractionType.BAN);

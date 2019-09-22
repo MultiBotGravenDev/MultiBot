@@ -2,7 +2,7 @@ package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
@@ -20,10 +20,10 @@ import java.util.regex.Pattern;
 public class UnbanCommand implements CommandExecutor {
 
     private static final Pattern mentionUserPattern = Pattern.compile("<@!?([0-9]{8,})>");
-    private DatabaseConnection databaseConnection;
+    private final InfractionDAO infractionDAO;
 
-    public UnbanCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    public UnbanCommand(DAOManager daoManager) {
+        this.infractionDAO = daoManager.getInfractionDAO();
     }
 
     @Override
@@ -62,7 +62,6 @@ public class UnbanCommand implements CommandExecutor {
                 return;
             }
 
-            InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
             InfractionData data;
             try {
                 data = infractionDAO.getLast(id, InfractionType.BAN);

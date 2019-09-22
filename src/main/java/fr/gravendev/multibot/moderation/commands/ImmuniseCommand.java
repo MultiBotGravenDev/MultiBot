@@ -3,7 +3,7 @@ package fr.gravendev.multibot.moderation.commands;
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.ImmunisedIdDAO;
 import fr.gravendev.multibot.database.data.ImmunisedIdsData;
 import net.dv8tion.jda.api.Permission;
@@ -17,8 +17,8 @@ public class ImmuniseCommand implements CommandExecutor {
 
     private final ImmunisedIdDAO immunisedIdDAO;
 
-    public ImmuniseCommand(DatabaseConnection databaseConnection) {
-        this.immunisedIdDAO = new ImmunisedIdDAO(databaseConnection);
+    public ImmuniseCommand(DAOManager daoManager) {
+        this.immunisedIdDAO = daoManager.getImmunisedIdDAO();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.quiz.events.emoteaddedexecutors;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.utils.GuildUtils;
@@ -14,9 +14,9 @@ public class ReadThisSaloonExecutor implements EmoteAddedExecutor {
     private final QuizManager quizManager;
     private final GuildIdDAO guildIdDAO;
 
-    public ReadThisSaloonExecutor(QuizManager quizManager, DatabaseConnection databaseConnection) {
+    public ReadThisSaloonExecutor(QuizManager quizManager, DAOManager daoManager) {
         this.quizManager = quizManager;
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
+        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     @Override

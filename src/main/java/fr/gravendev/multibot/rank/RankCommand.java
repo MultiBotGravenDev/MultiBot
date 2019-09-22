@@ -3,7 +3,7 @@ package fr.gravendev.multibot.rank;
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
 import fr.gravendev.multibot.database.data.ExperienceData;
 import net.dv8tion.jda.api.entities.Member;
@@ -21,10 +21,11 @@ import java.util.Optional;
 
 public class RankCommand implements CommandExecutor {
 
-    private DatabaseConnection databaseConnection;
 
-    public RankCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    private final ExperienceDAO experienceDAO;
+
+    public RankCommand(DAOManager daoManager) {
+        this.experienceDAO = daoManager.getExperienceDAO();
     }
 
     @Override
@@ -61,12 +62,11 @@ public class RankCommand implements CommandExecutor {
             List<Role> roles = member.getRoles();
             Color color = roles.size() > 0 ? getColor(roles) : Color.WHITE;
 
-            ExperienceDAO dao = new ExperienceDAO(databaseConnection);
-            ExperienceData data = dao.get(user.getId());
+            ExperienceData data = experienceDAO.get(user.getId());
 
             if (data == null) {
                 data = new ExperienceData(user.getId());
-                dao.save(data);
+                experienceDAO.save(data);
             }
 
             int experiences = data.getExperiences();

@@ -1,8 +1,7 @@
 package fr.gravendev.multibot.tasks.antiroles;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.AntiRolesDAO;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.data.AntiRoleData;
 import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.api.entities.Guild;
@@ -18,10 +17,10 @@ public abstract class AntiRole {
     private final String roleName;
     private final long roleId;
 
-    AntiRole(DatabaseConnection databaseConnection, String roleName) {
-        this.antiRolesDAO = new AntiRolesDAO(databaseConnection);
+    AntiRole(DAOManager daoManager, String roleName) {
+        this.antiRolesDAO = daoManager.getAntiRolesDAO();
         this.roleName = roleName;
-        this.roleId = new GuildIdDAO(databaseConnection).get(roleName).id;
+        this.roleId = daoManager.getGuildIdDAO().get(roleName).id;
     }
 
     public void deleteRoles(Guild guild) {

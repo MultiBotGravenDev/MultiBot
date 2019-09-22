@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.votes.events;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.VoteDAO;
 import fr.gravendev.multibot.database.data.VoteData;
 import fr.gravendev.multibot.events.Listener;
@@ -19,10 +20,10 @@ public class RoleAddedEvent implements Listener<GuildMemberRoleAddEvent> {
             "Développeur",
             "Pilier de la Commu");
 
-    private final DatabaseConnection databaseConnection;
+    private final VoteDAO voteDAO;
 
-    public RoleAddedEvent(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    public RoleAddedEvent(DAOManager daoManager) {
+        this.voteDAO = daoManager.getVoteDAO();
     }
 
     @Override
@@ -33,7 +34,6 @@ public class RoleAddedEvent implements Listener<GuildMemberRoleAddEvent> {
     @Override
     public void executeListener(GuildMemberRoleAddEvent event) {
 
-        VoteDAO voteDAO = new VoteDAO(databaseConnection);
         VoteData voteData = voteDAO.get(event.getUser().getId());
 
         Role role = event.getRoles().get(0);

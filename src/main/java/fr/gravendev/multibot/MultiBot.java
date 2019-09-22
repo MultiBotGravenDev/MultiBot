@@ -3,6 +3,7 @@ package fr.gravendev.multibot;
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.DatabaseConnectionBuilder;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.events.MultiBotListener;
 import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.quiz.QuizManager;
@@ -22,8 +23,8 @@ class MultiBot {
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiBot.class);
 
     private Configuration configuration;
+    private final DAOManager daoManager;
     private final CommandManager commandManager;
-    private final DatabaseConnection databaseConnection;
     private final QuizManager quizManager;
     private final WelcomeMessagesSetManager welcomeMessagesSetManager;
     private final PollsManager pollsManager;
@@ -39,7 +40,7 @@ class MultiBot {
             FileWriter.writeFile(Configuration.CONFIGURATION_FILE, json);
         }
 
-        this.databaseConnection = DatabaseConnectionBuilder
+        DatabaseConnection databaseConnection = DatabaseConnectionBuilder
                 .aDatabaseConnection()
                 .withHost(configuration.getHost())
                 .withUser(configuration.getUser())
@@ -47,17 +48,19 @@ class MultiBot {
                 .withDatabase(configuration.getDatabase())
                 .build();
 
-        this.quizManager = new QuizManager(databaseConnection);
-        this.welcomeMessagesSetManager = new WelcomeMessagesSetManager(databaseConnection);
-        this.pollsManager = new PollsManager(databaseConnection);
-        this.commandManager = new CommandManager(configuration.getPrefix(), databaseConnection, welcomeMessagesSetManager, pollsManager);
+        this.daoManager = new DAOManager(databaseConnection);
+
+        this.quizManager = new QuizManager(daoManager);
+        this.welcomeMessagesSetManager = new WelcomeMessagesSetManager(daoManager);
+        this.pollsManager = new PollsManager(daoManager);
+        this.commandManager = new CommandManager(configuration.getPrefix(), daoManager, welcomeMessagesSetManager, pollsManager);
     }
 
     void start() {
         try {
 
             this.jda = new JDABuilder(configuration.getToken())
-                    .addEventListeners(new MultiBotListener(commandManager, databaseConnection, quizManager, welcomeMessagesSetManager, pollsManager))
+                    .addEventListeners(new MultiBotListener(commandManager, daoManager, quizManager, welcomeMessagesSetManager, pollsManager))
                     .build();
 
             //SparkAPI sparkAPI = new SparkAPI(jda, databaseConnection);

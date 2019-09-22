@@ -3,15 +3,20 @@ package fr.gravendev.multibot.moderation.commands;
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.AntiRolesDAO;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.data.AntiRoleData;
 import fr.gravendev.multibot.utils.GuildUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.sql.Date;
@@ -21,10 +26,12 @@ import java.util.Map;
 
 public class AntiCommand implements CommandExecutor {
 
-    private final DatabaseConnection databaseConnection;
+    private final GuildIdDAO guildIdDAO;
+    private final AntiRolesDAO antiRolesDAO;
 
-    public AntiCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    public AntiCommand(DAOManager daoManager) {
+        this.guildIdDAO = daoManager.getGuildIdDAO();
+        this.antiRolesDAO = daoManager.getAntiRolesDAO();
     }
 
     @Override
@@ -65,8 +72,6 @@ public class AntiCommand implements CommandExecutor {
             return;
         }
 
-        GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
-
         Member member = mentionedMembers.get(0);
         Guild guild = message.getGuild();
         Role role = guild.getRoleById(guildIdDAO.get("anti-" + args[0]).id);
@@ -101,7 +106,6 @@ public class AntiCommand implements CommandExecutor {
     }
 
     private void saveInDatabase(String roleName, Member member) {
-        AntiRolesDAO antiRolesDAO = new AntiRolesDAO(databaseConnection);
         User sanctionedUser = member.getUser();
         String sanctionedUserId = sanctionedUser.getId();
         AntiRoleData antiRoleData = antiRolesDAO.get(sanctionedUserId);

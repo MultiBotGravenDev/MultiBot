@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.roles.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.RoleDAO;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -15,8 +15,8 @@ public class HereCommand implements CommandExecutor {
 
     private final RoleDAO roleDAO;
 
-    HereCommand(DatabaseConnection databaseConnection) {
-        this.roleDAO = new RoleDAO(databaseConnection);
+    HereCommand(DAOManager daoManager) {
+        this.roleDAO = daoManager.getRoleDAO();
     }
 
     @Override

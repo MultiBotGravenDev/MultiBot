@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.quiz;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
+import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.QuizMessageDAO;
 import net.dv8tion.jda.api.entities.User;
 
@@ -9,13 +10,14 @@ import java.util.Map;
 
 public class QuizManager {
 
-    private final DatabaseConnection databaseConnection;
     private final QuizMessageDAO quizMessageDAO;
+    private final GuildIdDAO guildIdDAO;
+
     private Map<Long, Quiz> quizs = new HashMap<>();
 
-    public QuizManager(DatabaseConnection databaseConnection) {
-        quizMessageDAO = new QuizMessageDAO(databaseConnection);
-        this.databaseConnection = databaseConnection;
+    public QuizManager(DAOManager daoManager) {
+        this.quizMessageDAO = daoManager.getQuizMessageDAO();
+        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     public void createQuiz(User user) {
@@ -29,7 +31,7 @@ public class QuizManager {
         Quiz quiz = this.quizs.get(userId);
         quiz.send(user);
         if (!quiz.hashNextQuestion()) {
-            CandidatureSender.send(this.databaseConnection, user, quiz);
+            CandidatureSender.send(guildIdDAO, user, quiz);
             this.quizs.remove(userId);
         }
     }

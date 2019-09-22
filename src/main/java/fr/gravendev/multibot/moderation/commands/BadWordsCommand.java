@@ -2,8 +2,8 @@ package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.BadWordsDAO;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.data.BadWordsData;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -16,8 +16,8 @@ public class BadWordsCommand implements CommandExecutor {
 
     private final BadWordsDAO badWordsDAO;
 
-    public BadWordsCommand(DatabaseConnection databaseConnection) {
-        this.badWordsDAO = new BadWordsDAO(databaseConnection);
+    public BadWordsCommand(DAOManager daoManager) {
+        this.badWordsDAO = daoManager.getBadWordsDAO();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.polls;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -14,8 +14,8 @@ public class PollsManager {
     private final GuildIdDAO guildIdDAO;
     private Map<Long, Poll> polls = new HashMap<>();
 
-    public PollsManager(DatabaseConnection databaseConnection) {
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
+    public PollsManager(DAOManager daoManager) {
+        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     public void registerPoll(User user, long messageId) {

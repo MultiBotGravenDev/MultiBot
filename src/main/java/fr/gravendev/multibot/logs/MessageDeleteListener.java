@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.logs;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.LogsDAO;
 import fr.gravendev.multibot.database.data.GuildIdsData;
@@ -21,9 +21,9 @@ public class MessageDeleteListener implements Listener<MessageDeleteEvent> {
     private final GuildIdDAO guildIdDAO;
     private final LogsDAO logsDAO;
 
-    public MessageDeleteListener(DatabaseConnection databaseConnection) {
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
-        this.logsDAO = new LogsDAO(databaseConnection);
+    public MessageDeleteListener(DAOManager daoManager) {
+        this.guildIdDAO = daoManager.getGuildIdDAO();
+        this.logsDAO = daoManager.getLogsDAO();
     }
 
     @Override

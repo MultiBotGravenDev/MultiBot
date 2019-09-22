@@ -1,20 +1,24 @@
 package fr.gravendev.multibot.quiz;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
 import fr.gravendev.multibot.database.data.MessageData;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class WelcomeMessagesSetManager {
 
     private final WelcomeMessageDAO welcomeMessageDAO;
     private Map<Long, List<Message>> setters = new HashMap<>();
 
-    public WelcomeMessagesSetManager(DatabaseConnection databaseConnection) {
-        this.welcomeMessageDAO = new WelcomeMessageDAO(databaseConnection);
+    public WelcomeMessagesSetManager(DAOManager daoManager) {
+        this.welcomeMessageDAO = daoManager.getWelcomeMessageDAO();
     }
 
     public void onCommand(Message message) {

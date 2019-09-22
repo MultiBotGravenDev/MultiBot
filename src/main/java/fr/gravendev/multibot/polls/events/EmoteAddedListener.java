@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.polls.events;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.events.Listener;
 import fr.gravendev.multibot.polls.PollsManager;
@@ -13,8 +13,8 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
     private final GuildIdDAO guildIdDAO;
     private final PollsManager pollsManager;
 
-    public EmoteAddedListener(DatabaseConnection databaseConnection, PollsManager pollsManager) {
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
+    public EmoteAddedListener(DAOManager daoManager, PollsManager pollsManager) {
+        this.guildIdDAO = daoManager.getGuildIdDAO();
         this.pollsManager = pollsManager;
     }
 
