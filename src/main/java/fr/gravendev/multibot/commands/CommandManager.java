@@ -76,6 +76,16 @@ public class CommandManager {
         this.customCommandDAO = daoManager.getCustomCommandDAO();
     }
 
+    private void executeIfAble(CommandExecutor commandExecutor, Message message, String[] args){
+        if (commandExecutor.canExecute(message)) {
+            int argsLength = args.length;
+            // TODO Find a better name for that
+            String[] stringArray = Arrays.copyOfRange(args, 1, argsLength);
+
+            commandExecutor.execute(message, stringArray);
+        }
+    }
+
     void executeCommand(Message message) {
         String content = message.getContentRaw();
 
@@ -100,15 +110,7 @@ public class CommandManager {
 
         if (optionalCommandExecutor.isPresent()) {
             CommandExecutor commandExecutor = optionalCommandExecutor.get();
-
-            if (commandExecutor.canExecute(message)) {
-                int argsLength = args.length;
-                // TODO Find a better name for that
-                String[] stringArray = Arrays.copyOfRange(args, 1, argsLength);
-
-                commandExecutor.execute(message, stringArray);
-                return;
-            }
+            executeIfAble(commandExecutor, message, args);
             return;
         }
         if (args[0].matches("[0-9]+")) {
