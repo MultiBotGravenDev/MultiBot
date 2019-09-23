@@ -27,7 +27,7 @@ class CandidatureSender {
         messageBuilder.setContent(user.getAsMention());
 
         EmbedBuilder embedBuilder = new EmbedBuilder()
-                .setColor(Color.BLUE)
+                .setColor(Color.getColor("68944F"))
                 .setAuthor(user.getAsTag(), user.getAvatarUrl(), user.getAvatarUrl());
 
         while (quiz.hasNextAnswer()) {
