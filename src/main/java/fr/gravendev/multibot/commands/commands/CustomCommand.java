@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class CustomCommand implements CommandExecutor {
-
     private final List<CommandExecutor> argumentsExecutors;
 
     public CustomCommand(DAOManager daoManager) {
@@ -37,8 +36,7 @@ public class CustomCommand implements CommandExecutor {
     @Override
     public String getDescription() {
         return "Permet de créer une command custom \n"
-                + this.argumentsExecutors
-                .stream()
+                + this.argumentsExecutors.stream()
                 .map(executor -> getCharacter() + "custom " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
                 .reduce((message, executorInfos) -> message += executorInfos)
                 .orElse("");
@@ -56,7 +54,6 @@ public class CustomCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-
         if (args.length == 0) {
             help(message);
             return;
@@ -66,16 +63,15 @@ public class CustomCommand implements CommandExecutor {
                 .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
                 .filter(commandExecutor -> commandExecutor.canExecute(message))
                 .findAny();
-        if(optionalCommandExecutor.isPresent()) {
+
+        if (optionalCommandExecutor.isPresent()) {
             optionalCommandExecutor.get().execute(message, Arrays.copyOfRange(args, 1, args.length));
             return;
         }
-
         help(message);
     }
 
     private void help(Message message) {
         message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "<set,remove> <commande> [valeur]")).queue();
     }
-
 }

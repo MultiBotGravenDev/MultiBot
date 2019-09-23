@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.UUID;
 
 public class InfractionData {
-
     private UUID uuid;
     private String punishedId, punisherId, reason;
     private InfractionType type;

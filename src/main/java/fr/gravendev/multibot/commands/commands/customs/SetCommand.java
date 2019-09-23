@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.entities.Message;
 import java.util.Arrays;
 
 public class SetCommand implements CommandExecutor {
-
     private final CustomCommandDAO CustomCommandDAO;
 
     public SetCommand(DAOManager daoManager) {

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelpCommand implements CommandExecutor {
-
     private final List<CommandExecutor> commandExecutors;
     private final CustomCommandDAO customCommandDAO;
 
@@ -44,15 +43,13 @@ public class HelpCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-
         List<MessageEmbed> embeds = new ArrayList<>();
 
         for (CommandCategory category : CommandCategory.values()) {
             EmbedBuilder embedBuilder = new EmbedBuilder()
                     .setColor(category.getColor())
                     .setTitle(category.getName());
-            this.commandExecutors
-                    .stream()
+            this.commandExecutors.stream()
                     .filter(command -> command.getCategory() == category && command.isAuthorizedMember(message.getMember()))
                     .forEach(command -> embedBuilder.addField(command.getCommand(), command.getDescription(), false));
             embeds.add(embedBuilder.build());
@@ -65,13 +62,14 @@ public class HelpCommand implements CommandExecutor {
         embeds.add(embedBuilder.build());
 
         for (MessageEmbed embed : embeds) {
-            if (embed.getFields().size() == 0) continue;
+            if (embed.getFields().size() == 0) {
+                continue;
+            }
             message.getChannel().sendMessage(embed).queue();
         }
     }
 
     private List<CustomCommandData> getCustomCommands() {
-
         List<CustomCommandData> customCommands = new ArrayList<>();
 
         for (int i = 0; i < 100; i++) {

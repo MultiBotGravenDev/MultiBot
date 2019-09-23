@@ -76,7 +76,7 @@ public class CommandManager {
         this.customCommandDAO = daoManager.getCustomCommandDAO();
     }
 
-    private void executeIfAble(CommandExecutor commandExecutor, Message message, String[] args){
+    private void executeIfAble(CommandExecutor commandExecutor, Message message, String[] args) {
         if (commandExecutor.canExecute(message)) {
             int argsLength = args.length;
             // TODO Find a better name for that

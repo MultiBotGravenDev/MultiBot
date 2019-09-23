@@ -8,7 +8,6 @@ import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.entities.Message;
 
 public class RemoveCommand implements CommandExecutor {
-
     private final CustomCommandDAO customCommandDAO;
 
     public RemoveCommand(DAOManager daoManager) {

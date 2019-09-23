@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public abstract class DAO<T> {
-
     private final DatabaseConnection databaseConnection;
 
     public DAO(DatabaseConnection databaseConnection) {

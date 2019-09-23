@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.database.data;
 
 public class MessageData {
-
     private final String id;
     private final String message;
 

@@ -3,7 +3,6 @@ package fr.gravendev.multibot.commands.commands;
 import java.awt.*;
 
 public enum CommandCategory {
-
     SYSTEM("Systèmes", Color.RED),
     UTILS("Utilitaires", Color.CYAN),
     MODERATION("Modérations", Color.GREEN),

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class VoteData {
-
     private final int voteId;
     private final long userId, messageId;
     private final String role;

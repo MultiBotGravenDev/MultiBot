@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.database.data;
 
 public class CustomCommandData {
-
     private final String command;
     private final String text;
 

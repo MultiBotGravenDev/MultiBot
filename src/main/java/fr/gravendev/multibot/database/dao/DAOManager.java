@@ -3,7 +3,6 @@ package fr.gravendev.multibot.database.dao;
 import fr.gravendev.multibot.database.DatabaseConnection;
 
 public class DAOManager {
-
     private AntiRolesDAO antiRolesDAO;
     private BadWordsDAO badWordsDAO;
     private CustomCommandDAO customCommandDAO;

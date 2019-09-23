@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.database.data;
 
 public class RoleData {
-
     private final String roleId;
     private final String emoteId;
 

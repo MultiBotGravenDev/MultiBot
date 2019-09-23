@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AntiRoleData {
-
     private final long userId;
     private final Map<Date, String> roles;
 

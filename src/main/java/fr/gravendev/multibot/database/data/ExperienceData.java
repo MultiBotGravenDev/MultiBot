@@ -3,7 +3,6 @@ package fr.gravendev.multibot.database.data;
 import java.util.Date;
 
 public class ExperienceData {
-
     private final String discordID;
     private int experience, level, message;
     private Date lastMessage;

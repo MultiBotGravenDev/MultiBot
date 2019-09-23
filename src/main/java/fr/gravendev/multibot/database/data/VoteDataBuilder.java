@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class VoteDataBuilder {
-
     private int voteId;
     private long userId, messageId;
     private String role;
@@ -23,7 +22,6 @@ public final class VoteDataBuilder {
 
     public static VoteDataBuilder fromVoteData(VoteData voteData) {
         VoteDataBuilder voteDataBuilder = new VoteDataBuilder();
-
         voteDataBuilder.voteId = voteData.getVoteId();
         voteDataBuilder.userId = voteData.getUserId();
         voteDataBuilder.messageId = voteData.getMessageId();
