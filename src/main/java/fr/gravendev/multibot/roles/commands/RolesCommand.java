@@ -4,13 +4,13 @@ import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.dao.DAOManager;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RolesCommand implements CommandExecutor {
 
@@ -36,7 +36,7 @@ public class RolesCommand implements CommandExecutor {
         return "Commandes relatives aux rôles langages. \n"
                 + this.argumentExecutors
                 .stream()
-                .map(executor -> "!roles " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
+                .map(executor -> getCharacter()+"roles " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
                 .reduce((message, executorInfos) -> message += executorInfos)
                 .orElse("");
     }
@@ -55,10 +55,7 @@ public class RolesCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length == 0) {
-            message.getChannel().sendMessage("Erreur. "
-                    + "!roles ["
-                    + this.argumentExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining("/"))
-                    + "]").queue();
+            message.getChannel().sendMessage(Utils.errorArguments(getCommand(), Arrays.toString(this.argumentExecutors.stream().map(CommandExecutor::getCommand).toArray()))).queue();
             return;
         }
 

@@ -81,7 +81,7 @@ public class VoteCommand implements CommandExecutor {
         MessageChannel channel = message.getChannel();
 
         if (mentionedMembers.size() < 1 || args.length < 2) {
-            channel.sendMessage("Erreur. !vote @personne <présentation>").queue();
+            channel.sendMessage("Erreur. "+getCharacter()+"vote @personne <présentation>").queue();
             return;
         }
 

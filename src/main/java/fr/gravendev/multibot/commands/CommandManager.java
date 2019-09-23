@@ -109,7 +109,6 @@ public class CommandManager {
                 commandExecutor.execute(message, stringArray);
                 return;
             }
-            channel.sendMessage("Mauvais channel ou permission manquante.").queue();
             return;
         }
         if (args[0].matches("[0-9]+")) {

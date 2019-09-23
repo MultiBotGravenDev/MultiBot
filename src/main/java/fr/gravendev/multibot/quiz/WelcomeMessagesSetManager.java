@@ -3,6 +3,7 @@ package fr.gravendev.multibot.quiz;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
 import fr.gravendev.multibot.database.data.MessageData;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 
@@ -55,7 +56,7 @@ public class WelcomeMessagesSetManager {
     public void registerMessage(Message message) {
         List<Message> messages = this.setters.get(message.getAuthor().getIdLong());
 
-        boolean isNotACommand = !message.getContentDisplay().startsWith("!quiz setChoice message");
+        boolean isNotACommand = !message.getContentDisplay().startsWith(Configuration.PREFIX.getValue()+"quiz setChoice message");
 
         if (messages != null && isNotACommand) {
 

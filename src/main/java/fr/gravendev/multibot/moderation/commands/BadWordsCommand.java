@@ -5,6 +5,7 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.dao.BadWordsDAO;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.data.BadWordsData;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -44,7 +45,7 @@ public class BadWordsCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length == 0){
-            message.getChannel().sendMessage("Usage: !badwords [add, remove, list]").queue();
+            message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "<add,remove,list> [word]")).queue();
             return;
         }
 
@@ -69,7 +70,7 @@ public class BadWordsCommand implements CommandExecutor {
     private void add(Message message, String[] args) {
 
         if (args.length < 2){
-            message.getChannel().sendMessage("Usage: &badwords add [word]").queue();
+            message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "add <word>")).queue();
             return;
         }
 
@@ -81,7 +82,7 @@ public class BadWordsCommand implements CommandExecutor {
     private void remove(Message message, String[] args) {
 
         if (args.length < 2){
-            message.getChannel().sendMessage("Usage: &badwords add [word]").queue();
+            message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "remove <word>")).queue();
             return;
         }
 
@@ -91,7 +92,7 @@ public class BadWordsCommand implements CommandExecutor {
     }
 
     private void list(MessageChannel channel) {
-        channel.sendMessage(Arrays.toString(this.badWordsDAO.get("").getBadWords().split(" "))).queue();
+        channel.sendMessage("Liste des mots interdits: "+ Arrays.toString(this.badWordsDAO.get("").getBadWords().split(" "))).queue();
     }
 
 }

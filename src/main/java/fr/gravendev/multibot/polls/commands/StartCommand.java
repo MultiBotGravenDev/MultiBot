@@ -44,7 +44,7 @@ public class StartCommand implements CommandExecutor {
                 .build())
                 .queue(message1 -> this.pollsManager.registerPoll(message.getAuthor(), message1.getIdLong()));
 
-        privateChannel.sendMessage("!poll ["
+        privateChannel.sendMessage(getCharacter()+"poll ["
                 + this.commandExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining("/"))
                 + "]").queue();
 

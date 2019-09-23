@@ -33,7 +33,7 @@ public class SetCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length == 0) {
-            message.getChannel().sendMessage("Erreur. !quiz setChoice question/message").queue();
+            message.getChannel().sendMessage("Erreur. "+getCharacter()+"quiz set question/message").queue();
             return;
         }
 
@@ -46,7 +46,7 @@ public class SetCommand implements CommandExecutor {
             this.welcomeMessagesSetManager.onCommand(message);
 
         } else {
-            message.getChannel().sendMessage("Erreur. !quiz setChoice question/message").queue();
+            message.getChannel().sendMessage("Erreur. "+getCharacter()+"quiz set question/message").queue();
         }
 
     }
@@ -54,7 +54,7 @@ public class SetCommand implements CommandExecutor {
     private void setQuestion(Message message, String[] args) {
 
         if (args.length < 1 || !args[0].matches("[0-9]+")) {
-            message.getChannel().sendMessage("Erreur. !quiz setChoice question <numéro de la question> <texte ou vide>").queue();
+            message.getChannel().sendMessage("Erreur. "+getCharacter()+"quiz set question <numéro de la question> <texte ou vide>").queue();
             return;
         }
 

@@ -24,10 +24,14 @@ public class Utils {
         return dateTimeFormatter;
     }
 
+    public static MessageEmbed errorArguments(String command, String arguments) {
+        return buildEmbed(Color.RED, "Utilisation: " + Configuration.PREFIX.getValue() + command + " "+ arguments);
+    }
+
     public static MessageEmbed buildEmbed(Color color, String message) {
         return new EmbedBuilder()
                 .setColor(color)
-                .setDescription(message)
+                .setTitle(message)
                 .build();
     }
 

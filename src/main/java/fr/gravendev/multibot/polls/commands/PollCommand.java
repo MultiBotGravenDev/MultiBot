@@ -5,6 +5,7 @@ import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.utils.GuildUtils;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 
@@ -42,7 +43,7 @@ public class PollCommand implements CommandExecutor {
         return "Commandes relatives aux sondages. \n"
                 + this.argumentsExecutors
                 .stream()
-                .map(executor -> "!poll " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
+                .map(executor -> getCharacter()+"poll " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
                 .reduce((message, executorInfos) -> message += executorInfos)
                 .orElse("");
     }
@@ -71,10 +72,7 @@ public class PollCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length == 0) {
-            message.getChannel().sendMessage("Erreur. "
-                    + "!poll ["
-                    + this.argumentsExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining("/"))
-                    + "]").queue();
+            message.getChannel().sendMessage(Utils.errorArguments(getCommand(), Arrays.toString(this.argumentsExecutors.stream().map(CommandExecutor::getCommand).toArray()))).queue();
             return;
         }
 
@@ -88,7 +86,7 @@ public class PollCommand implements CommandExecutor {
         }
 
         message.getChannel().sendMessage("Erreur. "
-                + "!poll ["
+                + getCharacter() + "poll ["
                 + this.argumentsExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining("/"))
                 + "]").queue();
 

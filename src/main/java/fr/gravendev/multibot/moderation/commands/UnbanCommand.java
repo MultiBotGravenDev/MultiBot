@@ -51,7 +51,7 @@ public class UnbanCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length == 0 || extractId(args[0]) == null) {
-            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: unban @utilisateur")).queue();
+            message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "@utilisateur")).queue();
             return;
         }
 

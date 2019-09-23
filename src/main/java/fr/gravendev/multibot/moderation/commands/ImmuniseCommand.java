@@ -6,10 +6,12 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.ImmunisedIdDAO;
 import fr.gravendev.multibot.database.data.ImmunisedIdsData;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 
+import java.awt.*;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -50,32 +52,31 @@ public class ImmuniseCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length == 0) {
-            message.getChannel().sendMessage("Usage: !immunise [add, remove, list]").queue();
+            message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "<add, remove, list> [Role ID]")).queue();
             return;
         }
 
         switch (args[0]) {
 
+            case "list":
+                list(message);
+                break;
+
             case "add":
-                if (message.getGuild().getRoleById(args[1]) == null) {
-                    message.getChannel().sendMessage("Erreur: L'ID du rôle est incorrect.").queue();
+                if (args.length < 2 || message.getGuild().getRoleById(args[1]) == null) {
+                    message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Erreur: L'ID du rôle est incorrect.")).queue();
                     return;
                 }
                 add(message, args);
                 break;
 
             case "remove":
-                if (message.getGuild().getRoleById(args[1]) == null) {
-                    message.getChannel().sendMessage("Erreur: L'ID du rôle est incorrect.").queue();
+                if (args.length < 2 || message.getGuild().getRoleById(args[1]) == null) {
+                    message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Erreur: L'ID du rôle est incorrect.")).queue();
                     return;
                 }
                 remove(message, args);
                 break;
-
-            case "list":
-                list(message);
-                break;
-
         }
 
     }
@@ -101,7 +102,7 @@ public class ImmuniseCommand implements CommandExecutor {
         String roles = this.immunisedIdDAO.get("").immunisedIds.stream()
                 .map(id -> message.getGuild().getRoleById(id).getName())
                 .collect(Collectors.joining(" - "));
-        message.getChannel().sendMessage("[" + roles + "]").queue();
+        message.getChannel().sendMessage("List des rôles immunisés: [" + roles + "]").queue();
     }
 
 }

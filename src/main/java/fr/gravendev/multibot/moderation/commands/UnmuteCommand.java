@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 
 import java.awt.*;
@@ -57,9 +56,7 @@ public class UnmuteCommand implements CommandExecutor {
         Guild guild = message.getGuild();
 
         if (mentionedMembers.size() == 0) {
-            MessageEmbed embed = Utils.buildEmbed(Color.RED, "Utilisation: unmute @membre");
-
-            messageChannel.sendMessage(embed).queue();
+            message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "@membre")).queue();
             return;
         }
 

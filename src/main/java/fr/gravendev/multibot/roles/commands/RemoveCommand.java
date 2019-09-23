@@ -40,7 +40,7 @@ public class RemoveCommand implements CommandExecutor {
         List<Role> mentionedRoles = message.getMentionedRoles();
         MessageChannel channel = message.getChannel();
         if (mentionedRoles.size() != 1) {
-            channel.sendMessage("Erreur. !roles remove @role").queue();
+            channel.sendMessage("Erreur. "+getCharacter()+"roles remove @role").queue();
             return;
         }
 

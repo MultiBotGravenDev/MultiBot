@@ -53,7 +53,7 @@ public class InfractionsCommand implements CommandExecutor {
 
             List<Member> mentionedMembers = message.getMentionedMembers();
             if (mentionedMembers.size() == 0) {
-                message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: infractions @membre")).queue();
+                message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "@membre")).queue();
                 return;
             }
 

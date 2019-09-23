@@ -30,7 +30,7 @@ public class ChannelCommand implements CommandExecutor {
 
         List<TextChannel> mentionedChannels = message.getMentionedChannels();
         if (mentionedChannels.size() != 1) {
-            message.getChannel().sendMessage("Erreur. !quiz channel #channel").queue();
+            message.getChannel().sendMessage("Erreur. "+getCharacter()+"quiz channel #channel").queue();
             return;
         }
 

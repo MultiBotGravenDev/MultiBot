@@ -37,8 +37,7 @@ public abstract class AModeration implements CommandExecutor {
         MessageChannel messageChannel = message.getChannel();
 
         if (mentionedMembers.size() == 0) {
-            messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: " + getCommand() + " @membre " +
-                    (isTemporary() ? "durée " : "") + "raison")).queue();
+            messageChannel.sendMessage(Utils.errorArguments(getCommand(), "@membre "+ (isTemporary() ? "<durée> " : "") + "<raison>")).queue();
             return;
         }
 

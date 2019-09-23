@@ -5,13 +5,13 @@ import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class QuizCommand implements CommandExecutor {
 
@@ -36,7 +36,7 @@ public class QuizCommand implements CommandExecutor {
         return "Commandes relatives au quizz d'entrée sur le serveur. \n"
                 + this.argumentExecutors
                 .stream()
-                .map(executor -> "!quiz " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
+                .map(executor -> getCharacter() + "quiz " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
                 .reduce((message, executorInfos) -> message += executorInfos)
                 .orElse("");
     }
@@ -65,10 +65,7 @@ public class QuizCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length == 0) {
-            message.getChannel().sendMessage("Erreur. "
-                    + "!quiz ["
-                    + this.argumentExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining("/"))
-                    + "]").queue();
+            message.getChannel().sendMessage(Utils.errorArguments(getCommand(), Arrays.toString(this.argumentExecutors.stream().map(CommandExecutor::getCommand).toArray()))).queue();
             return;
         }
 

@@ -63,13 +63,8 @@ public class AntiCommand implements CommandExecutor {
 
         List<Member> mentionedMembers = message.getMentionedMembers();
 
-        if(args.length < 2 || mentionedMembers.size() == 0) {
-            message.getChannel().sendMessage("Usage: @membre repost | review | meme").queue();
-            return;
-        }
-
-        if(!"repost review meme".contains(args[1])) {
-            message.getChannel().sendMessage("Anti: repost | review | meme").queue();
+        if(args.length < 2 || mentionedMembers.size() == 0 || !"repost review meme".contains(args[1])) {
+            message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "@membre <repost,review,meme>")).queue();
             return;
         }
 
