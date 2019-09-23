@@ -21,11 +21,11 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
     @Override
     public void executeListener(MessageReceivedEvent event) {
         User messageAuthor = event.getAuthor();
+        Message message = event.getMessage();
         if (messageAuthor.isBot()) {
             return;
         }
 
-        Message message = event.getMessage();
         commandManager.executeCommand(message);
     }
 }

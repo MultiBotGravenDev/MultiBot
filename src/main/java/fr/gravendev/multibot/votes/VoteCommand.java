@@ -32,9 +32,9 @@ public class VoteCommand implements CommandExecutor {
 
     public VoteCommand(DAOManager daoManager) {
         roles = Arrays.asList(
-                new Honorable(daoManager),
-                new Developer(daoManager),
-                new Pillar(daoManager)
+                new Honorable(),
+                new Developer(),
+                new Pillar()
         );
 
         this.voteDAO = daoManager.getVoteDAO();
@@ -86,6 +86,12 @@ public class VoteCommand implements CommandExecutor {
         }
 
         Member member = mentionedMembers.get(0);
+        if(member.getUser().isBot()) {
+            channel.sendMessage("Erreur: Vous ne pouvez pas proposer un bot.").queue();
+            return;
+        }
+
+
         String channelName = channel.getName();
         Role role = roles.stream()
                 .filter(currentRole -> currentRole.getChannelName().equalsIgnoreCase(channelName))
@@ -97,7 +103,7 @@ public class VoteCommand implements CommandExecutor {
         }
 
         boolean memberAlreadyHasRole = member.getRoles().stream()
-                .anyMatch(currentRole -> currentRole.getIdLong() == role.getRoleId());
+                .anyMatch(currentRole -> currentRole.getId().equals(role.getRoleId()));
         if (memberAlreadyHasRole) {
             channel.sendMessage("Cette personne a déjà le role " + role.getRoleName()).queue();
             return;

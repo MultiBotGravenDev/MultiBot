@@ -1,20 +1,17 @@
 package fr.gravendev.multibot.polls.events;
 
-import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.events.Listener;
 import fr.gravendev.multibot.polls.PollsManager;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
 
-    private final GuildIdDAO guildIdDAO;
     private final PollsManager pollsManager;
 
-    public EmoteAddedListener(DAOManager daoManager, PollsManager pollsManager) {
-        this.guildIdDAO = daoManager.getGuildIdDAO();
+    public EmoteAddedListener(PollsManager pollsManager) {
         this.pollsManager = pollsManager;
     }
 
@@ -26,8 +23,8 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
     @Override
     public void executeListener(MessageReactionAddEvent event) {
 
-        long pollVerifChannelId = this.guildIdDAO.get("sondages_verif").id;
-        if (event.getUser().isBot() || event.getChannel().getIdLong() != pollVerifChannelId) return;
+        String pollVerifChannelId = Configuration.SONDAGES_VERIF.getValue();
+        if (event.getUser().isBot() || !event.getChannel().getId().equals(pollVerifChannelId)) return;
 
         event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(message -> {
 

@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.polls;
 
-import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -11,12 +10,7 @@ import java.util.Map;
 
 public class PollsManager {
 
-    private final GuildIdDAO guildIdDAO;
     private Map<Long, Poll> polls = new HashMap<>();
-
-    public PollsManager(DAOManager daoManager) {
-        this.guildIdDAO = daoManager.getGuildIdDAO();
-    }
 
     public void registerPoll(User user, long messageId) {
         this.polls.put(user.getIdLong(), new Poll(user, messageId));
@@ -43,8 +37,8 @@ public class PollsManager {
     }
 
     public void sendToValidation(User user) {
-        long guildId = this.guildIdDAO.get("guild").id;
-        long sondagesVerifId = this.guildIdDAO.get("sondages_verif").id;
+        String guildId = Configuration.GUILD.getValue();
+        String sondagesVerifId = Configuration.SONDAGES_VERIF.getValue();
 
         TextChannel channel = user.getJDA().getGuildById(guildId).getTextChannelById(sondagesVerifId);
         this.polls.get(user.getIdLong()).finish(channel, false);
@@ -52,8 +46,8 @@ public class PollsManager {
 
     public void send(User user, String title) {
         long userId = user.getIdLong();
-        long guildId = this.guildIdDAO.get("guild").id;
-        long sondagesId = this.guildIdDAO.get("sondages").id;
+        String guildId = Configuration.GUILD.getValue();
+        String sondagesId = Configuration.SONDAGES.getValue();
         if (!this.polls.containsKey(userId) || !this.polls.get(userId).isSameTitle(title)) return;
 
         TextChannel channel = user.getJDA().getGuildById(guildId).getTextChannelById(sondagesId);

@@ -6,6 +6,7 @@ import fr.gravendev.multibot.tasks.antiroles.AntiMeme;
 import fr.gravendev.multibot.tasks.antiroles.AntiRepost;
 import fr.gravendev.multibot.tasks.antiroles.AntiReview;
 import fr.gravendev.multibot.tasks.antiroles.AntiRole;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -19,7 +20,7 @@ public class AntiRolesTask extends TimerTask {
     private final List<AntiRole> antiRoles;
 
     public AntiRolesTask(JDA jda, DAOManager daoManager) {
-        this.guild = jda.getGuildById(daoManager.getGuildIdDAO().get("guild").id);
+        this.guild = jda.getGuildById(Configuration.GUILD.getValue());
 
         this.antiRoles = Arrays.asList(
                 new AntiRepost(daoManager),

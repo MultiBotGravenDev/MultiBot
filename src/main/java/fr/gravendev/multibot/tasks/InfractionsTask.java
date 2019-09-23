@@ -1,9 +1,9 @@
 package fr.gravendev.multibot.tasks;
 
 import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
+import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -17,12 +17,10 @@ public class InfractionsTask extends TimerTask {
 
     private final Guild guild;
     private final InfractionDAO infractionDAO;
-    private final GuildIdDAO guildIdDAO;
 
     public InfractionsTask(JDA jda, DAOManager daoManager) {
         this.infractionDAO = daoManager.getInfractionDAO();
-        this.guildIdDAO = daoManager.getGuildIdDAO();
-        this.guild = jda.getGuildById(this.guildIdDAO.get("guild").id);
+        this.guild = jda.getGuildById(Configuration.GUILD.getValue());
     }
 
     @Override
@@ -44,7 +42,7 @@ public class InfractionsTask extends TimerTask {
                         if (member == null) {
                             break;
                         }
-                        GuildUtils.removeRole(member, guildIdDAO.get("muted").id + "").queue();
+                        GuildUtils.removeRole(member, Configuration.MUTED.getValue()).queue();
                         member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unmute du discord GravenDev").queue(), throwable -> {});
                         break;
                 }

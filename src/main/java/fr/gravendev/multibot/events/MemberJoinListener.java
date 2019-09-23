@@ -2,8 +2,8 @@ package fr.gravendev.multibot.events;
 
 import fr.gravendev.multibot.database.dao.AntiRolesDAO;
 import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.data.AntiRoleData;
+import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -11,11 +11,9 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 class MemberJoinListener implements Listener<GuildMemberJoinEvent> {
 
     private final AntiRolesDAO antiRolesDAO;
-    private final GuildIdDAO guildIdDAO;
 
     MemberJoinListener(DAOManager daoManager) {
         this.antiRolesDAO = daoManager.getAntiRolesDAO();
-        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     @Override
@@ -29,7 +27,7 @@ class MemberJoinListener implements Listener<GuildMemberJoinEvent> {
         Member member = event.getMember();
 
         AntiRoleData antiRoleData = this.antiRolesDAO.get(member.getId());
-        antiRoleData.getRoles().forEach((date, roleName) -> GuildUtils.addRole(member, String.valueOf(this.guildIdDAO.get(roleName).id)).queue());
+        antiRoleData.getRoles().forEach((date, roleName) -> GuildUtils.addRole(member, Configuration.getConfigByName(roleName.replace("-","_")).getValue()).queue());
 
     }
 

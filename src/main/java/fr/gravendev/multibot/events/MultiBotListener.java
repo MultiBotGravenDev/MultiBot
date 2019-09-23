@@ -2,9 +2,11 @@ package fr.gravendev.multibot.events;
 
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.dao.DAOManager;
+import fr.gravendev.multibot.logs.GuildMessageDeleteListener;
 import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
+import fr.gravendev.multibot.rank.GuildMessageReceivedListener;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.jetbrains.annotations.NotNull;
@@ -20,18 +22,18 @@ public class MultiBotListener implements EventListener {
 
         events = Arrays.asList(
                 new fr.gravendev.multibot.commands.MessageReceivedListener(commandManager),
-                new fr.gravendev.multibot.rank.MessageReceivedListener(daoManager),
-                new fr.gravendev.multibot.logs.MessageReceivedListener(daoManager),
-                new fr.gravendev.multibot.logs.MessageDeleteListener(daoManager),
+                new GuildMessageReceivedListener(daoManager),
+                new fr.gravendev.multibot.logs.GuildMessageReceivedListener(daoManager),
+                new GuildMessageDeleteListener(daoManager),
                 new fr.gravendev.multibot.quiz.events.MessageReceivedListener(quizManager, welcomeMessagesSetManager),
-                new fr.gravendev.multibot.quiz.events.EmoteAddedListener(quizManager, daoManager),
+                new fr.gravendev.multibot.quiz.events.EmoteAddedListener(quizManager),
                 new fr.gravendev.multibot.quiz.events.EmoteRemovedListener(quizManager),
                 new fr.gravendev.multibot.roles.listeners.ReactionAddedListener(daoManager),
                 new fr.gravendev.multibot.roles.listeners.ReactionRemovedListener(daoManager),
                 new fr.gravendev.multibot.votes.events.EmoteAddedListener(daoManager),
                 new fr.gravendev.multibot.votes.events.RoleAddedEvent(daoManager),
-                new fr.gravendev.multibot.polls.events.EmoteAddedListener(daoManager, pollsManager),
-                new fr.gravendev.multibot.moderation.events.MessageReceivedListener(daoManager),
+                new fr.gravendev.multibot.polls.events.EmoteAddedListener(pollsManager),
+                new fr.gravendev.multibot.moderation.events.GuildMessageReceivedListener(daoManager),
                 new ReadyListener(daoManager),
                 new MemberJoinListener(daoManager)
         );

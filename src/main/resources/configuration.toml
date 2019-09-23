@@ -7,3 +7,26 @@ host = ""
 username = ""
 password = ""
 database = ""
+
+[identifiers]
+guild = 0
+
+    [identifiers.roles]
+    anti_image = 0
+    anti_meme = 0
+    anti_repost = 0
+    anti_review = 0
+    developpeur = 0
+    honorable = 0
+    member = 0
+    muted = 0
+    pilier = 0
+
+    [identifiers.channels]
+    candids = 0
+    logs = 0
+    rules = 0
+    read_this_saloon = 0
+    sondages = 0
+    sondages_verif = 0
+

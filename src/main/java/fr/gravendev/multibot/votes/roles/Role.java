@@ -7,7 +7,7 @@ public interface Role {
 
     String getChannelName();
 
-    long getRoleId();
+    String getRoleId();
 
     Color getColor();
 }

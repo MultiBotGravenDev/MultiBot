@@ -1,43 +1,40 @@
 package fr.gravendev.multibot.logs;
 
 import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.LogsDAO;
-import fr.gravendev.multibot.database.data.GuildIdsData;
 import fr.gravendev.multibot.events.Listener;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 
 import java.awt.*;
 import java.util.Date;
 
-public class MessageDeleteListener implements Listener<MessageDeleteEvent> {
+public class GuildMessageDeleteListener implements Listener<GuildMessageDeleteEvent> {
 
-    private final GuildIdDAO guildIdDAO;
     private final LogsDAO logsDAO;
 
-    public MessageDeleteListener(DAOManager daoManager) {
-        this.guildIdDAO = daoManager.getGuildIdDAO();
+    public GuildMessageDeleteListener(DAOManager daoManager) {
         this.logsDAO = daoManager.getLogsDAO();
     }
 
     @Override
-    public Class<MessageDeleteEvent> getEventClass() {
-        return MessageDeleteEvent.class;
+    public Class<GuildMessageDeleteEvent> getEventClass() {
+        return GuildMessageDeleteEvent.class;
     }
 
     // TODO Refactor that by splitting it in different methods
     @Override
-    public void executeListener(MessageDeleteEvent event) {
-        TextChannel channel = event.getTextChannel();
+    public void executeListener(GuildMessageDeleteEvent event) {
+        TextChannel channel = event.getChannel();
         String channelName = channel.getName();
 
-        if (!channelName.startsWith("présentation")) {
+        if (!channelName.startsWith("présentation") || !channel.getGuild().getId().equals(Configuration.GUILD.getValue())) {
             return;
         }
 
@@ -48,7 +45,7 @@ public class MessageDeleteListener implements Listener<MessageDeleteEvent> {
             return;
         }
 
-        GuildIdsData logs = guildIdDAO.get("logs");
+        String logs = Configuration.LOGS.getValue();
         JDA jda = event.getJDA();
         String discordID = messageData.getDiscordID();
         User user = jda.getUserById(discordID);
@@ -75,10 +72,9 @@ public class MessageDeleteListener implements Listener<MessageDeleteEvent> {
                 .setFooter("User ID: " + userId, userAvatarUrl);
 
         Guild guild = event.getGuild();
-        long logsId = logs.id;
         MessageEmbed embed = embedBuilder.build();
 
-        TextChannel logsChannel = guild.getTextChannelById(logsId);
+        TextChannel logsChannel = guild.getTextChannelById(logs);
         logsChannel.sendMessage(embed).queue();
     }
 }

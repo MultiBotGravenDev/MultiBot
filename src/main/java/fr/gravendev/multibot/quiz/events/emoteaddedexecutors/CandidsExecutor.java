@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.quiz.events.emoteaddedexecutors;
 
-import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
+import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -9,21 +8,15 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class CandidsExecutor implements EmoteAddedExecutor {
 
-    private final GuildIdDAO guildIdDAO;
-
-    public CandidsExecutor(DAOManager daoManager) {
-        this.guildIdDAO = daoManager.getGuildIdDAO();
-    }
-
     @Override
-    public long getSaloonId() {
-        return this.guildIdDAO.get("candids").id;
+    public String getSaloonId() {
+        return Configuration.CANDIDS.getValue();
     }
 
     @Override
     public void execute(MessageReactionAddEvent event) {
 
-        long memberRoleId = this.guildIdDAO.get("member").id;
+        String memberRoleId = Configuration.MEMBER.getValue();
 
         event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(message -> {
 

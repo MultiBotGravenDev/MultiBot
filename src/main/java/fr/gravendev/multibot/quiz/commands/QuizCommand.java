@@ -20,7 +20,7 @@ public class QuizCommand implements CommandExecutor {
     public QuizCommand(DAOManager daoManager, WelcomeMessagesSetManager welcomeMessagesSetManager) {
         this.argumentExecutors = Arrays.asList(
                 new HereCommand(daoManager),
-                new ChannelCommand(daoManager),
+                new ChannelCommand(),
                 new SetCommand(daoManager, welcomeMessagesSetManager),
                 new ListCommand(daoManager)
         );

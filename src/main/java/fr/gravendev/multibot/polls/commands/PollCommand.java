@@ -4,11 +4,15 @@ import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.polls.PollsManager;
+import fr.gravendev.multibot.utils.GuildUtils;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PollCommand implements CommandExecutor {
@@ -16,15 +20,16 @@ public class PollCommand implements CommandExecutor {
     private final List<CommandExecutor> argumentsExecutors;
 
     public PollCommand(PollsManager pollsManager) {
-        argumentsExecutors = Arrays.asList(
-                new StartCommand(pollsManager),
-                new ColorCommand(pollsManager),
-                new AskCommand(pollsManager),
-                new ChoiceCommand(pollsManager),
-                new EmoteCommand(pollsManager),
-                new FinishCommand(pollsManager),
-                new CancelCommand(pollsManager)
-        );
+
+        argumentsExecutors = new ArrayList<CommandExecutor>() {{
+            add(new ColorCommand(pollsManager));
+            add(new AskCommand(pollsManager));
+            add(new ChoiceCommand(pollsManager));
+            add(new EmoteCommand(pollsManager));
+            add(new FinishCommand(pollsManager));
+            add(new CancelCommand(pollsManager));
+            add(new StartCommand(pollsManager, this));
+        }};
     }
 
     @Override
@@ -58,6 +63,11 @@ public class PollCommand implements CommandExecutor {
     }
 
     @Override
+    public boolean isAuthorizedMember(Member member) {
+        return GuildUtils.hasRole(member, "Sondeur");
+    }
+
+    @Override
     public void execute(Message message, String[] args) {
 
         if (args.length == 0) {
@@ -68,10 +78,19 @@ public class PollCommand implements CommandExecutor {
             return;
         }
 
-        this.argumentsExecutors.stream()
+        Optional<CommandExecutor> optionalCommandExecutor = this.argumentsExecutors.stream()
                 .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
-                .findAny()
-                .ifPresent(commandExecutor -> commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length)));
+                .findAny();
+
+        if(optionalCommandExecutor.isPresent()) {
+            optionalCommandExecutor.get().execute(message, Arrays.copyOfRange(args, 1, args.length));
+            return;
+        }
+
+        message.getChannel().sendMessage("Erreur. "
+                + "!poll ["
+                + this.argumentsExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining("/"))
+                + "]").queue();
 
     }
 

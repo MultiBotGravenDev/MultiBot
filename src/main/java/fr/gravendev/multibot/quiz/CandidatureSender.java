@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.quiz;
 
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -12,9 +12,9 @@ import java.awt.*;
 
 class CandidatureSender {
 
-    static void send(GuildIdDAO guildIdDAO, User user, Quiz quiz) {
+    static void send(User user, Quiz quiz) {
 
-        getCandidsChannel(guildIdDAO, user).sendMessage(buildMessage(user, quiz)).queue(message -> {
+        getCandidsChannel(user).sendMessage(buildMessage(user, quiz)).queue(message -> {
             message.addReaction("\u2705").queue();
             message.addReaction("\u274C").queue();
         });
@@ -40,11 +40,10 @@ class CandidatureSender {
 
     }
 
-    private static TextChannel getCandidsChannel(GuildIdDAO guildIdDAO, User user) {
-        long guildId = guildIdDAO.get("guild").id;
-        long candidsChannelId = guildIdDAO.get("candids").id;
+    private static TextChannel getCandidsChannel(User user) {
+        String candidsChannelId = Configuration.CANDIDS.getValue();
 
-        Guild guild = user.getJDA().getGuildById(guildId);
+        Guild guild = user.getJDA().getGuildById(Configuration.GUILD.getValue());
         if (guild == null) {
             return null;
         }

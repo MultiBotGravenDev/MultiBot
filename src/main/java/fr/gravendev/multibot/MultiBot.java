@@ -12,6 +12,7 @@ import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,7 @@ class MultiBot {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiBot.class);
 
+    private final CommentedFileConfig config;
     private final DAOManager daoManager;
     private final CommandManager commandManager;
     private final QuizManager quizManager;
@@ -30,13 +32,15 @@ class MultiBot {
     private JDA jda;
 
     MultiBot() {
-        CommentedFileConfig config = CommentedFileConfig.builder("configuration.toml")
+        this.config = CommentedFileConfig.builder("configuration.toml")
                 .defaultResource("/configuration.toml")
                 .autosave()
                 .build();
-        config.load();
+        this.config.load();
         for (Configuration configuration : Configuration.values()) {
-            configuration.setValue(config.get(configuration.getPath()));
+            String path = configuration.getPath();
+            String value = config.get(path).toString();
+            configuration.setValue(value);
         }
 
         DatabaseConnection databaseConnection = DatabaseConnectionBuilder
@@ -51,7 +55,7 @@ class MultiBot {
 
         this.quizManager = new QuizManager(daoManager);
         this.welcomeMessagesSetManager = new WelcomeMessagesSetManager(daoManager);
-        this.pollsManager = new PollsManager(daoManager);
+        this.pollsManager = new PollsManager();
         this.commandManager = new CommandManager(daoManager, welcomeMessagesSetManager, pollsManager);
     }
 
@@ -59,7 +63,8 @@ class MultiBot {
         try {
 
             this.jda = new JDABuilder(Configuration.TOKEN.getValue())
-                    .addEventListeners(new MultiBotListener(commandManager, daoManager, quizManager, welcomeMessagesSetManager, pollsManager))
+                    .addEventListeners(new MultiBotListener( commandManager, daoManager, quizManager, welcomeMessagesSetManager, pollsManager))
+                    .setActivity(Activity.listening("\"il sort quand le multibot?\""))
                     .build();
 
             //SparkAPI sparkAPI = new SparkAPI(jda, databaseConnection);

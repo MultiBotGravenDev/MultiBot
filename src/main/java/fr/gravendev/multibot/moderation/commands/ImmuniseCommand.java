@@ -49,17 +49,26 @@ public class ImmuniseCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
-        if (args.length == 0) return;
+        if (args.length == 0) {
+            message.getChannel().sendMessage("Usage: !immunise [add, remove, list]").queue();
+            return;
+        }
 
         switch (args[0]) {
 
             case "add":
-                if (message.getGuild().getRoleById(args[1]) == null) return;
+                if (message.getGuild().getRoleById(args[1]) == null) {
+                    message.getChannel().sendMessage("Erreur: L'ID du rôle est incorrect.").queue();
+                    return;
+                }
                 add(message, args);
                 break;
 
             case "remove":
-                if (message.getGuild().getRoleById(args[1]) == null) return;
+                if (message.getGuild().getRoleById(args[1]) == null) {
+                    message.getChannel().sendMessage("Erreur: L'ID du rôle est incorrect.").queue();
+                    return;
+                }
                 remove(message, args);
                 break;
 

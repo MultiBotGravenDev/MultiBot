@@ -10,6 +10,7 @@ import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -77,9 +78,16 @@ public class UnbanCommand implements CommandExecutor {
             }
 
             message.getGuild().unban(id).queue();
-            message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, id + " vient d'être unban")).queue();
-            message.getMentionedMembers().get(0).getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unban").queue());
 
+            User user = message.getJDA().getUserCache().getElementById(id);
+
+            message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, (user != null ? user.getName() : id) + " vient d'être unban")).queue();
+
+            if(user == null) {
+                return;
+            }
+
+            user.openPrivateChannel().queue(privateChannel ->  privateChannel.sendMessage("Vous avez été débanni du discord GravenCommunity !").queue());
         });
     }
 

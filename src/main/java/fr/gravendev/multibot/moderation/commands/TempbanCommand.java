@@ -2,11 +2,10 @@ package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
-import fr.gravendev.multibot.database.data.GuildIdsData;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.AModeration;
 import fr.gravendev.multibot.moderation.InfractionType;
+import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -22,11 +21,8 @@ import java.util.Date;
 
 public class TempbanCommand extends AModeration {
 
-    private final GuildIdDAO guildIdDAO;
-
     public TempbanCommand(DAOManager daoManager) {
         super(daoManager);
-        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     @Override
@@ -42,7 +38,7 @@ public class TempbanCommand extends AModeration {
         InfractionData infractionData = new InfractionData(victim.getId(), moderator.getId(), InfractionType.BAN, reason, start, end);
         infractionDAO.save(infractionData);
 
-        GuildIdsData logs = guildIdDAO.get("logs");
+        String logs = Configuration.LOGS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[TEMPBAN] " + victim.getAsTag(), victim.getAvatarUrl())
@@ -51,7 +47,7 @@ public class TempbanCommand extends AModeration {
                 .addField("Raison:", reason, true)
                 .addField("Jusqu'à:", Utils.getDateFormat().format(end), true);
 
-        TextChannel logsChannel = guild.getTextChannelById(logs.id);
+        TextChannel logsChannel = guild.getTextChannelById(logs);
         if(logsChannel != null) {
             logsChannel.sendMessage(embedBuilder.build()).queue();
         }

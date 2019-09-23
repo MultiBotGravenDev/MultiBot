@@ -3,8 +3,12 @@ package fr.gravendev.multibot.database.dao;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.AntiRoleData;
 
-import java.sql.*;
-import java.time.Instant;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +62,11 @@ public class AntiRolesDAO extends DAO<AntiRoleData> {
 
         for (Map.Entry<Date, String> entry : obj.getRoles().entrySet()) {
 
-            if (entry.getKey().before(Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 30 * 6)))) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(entry.getKey());
+            calendar.add(Calendar.MONTH, 1);
+
+            if (new Date().after(calendar.getTime())) {
 
                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM anti_roles WHERE user_id = ? AND role = ?");
                 preparedStatement.setString(1, String.valueOf(obj.getUserId()));

@@ -1,8 +1,7 @@
 package fr.gravendev.multibot.quiz.events.emoteaddedexecutors;
 
-import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.quiz.QuizManager;
+import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageReaction;
@@ -12,16 +11,14 @@ public class ReadThisSaloonExecutor implements EmoteAddedExecutor {
 
 
     private final QuizManager quizManager;
-    private final GuildIdDAO guildIdDAO;
 
-    public ReadThisSaloonExecutor(QuizManager quizManager, DAOManager daoManager) {
+    public ReadThisSaloonExecutor(QuizManager quizManager) {
         this.quizManager = quizManager;
-        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     @Override
-    public long getSaloonId() {
-        return this.guildIdDAO.get("read_this_saloon").id;
+    public String getSaloonId() {
+        return Configuration.READ_THIS_SALOON.getValue();
     }
 
     @Override

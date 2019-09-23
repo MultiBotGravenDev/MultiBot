@@ -4,28 +4,29 @@ import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
 import fr.gravendev.multibot.database.data.ExperienceData;
 import fr.gravendev.multibot.events.Listener;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
+public class GuildMessageReceivedListener implements Listener<GuildMessageReceivedEvent> {
 
     private final ExperienceDAO experienceDAO;
 
-    public MessageReceivedListener(DAOManager daoManager) {
+    public GuildMessageReceivedListener(DAOManager daoManager) {
         this.experienceDAO = daoManager.getExperienceDAO();
     }
 
     @Override
-    public Class<MessageReceivedEvent> getEventClass() {
-        return MessageReceivedEvent.class;
+    public Class<GuildMessageReceivedEvent> getEventClass() {
+        return GuildMessageReceivedEvent.class;
     }
 
     @Override
-    public void executeListener(MessageReceivedEvent event) {
+    public void executeListener(GuildMessageReceivedEvent event) {
 
-        if (event.getAuthor().isBot()) return;
+        if (event.getAuthor().isBot() || !event.getMessage().getGuild().getId().equals(Configuration.GUILD.getValue())) return;
 
         User author = event.getAuthor();
 

@@ -8,7 +8,26 @@ public enum Configuration {
     DB_HOST("", "database.host"),
     DB_USERNAME("", "database.username"),
     DB_PASSWORD("", "database.password"),
-    DB_DATABASE("", "database.database");
+    DB_DATABASE("", "database.database"),
+
+    GUILD("", "identifiers.guild"),
+
+    ANTI_IMAGE("", "identifiers.roles.anti_image"),
+    ANTI_MEME("", "identifiers.roles.anti_meme"),
+    ANTI_REPOST("", "identifiers.roles.anti_repost"),
+    ANTI_REVIEW("", "identifiers.roles.anti_review"),
+    DEVELOPPEUR("", "identifiers.roles.developpeur"),
+    HONORABLE("", "identifiers.roles.honorable"),
+    MEMBER("", "identifiers.roles.member"),
+    MUTED("", "identifiers.roles.muted"),
+    PILIER("", "identifiers.roles.pilier"),
+
+    CANDIDS("", "identifiers.channels.candids"),
+    LOGS("", "identifiers.channels.logs"),
+    RULES("", "identifiers.channels.rules"),
+    READ_THIS_SALOON("", "identifiers.channels.read_this_saloon"),
+    SONDAGES("", "identifiers.channels.sondages"),
+    SONDAGES_VERIF("", "identifiers.channels.sondages_verif");
 
     private String value;
     private final String path;
@@ -29,4 +48,14 @@ public enum Configuration {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public static Configuration getConfigByName(String name) {
+        for (Configuration value : values()) {
+            if(value.name().equalsIgnoreCase(name)) {
+                return value;
+            }
+        }
+        return null;
+    }
+
 }

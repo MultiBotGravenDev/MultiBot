@@ -8,7 +8,6 @@ public class DAOManager {
     private BadWordsDAO badWordsDAO;
     private CustomCommandDAO customCommandDAO;
     private ExperienceDAO experienceDAO;
-    private GuildIdDAO guildIdDAO;
     private ImmunisedIdDAO immunisedIdDAO;
     private InfractionDAO infractionDAO;
     private LogsDAO logsDAO;
@@ -22,7 +21,6 @@ public class DAOManager {
         this.badWordsDAO = new BadWordsDAO(databaseConnection);
         this.customCommandDAO = new CustomCommandDAO(databaseConnection);
         this.experienceDAO = new ExperienceDAO(databaseConnection);
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
         this.immunisedIdDAO = new ImmunisedIdDAO(databaseConnection);
         this.infractionDAO = new InfractionDAO(databaseConnection);
         this.logsDAO = new LogsDAO(databaseConnection);
@@ -46,10 +44,6 @@ public class DAOManager {
 
     public ExperienceDAO getExperienceDAO() {
         return experienceDAO;
-    }
-
-    public GuildIdDAO getGuildIdDAO() {
-        return guildIdDAO;
     }
 
     public ImmunisedIdDAO getImmunisedIdDAO() {

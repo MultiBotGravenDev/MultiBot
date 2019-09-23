@@ -1,17 +1,10 @@
 package fr.gravendev.multibot.votes.roles;
 
-import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
+import fr.gravendev.multibot.utils.Configuration;
 
 import java.awt.*;
 
 public class Developer implements Role {
-
-    private final GuildIdDAO guildIdDAO;
-
-    public Developer(DAOManager daoManager) {
-        this.guildIdDAO = daoManager.getGuildIdDAO();
-    }
 
     @Override
     public String getRoleName() {
@@ -24,8 +17,8 @@ public class Developer implements Role {
     }
 
     @Override
-    public long getRoleId() {
-        return guildIdDAO.get("developpeur").id;
+    public String getRoleId() {
+        return Configuration.DEVELOPPEUR.getValue();
     }
 
     @Override

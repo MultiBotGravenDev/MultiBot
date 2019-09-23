@@ -3,10 +3,10 @@ package fr.gravendev.multibot.moderation.commands;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
+import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
@@ -24,12 +24,10 @@ import java.util.List;
 
 public class UnmuteCommand implements CommandExecutor {
 
-    private final GuildIdDAO guildIdDAO;
     private final InfractionDAO infractionDAO;
 
     public UnmuteCommand(DAOManager daoManager) {
         this.infractionDAO = daoManager.getInfractionDAO();
-        this.guildIdDAO = daoManager.getGuildIdDAO();
     }
 
     @Override
@@ -85,8 +83,7 @@ public class UnmuteCommand implements CommandExecutor {
             infractionDAO.save(data);
         }
 
-        long mutedID = guildIdDAO.get("muted").id;
-        Role muted = guild.getRoleById(mutedID);
+        Role muted = guild.getRoleById(Configuration.MUTED.getValue());
 
         if (muted != null) {
             guild.removeRoleFromMember(member, muted).queue();

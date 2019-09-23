@@ -43,7 +43,10 @@ public class BadWordsCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
 
-        if (args.length == 0) return;
+        if (args.length == 0){
+            message.getChannel().sendMessage("Usage: !badwords [add, remove, list]").queue();
+            return;
+        }
 
         switch (args[0]) {
 
@@ -65,7 +68,10 @@ public class BadWordsCommand implements CommandExecutor {
 
     private void add(Message message, String[] args) {
 
-        if (args.length < 2) return;
+        if (args.length < 2){
+            message.getChannel().sendMessage("Usage: &badwords add [word]").queue();
+            return;
+        }
 
         this.badWordsDAO.save(new BadWordsData(this.badWordsDAO.get("").getBadWords() + args[1]));
         message.getChannel().sendMessage("Le mot " + args[1] + " a bien été ajouté aux bad words.").queue();
@@ -74,7 +80,10 @@ public class BadWordsCommand implements CommandExecutor {
 
     private void remove(Message message, String[] args) {
 
-        if (args.length < 2) return;
+        if (args.length < 2){
+            message.getChannel().sendMessage("Usage: &badwords add [word]").queue();
+            return;
+        }
 
         this.badWordsDAO.delete(new BadWordsData(args[1]));
         message.getChannel().sendMessage("Le mot " + args[1] + " a bien été retiré des bad words.").queue();

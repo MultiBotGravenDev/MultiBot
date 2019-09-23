@@ -1,9 +1,7 @@
 package fr.gravendev.multibot.quiz.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
-import fr.gravendev.multibot.database.data.GuildIdsData;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -11,12 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ChannelCommand implements CommandExecutor {
-
-    private final GuildIdDAO guildIdDAO;
-
-    ChannelCommand(DAOManager daoManager) {
-        this.guildIdDAO = daoManager.getGuildIdDAO();
-    }
 
     @Override
     public String getCommand() {
@@ -43,7 +35,7 @@ public class ChannelCommand implements CommandExecutor {
         }
 
         TextChannel textChannel = mentionedChannels.get(0);
-        this.guildIdDAO.save(new GuildIdsData("candids", textChannel.getIdLong()));
+        Configuration.CANDIDS.setValue(textChannel.getId());
         message.getChannel().sendMessage("Le nouveau salon pour envoyer les candidatures a bien été définis à : " + textChannel.getAsMention()).queue();
 
     }

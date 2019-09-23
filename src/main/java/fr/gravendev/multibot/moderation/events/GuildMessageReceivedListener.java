@@ -2,13 +2,12 @@ package fr.gravendev.multibot.moderation.events;
 
 import fr.gravendev.multibot.database.dao.BadWordsDAO;
 import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.ImmunisedIdDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
-import fr.gravendev.multibot.database.data.GuildIdsData;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.events.Listener;
 import fr.gravendev.multibot.moderation.InfractionType;
+import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -23,16 +22,14 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import java.awt.*;
 import java.util.Date;
 
-public class MessageReceivedListener implements Listener<GuildMessageReceivedEvent> {
+public class GuildMessageReceivedListener implements Listener<GuildMessageReceivedEvent> {
     private final BadWordsDAO badWordsDAO;
     private final InfractionDAO infractionDAO;
-    private final GuildIdDAO guildIdDAO;
     private final ImmunisedIdDAO immunisedIdsDAO;
 
-    public MessageReceivedListener(DAOManager daoManager) {
+    public GuildMessageReceivedListener(DAOManager daoManager) {
         this.badWordsDAO = daoManager.getBadWordsDAO();
         this.infractionDAO = daoManager.getInfractionDAO();
-        this.guildIdDAO = daoManager.getGuildIdDAO();
         this.immunisedIdsDAO = daoManager.getImmunisedIdDAO();
     }
 
@@ -44,7 +41,7 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
 
     @Override
     public void executeListener(GuildMessageReceivedEvent event) {
-        if (isImmunised(event.getMessage().getMember())) {
+        if (!event.getMessage().getGuild().getId().equals(Configuration.GUILD.getValue()) || isImmunised(event.getMessage().getMember())) {
             return;
         }
 
@@ -63,7 +60,7 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
     }
 
     private void warnForDiscordInviteIfNeeded(Message message) {
-        if (message.getContentDisplay().contains("discord.gg")) {
+        if (message.getContentDisplay().contains("discord.gg/")) {
             warn(message, "Posted invite");
             message.delete().queue();
         }
@@ -120,10 +117,10 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
         User user = message.getAuthor();
         Guild guild = message.getGuild();
 
-        InfractionData data = new InfractionData(user.getId(), user.getId(), InfractionType.WARN, "Bad word usage", new Date(), null);
+        InfractionData data = new InfractionData(user.getId(), user.getId(), InfractionType.WARN, reason, new Date(), null);
 
         infractionDAO.save(data);
-        GuildIdsData logs = guildIdDAO.get("logs");
+        String logs = Configuration.LOGS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[WARN] " + user.getAsTag(), user.getAvatarUrl())
@@ -131,7 +128,7 @@ public class MessageReceivedListener implements Listener<GuildMessageReceivedEve
                 .addField("Modérateur:", message.getJDA().getSelfUser().getAsMention(), true)
                 .addField("Raison:", reason, true);
 
-        TextChannel logsChannel = guild.getTextChannelById(logs.id);
+        TextChannel logsChannel = guild.getTextChannelById(logs);
         if (logsChannel != null) {
             logsChannel.sendMessage(embedBuilder.build()).queue();
         }

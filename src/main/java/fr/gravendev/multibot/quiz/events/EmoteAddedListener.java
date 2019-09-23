@@ -1,6 +1,5 @@
 package fr.gravendev.multibot.quiz.events;
 
-import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.events.Listener;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.events.emoteaddedexecutors.CandidsExecutor;
@@ -15,10 +14,10 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
 
     private final List<EmoteAddedExecutor> executors;
 
-    public EmoteAddedListener(QuizManager quizManager, DAOManager daoManager) {
+    public EmoteAddedListener(QuizManager quizManager) {
         this.executors = Arrays.asList(
-                new ReadThisSaloonExecutor(quizManager, daoManager),
-                new CandidsExecutor(daoManager)
+                new ReadThisSaloonExecutor(quizManager),
+                new CandidsExecutor()
         );
     }
 
@@ -33,7 +32,7 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
         if (event.getUser().isBot()) return;
 
         this.executors.stream()
-                .filter(executor -> executor.getSaloonId() == event.getChannel().getIdLong())
+                .filter(executor -> executor.getSaloonId().equals(event.getChannel().getId()))
                 .findAny()
                 .ifPresent(executor -> executor.execute(event));
 
