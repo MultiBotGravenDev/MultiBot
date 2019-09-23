@@ -54,18 +54,11 @@ public interface CommandExecutor {
         return false;
     }
 
+    // TODO: To try!
     default boolean canExecute(Message message) {
-
         Member member = message.getMember();
-        if (member != null && member.hasPermission(Permission.ADMINISTRATOR)) {
-            return true;
-        }
 
-        if(!isAuthorizedChannel(message.getChannel()) || (member != null && !isAuthorizedMember(member))) {
-            return false;
-        }
-
-        return true;
+        return (member != null && member.hasPermission(Permission.ADMINISTRATOR))
+                || !(!isAuthorizedChannel(message.getChannel()) || (member != null && !isAuthorizedMember(member)));
     }
-
 }
