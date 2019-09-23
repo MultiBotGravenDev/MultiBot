@@ -40,12 +40,15 @@ public interface CommandExecutor {
 
     default boolean isAuthorizedChannel(MessageChannel channel) {
         switch (getChannelType()) {
-
             case ALL:
-                if (channel.getType() == net.dv8tion.jda.api.entities.ChannelType.PRIVATE) return true;
+                if (channel.getType() == net.dv8tion.jda.api.entities.ChannelType.PRIVATE) {
+                    return true;
+                }
 
             case GUILD:
-                if (getAuthorizedChannelsNames().contains(channel.getName())) return true;
+                if (getAuthorizedChannelsNames().contains(channel.getName())) {
+                    return true;
+                }
                 return getAuthorizedChannelsNames().isEmpty();
 
             case PRIVATE:
@@ -57,8 +60,10 @@ public interface CommandExecutor {
     // TODO: To try!
     default boolean canExecute(Message message) {
         Member member = message.getMember();
+        boolean isMemberNullOrAdmin = member != null && member.hasPermission(Permission.ADMINISTRATOR);
 
-        return (member != null && member.hasPermission(Permission.ADMINISTRATOR))
+        // TODO To refactor again : revert condition + remove member != null as long as it has already been tested!
+        return isMemberNullOrAdmin
                 || !(!isAuthorizedChannel(message.getChannel()) || (member != null && !isAuthorizedMember(member)));
     }
 }
