@@ -107,7 +107,11 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
     }
 
     private void computeBadWord(String badWord, Message message) {
-        if (message.getContentDisplay().toLowerCase().contains(badWord.toLowerCase())) {
+        String messageToCheck = message.getContentDisplay().toLowerCase();
+        String lowerCasedBadWord = badWord.toLowerCase();
+
+        if (messageToCheck.contains(" " + lowerCasedBadWord)
+                || messageToCheck.contains(lowerCasedBadWord + " ")) {
             warn(message, "Bad word");
         }
     }
