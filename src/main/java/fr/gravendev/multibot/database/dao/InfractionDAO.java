@@ -24,8 +24,8 @@ public class InfractionDAO extends DAO<InfractionData> {
                         "ON DUPLICATE KEY UPDATE end = VALUES(end), finished = VALUES(finished)");
 
         statement.setString(1, data.getUUID().toString());
-        statement.setString(2, data.getPunished_id());
-        statement.setString(3, data.getPunisher_id());
+        statement.setString(2, data.getPunishedId());
+        statement.setString(3, data.getPunisherId());
         statement.setString(4, data.getType().name());
         statement.setString(5, data.getReason());
         statement.setTimestamp(6, new Timestamp(data.getStart().getTime()));

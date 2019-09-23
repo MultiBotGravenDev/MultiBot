@@ -30,15 +30,15 @@ public class InfractionsTask extends TimerTask {
             allUnfinished.forEach(infraction -> {
                 switch (infraction.getType()) {
                     case BAN:
-                        guild.unban(infraction.getPunished_id()).queue(success -> {}, throwable -> {});
-                        Member member = guild.getMemberById(infraction.getPunished_id());
+                        guild.unban(infraction.getPunishedId()).queue(success -> {}, throwable -> {});
+                        Member member = guild.getMemberById(infraction.getPunishedId());
                         if (member == null) {
                             break;
                         }
                         member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été débanni du discord GravenDev").queue(), throwable -> {});
                         break;
                     case MUTE:
-                        member = guild.getMemberById(infraction.getPunished_id());
+                        member = guild.getMemberById(infraction.getPunishedId());
                         if (member == null) {
                             break;
                         }

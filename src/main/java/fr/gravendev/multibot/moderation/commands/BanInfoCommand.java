@@ -86,7 +86,7 @@ public class BanInfoCommand implements CommandExecutor {
                                 .setTitle("Informations de ban " + user.getName())
                                 .addField("Raison:", data.getReason(), false)
                                 .addField("Date de fin:", end, false)
-                                .addField("Par:", "<@" + data.getPunisher_id() + ">", false)
+                                .addField("Par:", "<@" + data.getPunisherId() + ">", false)
                                 .addField("Le:", Utils.getDateFormat().format(data.getStart()), false).build();
 
                     } else

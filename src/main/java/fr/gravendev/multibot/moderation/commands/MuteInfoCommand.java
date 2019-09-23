@@ -82,7 +82,7 @@ public class MuteInfoCommand implements CommandExecutor {
                 .setTitle("Informations de mute " + member.getUser().getName())
                 .addField("Raison:", data.getReason(), false)
                 .addField("Date de fin:", end, false)
-                .addField("Par:", "<@" + data.getPunisher_id() + ">", false)
+                .addField("Par:", "<@" + data.getPunisherId() + ">", false)
                 .addField("Le:", Utils.getDateFormat().format(data.getStart()), false);
 
         messageChannel.sendMessage(embed.build()).queue();
