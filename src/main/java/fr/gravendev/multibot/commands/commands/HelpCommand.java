@@ -43,6 +43,7 @@ public class HelpCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
+
         List<MessageEmbed> embeds = new ArrayList<>();
 
         for (CommandCategory category : CommandCategory.values()) {
@@ -58,7 +59,7 @@ public class HelpCommand implements CommandExecutor {
         EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setColor(Color.MAGENTA)
                 .setTitle("Commandes personnalisées");
-        getCustomCommands().forEach(customCommand -> embedBuilder.addField(customCommand.getCommand(), "", false));
+        getCustomCommands().forEach(customCommand -> embedBuilder.addField(customCommand.getCommand(), "", true));
         embeds.add(embedBuilder.build());
 
         for (MessageEmbed embed : embeds) {
