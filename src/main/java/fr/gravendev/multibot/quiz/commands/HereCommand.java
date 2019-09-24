@@ -56,7 +56,7 @@ public class HereCommand implements CommandExecutor {
             channel.sendMessage(value).queue();
         }
 
-        if(channel.getName().equals("réglement")) {
+        if(channel.getName().equals("règlement")) {
             channel.sendMessage("Bonne continuation sur GravenDev - Community !").queue();
             return;
         }
