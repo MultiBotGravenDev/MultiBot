@@ -2,14 +2,16 @@ package fr.gravendev.multibot.quiz.events.emoteaddedexecutors;
 
 import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
-import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+
+import java.awt.*;
 
 public class CandidsExecutor implements EmoteAddedExecutor {
 
     @Override
-    public String getSaloonId() {
+    public String getChannelId() {
         return Configuration.CANDIDS.getValue();
     }
 
@@ -22,17 +24,19 @@ public class CandidsExecutor implements EmoteAddedExecutor {
 
             Member member = message.getMentionedMembers().get(0);
             String validationMessage = member.getAsMention() + "\n\n";
+            Color color = Color.getColor("0xFF0025");
 
             switch (event.getReactionEmote().getName()) {
 
                 case "\u2705":
-                    validationMessage += ":white_check_mark: acceptée ";
+                    validationMessage += "Acceptée par ";
                     member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Votre candidature a été acceptée ! Bienvenue sur GravenDev").queue());
                     GuildUtils.addRole(member, String.valueOf(memberRoleId)).queue();
+                    color = Color.getColor("0x008000");
                     break;
 
                 case "\u274C":
-                    validationMessage += ":x: refusée ";
+                    validationMessage += "Refusée par ";
                     member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Votre candidature a été refusée").queue());
                     break;
 
@@ -42,12 +46,13 @@ public class CandidsExecutor implements EmoteAddedExecutor {
 
             }
 
-            validationMessage += "par " + event.getMember().getAsMention();
+            validationMessage += event.getMember().getAsMention();
 
             message.clearReactions().queue();
 
-            message.editMessage(new MessageBuilder(message)
-                    .setContent(validationMessage)
+            message.editMessage(new EmbedBuilder(message.getEmbeds().get(0))
+                    .setTitle(member.getAsMention() + ". " + validationMessage)
+                    .setColor(color)
                     .build()).queue();
 
         });

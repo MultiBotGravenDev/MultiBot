@@ -59,19 +59,19 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
                 || member.hasPermission(Permission.ADMINISTRATOR);
     }
 
-    private void warnForDiscordInviteIfNeeded(Message message) {
-        if (message.getContentDisplay().contains("discord.gg/")) {
-            warn(message, "Posted invite");
-            message.delete().queue();
-        }
-    }
-
     private void warnForBadWordIfNeeded(Message message) {
         for (String badWord : this.badWordsDAO.get("").getBadWords().split(" ")) {
             if (badWord.isEmpty()) {
                 continue;
             }
             computeBadWord(badWord, message);
+        }
+    }
+
+    private void warnForDiscordInviteIfNeeded(Message message) {
+        if (message.getContentDisplay().contains("discord.gg/")) {
+            warn(message, "Posted invite");
+            message.delete().queue();
         }
     }
 

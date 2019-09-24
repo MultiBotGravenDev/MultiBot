@@ -7,17 +7,17 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
-public class ReadThisSaloonExecutor implements EmoteAddedExecutor {
+public class ReadThisChannelExecutor implements EmoteAddedExecutor {
 
 
     private final QuizManager quizManager;
 
-    public ReadThisSaloonExecutor(QuizManager quizManager) {
+    public ReadThisChannelExecutor(QuizManager quizManager) {
         this.quizManager = quizManager;
     }
 
     @Override
-    public String getSaloonId() {
+    public String getChannelId() {
         return Configuration.READ_THIS_SALOON.getValue();
     }
 

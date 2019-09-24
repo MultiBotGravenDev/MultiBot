@@ -2,9 +2,8 @@ package fr.gravendev.multibot.quiz;
 
 import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -21,22 +20,19 @@ class CandidatureSender {
 
     }
 
-    private static Message buildMessage(User user, Quiz quiz) {
-
-        MessageBuilder messageBuilder = new MessageBuilder();
-        messageBuilder.setContent(user.getAsMention());
+    private static MessageEmbed buildMessage(User user, Quiz quiz) {
 
         EmbedBuilder embedBuilder = new EmbedBuilder()
-                .setColor(Color.getColor("68944F"))
+                .setColor(Color.getColor("0x1A8CFE"))
                 .setAuthor(user.getAsTag(), user.getAvatarUrl(), user.getAvatarUrl());
+
+        embedBuilder.setTitle(user.getAsMention());
 
         while (quiz.hasNextAnswer()) {
             embedBuilder.addField(quiz.getCurrentAnswer());
         }
 
-        messageBuilder.setEmbed(embedBuilder.build());
-
-        return messageBuilder.build();
+        return embedBuilder.build();
 
     }
 
