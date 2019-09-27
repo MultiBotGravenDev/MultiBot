@@ -68,8 +68,17 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
         }
     }
 
+    private void computeBadWord(String badWord, Message message) {
+        String messageToCheck = " " + message.getContentDisplay().toLowerCase() + " ";
+        String lowerCasedBadWord = badWord.toLowerCase();
+
+        if (messageToCheck.contains(" " + lowerCasedBadWord + " ")) {
+            warn(message, "Bad word");
+        }
+    }
+
     private void warnForDiscordInviteIfNeeded(Message message) {
-        if (message.getContentDisplay().contains("discord.gg/")) {
+        if (message.getContentDisplay().toLowerCase().contains("discord.gg/")) {
             warn(message, "Posted invite");
             message.delete().queue();
         }
@@ -103,16 +112,6 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
 
         if (length >= 8 && capitalLettersCount * 100 / length >= 75) {
             warn(message, "Capital letters");
-        }
-    }
-
-    private void computeBadWord(String badWord, Message message) {
-        String messageToCheck = message.getContentDisplay().toLowerCase();
-        String lowerCasedBadWord = badWord.toLowerCase();
-
-        if (messageToCheck.contains(" " + lowerCasedBadWord)
-                || messageToCheck.contains(lowerCasedBadWord + " ")) {
-            warn(message, "Bad word");
         }
     }
 
