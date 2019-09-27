@@ -40,8 +40,8 @@ class Quiz {
 
     MessageEmbed.Field getCurrentAnswer() {
         return new MessageEmbed.Field(
-                "__" + quizMessageDAO.get(String.valueOf(this.answerIndex)).getMessage() + "__",
-                responses.get(this.answerIndex),
+                "*" + quizMessageDAO.get(String.valueOf(this.answerIndex)).getMessage() + "*",
+                responses.get(this.answerIndex) + "\n",
                 false);
     }
 

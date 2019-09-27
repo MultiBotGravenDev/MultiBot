@@ -22,7 +22,6 @@ class MultiBot {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiBot.class);
 
-    private final CommentedFileConfig config;
     private final DAOManager daoManager;
     private final CommandManager commandManager;
     private final QuizManager quizManager;
@@ -32,11 +31,11 @@ class MultiBot {
     private JDA jda;
 
     MultiBot() {
-        this.config = CommentedFileConfig.builder("configuration.toml")
+        CommentedFileConfig config = CommentedFileConfig.builder("configuration.toml")
                 .defaultResource("/configuration.toml")
                 .autosave()
                 .build();
-        this.config.load();
+        config.load();
         for (Configuration configuration : Configuration.values()) {
             String path = configuration.getPath();
             String value = config.get(path).toString();
@@ -64,7 +63,7 @@ class MultiBot {
 
             this.jda = new JDABuilder(Configuration.TOKEN.getValue())
                     .addEventListeners(new MultiBotListener( commandManager, daoManager, quizManager, welcomeMessagesSetManager, pollsManager))
-                    .setActivity(Activity.listening("\"il sort quand le multibot?\""))
+                    .setActivity(Activity.playing(Configuration.PREFIX.getValue() + "help"))
                     .build();
 
             //SparkAPI sparkAPI = new SparkAPI(jda, databaseConnection);
