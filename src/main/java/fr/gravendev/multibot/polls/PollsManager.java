@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PollsManager {
-
     private Map<Long, Poll> polls = new HashMap<>();
 
     public void registerPoll(User user, long messageId) {
@@ -21,19 +20,27 @@ public class PollsManager {
     }
 
     public void setColor(User user, Colors color) {
-        this.polls.get(user.getIdLong()).setColor(color);
+        getUserPoll(user).setColor(color);
     }
 
     public void setTitle(User user, String title) {
-        this.polls.get(user.getIdLong()).setTitle(title);
+        getUserPoll(user).setTitle(title);
+    }
+
+    private Poll getUserPoll(long userId) {
+        return polls.get(userId);
+    }
+
+    private Poll getUserPoll(User user) {
+        return getUserPoll(user.getIdLong());
     }
 
     public void setChoice(User user, String[] choice) {
-        this.polls.get(user.getIdLong()).setChoice(Integer.parseInt(choice[0]), String.join(" ", Arrays.copyOfRange(choice, 1, choice.length)));
+        getUserPoll(user).setChoice(Integer.parseInt(choice[0]), String.join(" ", Arrays.copyOfRange(choice, 1, choice.length)));
     }
 
     public void setEmote(User user, int numberEmote, String emote) {
-        this.polls.get(user.getIdLong()).setEmote(numberEmote, emote);
+        getUserPoll(user).setEmote(numberEmote, emote);
     }
 
     public void sendToValidation(User user) {
@@ -41,21 +48,28 @@ public class PollsManager {
         String sondagesVerifId = Configuration.SONDAGES_VERIF.getValue();
 
         TextChannel channel = user.getJDA().getGuildById(guildId).getTextChannelById(sondagesVerifId);
-        this.polls.get(user.getIdLong()).finish(channel, false);
+        getUserPoll(user).finish(channel, false);
     }
 
     public void send(User user, String title) {
         long userId = user.getIdLong();
         String guildId = Configuration.GUILD.getValue();
         String sondagesId = Configuration.SONDAGES.getValue();
-        if (!this.polls.containsKey(userId) || !this.polls.get(userId).isSameTitle(title)) return;
+        if (hasNotPoll(userId)
+                || !getUserPoll(userId).isSameTitle(title)) {
+            return;
+        }
 
         TextChannel channel = user.getJDA().getGuildById(guildId).getTextChannelById(sondagesId);
-        this.polls.get(userId).finish(channel, true);
+        getUserPoll(userId).finish(channel, true);
     }
 
+    // TODO Revert condition : hasPoll instead of hasNotPoll
     public boolean hasNotPoll(User user) {
-        return !this.polls.containsKey(user.getIdLong());
+        return hasNotPoll(user.getIdLong());
     }
 
+    private boolean hasNotPoll(long userId) {
+        return !polls.containsKey(userId);
+    }
 }
