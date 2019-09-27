@@ -6,17 +6,16 @@ import java.util.Date;
 import java.util.UUID;
 
 public class InfractionData {
-
     private UUID uuid;
-    private String punished_id, punisher_id, reason;
+    private String punishedId, punisherId, reason;
     private InfractionType type;
     private Date start, end;
     private boolean finished;
 
-    public InfractionData(String punished_id, String punisher_id, InfractionType type, String reason, Date start, Date end) {
+    public InfractionData(String punishedId, String punisherId, InfractionType type, String reason, Date start, Date end) {
         this.uuid = UUID.randomUUID();
-        this.punished_id = punished_id;
-        this.punisher_id = punisher_id;
+        this.punishedId = punishedId;
+        this.punisherId = punisherId;
         this.type = type;
         this.reason = reason;
         this.start = start;
@@ -24,10 +23,10 @@ public class InfractionData {
         this.finished = false;
     }
 
-    public InfractionData(UUID uuid, String punished_id, String punisher_id, InfractionType type, String reason, Date start, Date end, boolean finished) {
+    public InfractionData(UUID uuid, String punishedId, String punisherId, InfractionType type, String reason, Date start, Date end, boolean finished) {
         this.uuid = uuid;
-        this.punished_id = punished_id;
-        this.punisher_id = punisher_id;
+        this.punishedId = punishedId;
+        this.punisherId = punisherId;
         this.type = type;
         this.reason = reason;
         this.start = start;
@@ -35,12 +34,12 @@ public class InfractionData {
         this.finished = finished;
     }
 
-    public String getPunished_id() {
-        return punished_id;
+    public String getPunishedId() {
+        return punishedId;
     }
 
-    public String getPunisher_id() {
-        return punisher_id;
+    public String getPunisherId() {
+        return punisherId;
     }
 
     public String getReason() {

@@ -36,17 +36,21 @@ public class UserinfoCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
         Member member = message.getMember();
         List<Member> mentionedMembers = message.getMentionedMembers();
-        if (mentionedMembers.size() > 0)
-            member = mentionedMembers.get(0);
-        User user = member.getUser();
 
+        if (mentionedMembers.size() > 0) {
+            member = mentionedMembers.get(0);
+        }
+
+        User user = member.getUser();
         String joinDate = member.getTimeJoined().format(Utils.getDateTimeFormatter());
         String createdDate = user.getTimeCreated().format(Utils.getDateTimeFormatter());
-        String roles = member.getRoles().stream().map(Role::getName).collect(Collectors.joining(", "));
-
+        String roles = member.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(", "));
         String nickname = member.getNickname() == null ? "N/A" : member.getNickname();
-        String game = member.getActivities().size() == 0 ? "N/A" : member.getActivities().stream().map(Activity::getName).collect(Collectors.joining(", "));
-
+        String game = member.getActivities().size() == 0 ? "N/A" : member.getActivities().stream()
+                .map(Activity::getName)
+                .collect(Collectors.joining(", "));
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.magenta)
                 .setAuthor(user.getName(), user.getAvatarUrl(), user.getAvatarUrl())
                 .setThumbnail(user.getAvatarUrl())
@@ -60,7 +64,6 @@ public class UserinfoCommand implements CommandExecutor {
                 .setFooter("Crée le " + createdDate, null);
 
         message.getChannel().sendMessage(embedBuilder.build()).queue();
-
     }
 
     public List<String> getAuthorizedChannelsNames() {

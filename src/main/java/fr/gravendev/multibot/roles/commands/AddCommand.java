@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.roles.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.RoleDAO;
 import fr.gravendev.multibot.database.data.RoleData;
 import net.dv8tion.jda.api.entities.Emote;
@@ -15,8 +15,8 @@ public class AddCommand implements CommandExecutor {
 
     private final RoleDAO roleDAO;
 
-    AddCommand(DatabaseConnection databaseConnection) {
-        this.roleDAO = new RoleDAO(databaseConnection);
+    AddCommand(DAOManager daoManager) {
+        this.roleDAO = daoManager.getRoleDAO();
     }
 
     @Override
@@ -39,7 +39,7 @@ public class AddCommand implements CommandExecutor {
 
         List<Role> mentionedRoles = message.getMentionedRoles();
         if (args.length != 2 || !args[0].matches("[0-9]+") || mentionedRoles.size() != 1) {
-            message.getChannel().sendMessage("Erreur. !roles add <id de l'emote> @role").queue();
+            message.getChannel().sendMessage("Erreur. "+getCharacter()+"roles add <id de l'emote> @role").queue();
             return;
         }
 

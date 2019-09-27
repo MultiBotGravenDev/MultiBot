@@ -1,12 +1,17 @@
 package fr.gravendev.multibot.spark.routes.admin;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.MessageHistory;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
@@ -42,9 +47,8 @@ public class AdminInfos implements Route {
         long mutes = allUnfinished.stream().filter(infraction -> infraction.getType() == InfractionType.MUTE).count();
 
         JSONObject lastCandid = new JSONObject();
-        GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
 
-        long candids = guildIdDAO.get("candids").id;
+        String candids = Configuration.CANDIDS.getValue();
         for (Message message : getHistory(candids)) {
             if(!message.getAuthor().isBot() || message.getReactions().size() > 0 || message.getEmbeds().size() != 1) continue;
             MessageEmbed messageEmbed = message.getEmbeds().get(0);
@@ -62,7 +66,7 @@ public class AdminInfos implements Route {
             break;
         }
 
-        long polls = guildIdDAO.get("sondages").id;
+        String polls = Configuration.SONDAGES.getValue();
         JSONObject lastPoll = new JSONObject();
 
         for (Message message : getHistory(polls)) {
@@ -84,7 +88,7 @@ public class AdminInfos implements Route {
         return new JSONObject().put("bans", bans).put("mutes", mutes).put("candid", lastCandid).put("lastPoll", lastPoll);
     }
 
-    private List<Message> getHistory(long channelID) {
+    private List<Message> getHistory(String channelID) {
         TextChannel pollsChannel = guild.getTextChannelById(channelID);
 
         MessageHistory messageHistory = pollsChannel.getHistoryAround(pollsChannel.getLatestMessageId(), 10).complete();

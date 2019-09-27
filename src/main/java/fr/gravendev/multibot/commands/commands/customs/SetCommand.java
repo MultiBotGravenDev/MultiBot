@@ -1,19 +1,19 @@
 package fr.gravendev.multibot.commands.commands.customs;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.data.CustomCommandData;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.util.Arrays;
 
 public class SetCommand implements CommandExecutor {
-
     private final CustomCommandDAO CustomCommandDAO;
 
-    public SetCommand(DatabaseConnection databaseConnection) {
-        this.CustomCommandDAO = new CustomCommandDAO(databaseConnection);
+    public SetCommand(DAOManager daoManager) {
+        this.CustomCommandDAO = daoManager.getCustomCommandDAO();
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SetCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length < 2) {
-            message.getChannel().sendMessage("Erreur. !custom setChoice <commande> <texte>").queue();
+            message.getChannel().sendMessage(Utils.errorArguments("custom set", "<commande> <valeur>")).queue();
             return;
         }
 

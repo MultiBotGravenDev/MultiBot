@@ -1,64 +1,107 @@
 package fr.gravendev.multibot.quiz.events.emoteaddedexecutors;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
+import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+
+import java.awt.*;
 
 public class CandidsExecutor implements EmoteAddedExecutor {
 
-    private final GuildIdDAO guildIdDAO;
-
-    public CandidsExecutor(DatabaseConnection databaseConnection) {
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
-    }
-
     @Override
-    public long getSaloonId() {
-        return this.guildIdDAO.get("candids").id;
+    public String getChannelId() {
+        return Configuration.CANDIDS.getValue();
     }
 
     @Override
     public void execute(MessageReactionAddEvent event) {
 
-        long memberRoleId = this.guildIdDAO.get("member").id;
+        String memberRoleId = Configuration.MEMBER.getValue();
 
         event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(message -> {
 
-            Member member = message.getMentionedMembers().get(0);
-            String validationMessage = member.getAsMention() + "\n\n";
+            MessageEmbed builder = editWithoutMember(event, message);
 
-            switch (event.getReactionEmote().getName()) {
-
-                case "\u2705":
-                    validationMessage += ":white_check_mark: acceptée ";
-                    member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Votre candidature a été acceptée ! Bienvenue sur GravenDev").queue());
-                    GuildUtils.addRole(member, String.valueOf(memberRoleId)).queue();
-                    break;
-
-                case "\u274C":
-                    validationMessage += ":x: refusée ";
-                    member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Votre candidature a été refusée").queue());
-                    break;
-
-                default:
-                    event.getReaction().removeReaction(event.getUser()).queue();
-                    return;
-
+            if (message.getMentionedMembers().size() != 0) {
+                Member member = message.getMentionedMembers().get(0);
+                builder = editWithMember(event, memberRoleId, message, member);
             }
 
-            validationMessage += "par " + event.getMember().getAsMention();
-
-            message.clearReactions().queue();
-
-            message.editMessage(new MessageBuilder(message)
-                    .setContent(validationMessage)
-                    .build()).queue();
+            if (builder != null) {
+                message.clearReactions().queue();
+                message.editMessage(new MessageBuilder(builder).build()).queue();
+            }
 
         });
 
+    }
+
+    private MessageEmbed editWithoutMember(MessageReactionAddEvent event, Message message) {
+
+        String validationMessage = " ";
+        Color color = Color.decode("#FF0025");
+
+        switch (event.getReactionEmote().getName()) {
+
+            case "\u2705":
+                validationMessage += "Acceptée par ";
+                color = Color.decode("#008000");
+                break;
+
+            case "\u274C":
+                validationMessage += "Refusée par ";
+                break;
+
+            default:
+                event.getReaction().removeReaction(event.getUser()).queue();
+                return null;
+
+        }
+
+        validationMessage += event.getUser().getAsTag();
+
+        return new EmbedBuilder(message.getEmbeds().get(0))
+                .setTitle(validationMessage)
+                .setColor(color)
+                .build();
+
+    }
+
+    private MessageEmbed editWithMember(MessageReactionAddEvent event, String memberRoleId, Message message, Member member) {
+        String validationMessage = "";
+        Color color = Color.decode("#FF0025");
+
+        switch (event.getReactionEmote().getName()) {
+
+            case "\u2705":
+                validationMessage += "Acceptée par ";
+                member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Votre candidature a été acceptée ! Bienvenue sur GravenDev").queue());
+                GuildUtils.addRole(member, String.valueOf(memberRoleId)).queue();
+                color = Color.decode("#008000");
+                break;
+
+            case "\u274C":
+                validationMessage += "Refusée par ";
+                member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Votre candidature a été refusée").queue());
+                break;
+
+            default:
+                event.getReaction().removeReaction(event.getUser()).queue();
+                return null;
+
+        }
+
+        validationMessage += event.getUser().getAsTag();
+
+        return new EmbedBuilder(message.getEmbeds().get(0))
+                .setTitle(validationMessage)
+                .setColor(color)
+                .build();
     }
 
 }

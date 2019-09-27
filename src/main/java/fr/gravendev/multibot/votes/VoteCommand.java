@@ -3,7 +3,7 @@ package fr.gravendev.multibot.votes;
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.VoteDAO;
 import fr.gravendev.multibot.database.data.VoteData;
 import fr.gravendev.multibot.database.data.VoteDataBuilder;
@@ -14,7 +14,11 @@ import fr.gravendev.multibot.votes.roles.Role;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,15 +28,16 @@ import java.util.stream.Collectors;
 public class VoteCommand implements CommandExecutor {
 
     private final List<Role> roles;
-    private final DatabaseConnection databaseConnection;
+    private final VoteDAO voteDAO;
 
-    public VoteCommand(DatabaseConnection databaseConnection) {
+    public VoteCommand(DAOManager daoManager) {
         roles = Arrays.asList(
-                new Honorable(databaseConnection),
-                new Developer(databaseConnection),
-                new Pillar(databaseConnection)
+                new Honorable(),
+                new Developer(),
+                new Pillar()
         );
-        this.databaseConnection = databaseConnection;
+
+        this.voteDAO = daoManager.getVoteDAO();
     }
 
     @Override
@@ -76,11 +81,17 @@ public class VoteCommand implements CommandExecutor {
         MessageChannel channel = message.getChannel();
 
         if (mentionedMembers.size() < 1 || args.length < 2) {
-            channel.sendMessage("Erreur. !vote @personne <présentation>").queue();
+            channel.sendMessage("Erreur. "+getCharacter()+"vote @personne <présentation>").queue();
             return;
         }
 
         Member member = mentionedMembers.get(0);
+        if(member.getUser().isBot()) {
+            channel.sendMessage("Erreur: Vous ne pouvez pas proposer un bot.").queue();
+            return;
+        }
+
+
         String channelName = channel.getName();
         Role role = roles.stream()
                 .filter(currentRole -> currentRole.getChannelName().equalsIgnoreCase(channelName))
@@ -92,7 +103,7 @@ public class VoteCommand implements CommandExecutor {
         }
 
         boolean memberAlreadyHasRole = member.getRoles().stream()
-                .anyMatch(currentRole -> currentRole.getIdLong() == role.getRoleId());
+                .anyMatch(currentRole -> currentRole.getId().equals(role.getRoleId()));
         if (memberAlreadyHasRole) {
             channel.sendMessage("Cette personne a déjà le role " + role.getRoleName()).queue();
             return;
@@ -114,8 +125,6 @@ public class VoteCommand implements CommandExecutor {
             sentMessage.addReaction("\u2705").queue();
             sentMessage.addReaction("\u274C").queue();
             sentMessage.addReaction("\u2B1C").queue();
-
-            VoteDAO voteDAO = new VoteDAO(this.databaseConnection);
 
             voteDAO.save(VoteDataBuilder
                     .aVoteData()

@@ -3,7 +3,7 @@ package fr.gravendev.multibot.rank;
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
 import fr.gravendev.multibot.database.data.ExperienceData;
 import net.dv8tion.jda.api.entities.Member;
@@ -17,13 +17,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class RankCommand implements CommandExecutor {
 
-    private DatabaseConnection databaseConnection;
 
-    public RankCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    private final ExperienceDAO experienceDAO;
+
+    public RankCommand(DAOManager daoManager) {
+        this.experienceDAO = daoManager.getExperienceDAO();
     }
 
     @Override
@@ -58,14 +60,13 @@ public class RankCommand implements CommandExecutor {
             if (user.isBot()) return;
 
             List<Role> roles = member.getRoles();
-            Color color = roles.size() > 0 ? roles.get(0).getColor() : Color.WHITE;
+            Color color = roles.size() > 0 ? getColor(roles) : Color.WHITE;
 
-            ExperienceDAO dao = new ExperienceDAO(databaseConnection);
-            ExperienceData data = dao.get(user.getId());
+            ExperienceData data = experienceDAO.get(user.getId());
 
             if (data == null) {
                 data = new ExperienceData(user.getId());
-                dao.save(data);
+                experienceDAO.save(data);
             }
 
             int experiences = data.getExperiences();
@@ -101,7 +102,14 @@ public class RankCommand implements CommandExecutor {
     }
 
     private int levelToExp(int level) {
-        return (5 * level) * 2 + (50 * level + 100);
+        return 5 * level * level + 50 * level + 100;
+    }
+
+    private Color getColor(List<Role> roles) {
+        Optional<Role> optionalRole = roles.stream()
+                .filter(c -> c != null && c.getColor() != Color.BLACK)
+                .findFirst();
+        return optionalRole.isPresent() ? optionalRole.get().getColor() : Color.WHITE;
     }
 
 }

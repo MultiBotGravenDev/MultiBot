@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.quiz;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -13,9 +12,9 @@ import java.awt.*;
 
 class CandidatureSender {
 
-    static void send(DatabaseConnection databaseConnection, User user, Quiz quiz) {
+    static void send(User user, Quiz quiz) {
 
-        getCandidsChannel(databaseConnection, user).sendMessage(buildMessage(user, quiz)).queue(message -> {
+        getCandidsChannel(user).sendMessage(buildMessage(user, quiz)).queue(message -> {
             message.addReaction("\u2705").queue();
             message.addReaction("\u274C").queue();
         });
@@ -24,29 +23,27 @@ class CandidatureSender {
 
     private static Message buildMessage(User user, Quiz quiz) {
 
-        MessageBuilder messageBuilder = new MessageBuilder();
-        messageBuilder.setContent(user.getAsMention());
+        MessageBuilder builder = new MessageBuilder();
+        builder.setContent(user.getAsMention());
 
         EmbedBuilder embedBuilder = new EmbedBuilder()
-                .setColor(Color.BLUE)
+                .setColor(Color.decode("#1A8CFE"))
                 .setAuthor(user.getAsTag(), user.getAvatarUrl(), user.getAvatarUrl());
+
+        embedBuilder.setTitle(user.getName());
 
         while (quiz.hasNextAnswer()) {
             embedBuilder.addField(quiz.getCurrentAnswer());
         }
 
-        messageBuilder.setEmbed(embedBuilder.build());
-
-        return messageBuilder.build();
+        return builder.setEmbed(embedBuilder.build()).build();
 
     }
 
-    private static TextChannel getCandidsChannel(DatabaseConnection databaseConnection, User user) {
-        GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
-        long guildId = guildIdDAO.get("guild").id;
-        long candidsChannelId = guildIdDAO.get("candids").id;
+    private static TextChannel getCandidsChannel(User user) {
+        String candidsChannelId = Configuration.CANDIDS.getValue();
 
-        Guild guild = user.getJDA().getGuildById(guildId);
+        Guild guild = user.getJDA().getGuildById(Configuration.GUILD.getValue());
         if (guild == null) {
             return null;
         }

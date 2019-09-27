@@ -1,27 +1,29 @@
 package fr.gravendev.multibot.moderation.commands;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
-import fr.gravendev.multibot.database.dao.InfractionDAO;
-import fr.gravendev.multibot.database.data.GuildIdsData;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.AModeration;
 import fr.gravendev.multibot.moderation.InfractionType;
+import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.util.Date;
 
 public class TempmuteCommand extends AModeration {
 
-    private final DatabaseConnection databaseConnection;
-
-    public TempmuteCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    public TempmuteCommand(DAOManager daoManager) {
+        super(daoManager);
     }
 
     @Override
@@ -60,15 +62,12 @@ public class TempmuteCommand extends AModeration {
             return;
         }
 
-        InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
         InfractionData infractionData = new InfractionData(victim.getId(), message.getAuthor().getId(), InfractionType.MUTE, reason, start, end);
         infractionDAO.save(infractionData);
 
-        GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
-        long mutedID = guildIdDAO.get("muted").id;
-        Role muted = guild.getRoleById(mutedID);
+        Role muted = guild.getRoleById(Configuration.MUTED.getValue());
 
-        GuildIdsData logs = guildIdDAO.get("logs");
+        String logs = Configuration.LOGS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[TEMPMUTE] " + victim.getAsTag(), victim.getAvatarUrl())
@@ -77,7 +76,7 @@ public class TempmuteCommand extends AModeration {
                 .addField("Raison:", reason, true)
                 .addField("Jusqu'à:", Utils.getDateFormat().format(end), true);
 
-        TextChannel logsChannel = guild.getTextChannelById(logs.id);
+        TextChannel logsChannel = guild.getTextChannelById(logs);
         if(logsChannel != null) {
             logsChannel.sendMessage(embedBuilder.build()).queue();
         }

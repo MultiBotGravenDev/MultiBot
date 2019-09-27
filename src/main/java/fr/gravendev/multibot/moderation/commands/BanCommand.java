@@ -2,27 +2,28 @@ package fr.gravendev.multibot.moderation.commands;
 
 
 import fr.gravendev.multibot.commands.ChannelType;
-import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
-import fr.gravendev.multibot.database.dao.InfractionDAO;
-import fr.gravendev.multibot.database.data.GuildIdsData;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.AModeration;
 import fr.gravendev.multibot.moderation.InfractionType;
+import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.util.Date;
 
 public class BanCommand extends AModeration {
 
-    private DatabaseConnection databaseConnection;
-
-    public BanCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    public BanCommand(DAOManager daoManager) {
+        super(daoManager);
     }
 
     @Override
@@ -39,11 +40,9 @@ public class BanCommand extends AModeration {
 
         InfractionData data = new InfractionData(
                 victim.getId(), moderator.getId(), InfractionType.BAN, reason, new Date(), null);
-        InfractionDAO dao = new InfractionDAO(databaseConnection);
-        dao.save(data);
+        infractionDAO.save(data);
 
-        GuildIdDAO guildIdDAO = new GuildIdDAO(databaseConnection);
-        GuildIdsData logs = guildIdDAO.get("logs");
+        String logs = Configuration.LOGS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[BAN] " + victim.getAsTag(), victim.getAvatarUrl())
@@ -51,7 +50,7 @@ public class BanCommand extends AModeration {
                 .addField("Modérateur:", moderator.getAsMention(), true)
                 .addField("Raison:", reason, true);
 
-        TextChannel logsChannel = guild.getTextChannelById(logs.id);
+        TextChannel logsChannel = guild.getTextChannelById(logs);
         if (logsChannel != null) {
             logsChannel.sendMessage(embedBuilder.build()).queue();
         }

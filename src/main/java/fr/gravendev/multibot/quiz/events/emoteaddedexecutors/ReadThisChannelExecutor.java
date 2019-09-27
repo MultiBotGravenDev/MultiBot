@@ -1,27 +1,24 @@
 package fr.gravendev.multibot.quiz.events.emoteaddedexecutors;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
 import fr.gravendev.multibot.quiz.QuizManager;
+import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
-public class ReadThisSaloonExecutor implements EmoteAddedExecutor {
+public class ReadThisChannelExecutor implements EmoteAddedExecutor {
 
 
     private final QuizManager quizManager;
-    private final GuildIdDAO guildIdDAO;
 
-    public ReadThisSaloonExecutor(QuizManager quizManager, DatabaseConnection databaseConnection) {
+    public ReadThisChannelExecutor(QuizManager quizManager) {
         this.quizManager = quizManager;
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
     }
 
     @Override
-    public long getSaloonId() {
-        return this.guildIdDAO.get("read_this_saloon").id;
+    public String getChannelId() {
+        return Configuration.READ_THIS_SALOON.getValue();
     }
 
     @Override

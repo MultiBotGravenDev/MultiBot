@@ -1,18 +1,18 @@
 package fr.gravendev.multibot;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.DatabaseConnectionBuilder;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.events.MultiBotListener;
 import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
-import fr.gravendev.multibot.spark.SparkAPI;
-import fr.gravendev.multibot.utils.json.Configuration;
-import fr.gravendev.multibot.utils.json.FileWriter;
-import fr.gravendev.multibot.utils.json.Serializer;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +22,9 @@ class MultiBot {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiBot.class);
 
-    private Configuration configuration;
+    private final CommentedFileConfig config;
+    private final DAOManager daoManager;
     private final CommandManager commandManager;
-    private final DatabaseConnection databaseConnection;
     private final QuizManager quizManager;
     private final WelcomeMessagesSetManager welcomeMessagesSetManager;
     private final PollsManager pollsManager;
@@ -32,41 +32,48 @@ class MultiBot {
     private JDA jda;
 
     MultiBot() {
-        this.configuration = new Serializer<Configuration>().deserialize(Configuration.CONFIGURATION_FILE, Configuration.class);
-
-        if (this.configuration == null) {
-            this.configuration = new Configuration();
-            String json = new Serializer<Configuration>().serialize(configuration);
-            FileWriter.writeFile(Configuration.CONFIGURATION_FILE, json);
+        this.config = CommentedFileConfig.builder("configuration.toml")
+                .defaultResource("/configuration.toml")
+                .autosave()
+                .build();
+        this.config.load();
+        for (Configuration configuration : Configuration.values()) {
+            String path = configuration.getPath();
+            String value = config.get(path).toString();
+            configuration.setValue(value);
         }
 
-        this.databaseConnection = DatabaseConnectionBuilder
+        DatabaseConnection databaseConnection = DatabaseConnectionBuilder
                 .aDatabaseConnection()
-                .withHost(configuration.getHost())
-                .withUser(configuration.getUser())
-                .withPassword(configuration.getPassword())
-                .withDatabase(configuration.getDatabase())
+                .withHost(Configuration.DB_HOST.getValue())
+                .withUser(Configuration.DB_USERNAME.getValue())
+                .withPassword(Configuration.DB_PASSWORD.getValue())
+                .withDatabase(Configuration.DB_DATABASE.getValue())
                 .build();
 
-        this.quizManager = new QuizManager(databaseConnection);
-        this.welcomeMessagesSetManager = new WelcomeMessagesSetManager(databaseConnection);
-        this.pollsManager = new PollsManager(databaseConnection);
-        this.commandManager = new CommandManager(configuration.getPrefix(), databaseConnection, welcomeMessagesSetManager, pollsManager);
+        this.daoManager = new DAOManager(databaseConnection);
+
+        this.quizManager = new QuizManager(daoManager);
+        this.welcomeMessagesSetManager = new WelcomeMessagesSetManager(daoManager);
+        this.pollsManager = new PollsManager();
+        this.commandManager = new CommandManager(daoManager, welcomeMessagesSetManager, pollsManager);
     }
 
     void start() {
         try {
 
-            this.jda = new JDABuilder(configuration.getToken())
-                    .addEventListeners(new MultiBotListener(commandManager, databaseConnection, quizManager, welcomeMessagesSetManager, pollsManager))
+            this.jda = new JDABuilder(Configuration.TOKEN.getValue())
+                    .addEventListeners(new MultiBotListener( commandManager, daoManager, quizManager, welcomeMessagesSetManager, pollsManager))
+                    .setActivity(Activity.listening("\"il sort quand le multibot?\""))
                     .build();
 
-            SparkAPI sparkAPI = new SparkAPI(jda, databaseConnection);
-            sparkAPI.initRoutes();
+            //SparkAPI sparkAPI = new SparkAPI(jda, databaseConnection);
+            //sparkAPI.initRoutes();
+            // TODO: Finish the website kappa
 
             LOGGER.info("Bot connected");
 
-        } catch (LoginException | InterruptedException ex) {
+        } catch (LoginException ex) {
             ex.printStackTrace();
             LOGGER.error("Failed to connect the bot");
             System.exit(0);

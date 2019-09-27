@@ -9,53 +9,41 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class BadWordsDAO extends DAO<BadWordsData> {
-
     public BadWordsDAO(DatabaseConnection databaseConnection) {
         super(databaseConnection);
     }
 
     @Override
     protected boolean save(BadWordsData obj, Connection connection) throws SQLException {
-
         connection.prepareStatement("TRUNCATE TABLE bad_words").execute();
-
         for (String badWord : obj.getBadWords().split(" ")) {
-
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO bad_words(word) VALUE(?)");
+
             preparedStatement.setString(1, badWord);
-
             preparedStatement.execute();
-
         }
-
         return true;
     }
 
     @Override
     protected BadWordsData get(String value, Connection connection) throws SQLException {
-
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM bad_words");
         ResultSet result = preparedStatement.executeQuery();
-
         StringBuilder badWords = new StringBuilder();
 
         while (result.next()) {
-            badWords.append(result.getString("word"));
-            badWords.append(" ");
+            badWords.append(result.getString("word"))
+                    .append(" ");
         }
-
         return new BadWordsData(badWords.toString());
     }
 
     @Override
     protected void delete(BadWordsData obj, Connection connection) throws SQLException {
-
         BadWordsData badWords = this.get("", connection);
         String words = badWords.getBadWords();
         BadWordsData finalBadWords = new BadWordsData(words.replace(obj.getBadWords(), ""));
 
         this.save(finalBadWords, connection);
-
     }
-
 }

@@ -6,6 +6,8 @@ import fr.gravendev.multibot.polls.Colors;
 import fr.gravendev.multibot.polls.PollsManager;
 import net.dv8tion.jda.api.entities.Message;
 
+import java.util.Arrays;
+
 public class ColorCommand implements CommandExecutor {
 
     private PollsManager pollsManager;
@@ -31,7 +33,12 @@ public class ColorCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-        if (args.length == 0 || this.pollsManager.hasNotPoll(message.getAuthor())) return;
+        if (this.pollsManager.hasNotPoll(message.getAuthor())) return;
+        if(args.length == 0) {
+            message.getChannel().sendMessage("!poll color " + Arrays.toString(Colors.values())).queue();
+            return;
+        }
+
         this.pollsManager.setColor(message.getAuthor(), Colors.fromString(args[0]));
     }
 

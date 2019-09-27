@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.votes;
 
 public enum VoteType {
-
     YES("Oui", "\u2705"),
     NO("Non", "\u274C"),
     WHITE("Blanc", "\u2B1C");
@@ -22,10 +21,13 @@ public enum VoteType {
         return reaction;
     }
 
+    // TODO Maybe that can be refactored using a stream filter (?)
     public static VoteType getVoteTypeByReaction(String reaction) {
-        for (VoteType voteType : values())
-            if (voteType.getReaction().equals(reaction))
+        for (VoteType voteType : values()) {
+            if (voteType.getReaction().equals(reaction)) {
                 return voteType;
+            }
+        }
         return null;
     }
 }

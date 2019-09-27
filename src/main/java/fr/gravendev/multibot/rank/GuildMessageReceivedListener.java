@@ -1,37 +1,37 @@
 package fr.gravendev.multibot.rank;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
 import fr.gravendev.multibot.database.data.ExperienceData;
 import fr.gravendev.multibot.events.Listener;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
+public class GuildMessageReceivedListener implements Listener<GuildMessageReceivedEvent> {
 
-    private final DatabaseConnection databaseConnection;
+    private final ExperienceDAO experienceDAO;
 
-    public MessageReceivedListener(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    public GuildMessageReceivedListener(DAOManager daoManager) {
+        this.experienceDAO = daoManager.getExperienceDAO();
     }
 
     @Override
-    public Class<MessageReceivedEvent> getEventClass() {
-        return MessageReceivedEvent.class;
+    public Class<GuildMessageReceivedEvent> getEventClass() {
+        return GuildMessageReceivedEvent.class;
     }
 
     @Override
-    public void executeListener(MessageReceivedEvent event) {
+    public void executeListener(GuildMessageReceivedEvent event) {
 
-        if (event.getAuthor().isBot()) return;
+        if (event.getAuthor().isBot() || !event.getMessage().getGuild().getId().equals(Configuration.GUILD.getValue())) return;
 
         User author = event.getAuthor();
 
         int xpEarned = ThreadLocalRandom.current().nextInt(15, 26);
 
-        ExperienceDAO experienceDAO = new ExperienceDAO(databaseConnection);
         ExperienceData experienceData = experienceDAO.get(author.getId());
         if (experienceData != null) {
             if (experienceData.getLastMessage().getTime() + 60000 < System.currentTimeMillis()) {
@@ -53,7 +53,7 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
     }
 
     private int levelToExp(int level) {
-        return (5 * level) * 2 + (50 * level + 100);
+        return 5 * level * level + 50 * level + 100;
     }
 
 }

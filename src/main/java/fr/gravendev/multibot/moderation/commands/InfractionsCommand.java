@@ -3,7 +3,7 @@ package fr.gravendev.multibot.moderation.commands;
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.utils.Utils;
@@ -21,10 +21,10 @@ import java.util.List;
 
 public class InfractionsCommand implements CommandExecutor {
 
-    private final DatabaseConnection databaseConnection;
+    private final InfractionDAO infractionDAO;
 
-    public InfractionsCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    public InfractionsCommand(DAOManager daoManager) {
+        this.infractionDAO = daoManager.getInfractionDAO();
     }
 
     @Override
@@ -53,13 +53,12 @@ public class InfractionsCommand implements CommandExecutor {
 
             List<Member> mentionedMembers = message.getMentionedMembers();
             if (mentionedMembers.size() == 0) {
-                message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: infractions @membre")).queue();
+                message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "@membre")).queue();
                 return;
             }
 
             Member member = mentionedMembers.get(0);
 
-            InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
             List<InfractionData> allInfractions = infractionDAO.getALLInfractions(member.getUser().getId());
 
             Date lastDayDate = Date.from(Instant.now().minusSeconds(60 * 60 * 24));

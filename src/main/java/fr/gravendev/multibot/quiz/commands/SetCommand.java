@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.quiz.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.QuizMessageDAO;
 import fr.gravendev.multibot.database.data.MessageData;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
@@ -14,8 +14,8 @@ public class SetCommand implements CommandExecutor {
     private final QuizMessageDAO quizMessageDAO;
     private WelcomeMessagesSetManager welcomeMessagesSetManager;
 
-    SetCommand(DatabaseConnection databaseConnection, WelcomeMessagesSetManager welcomeMessagesSetManager) {
-        quizMessageDAO = new QuizMessageDAO(databaseConnection);
+    SetCommand(DAOManager daoManager, WelcomeMessagesSetManager welcomeMessagesSetManager) {
+        quizMessageDAO = daoManager.getQuizMessageDAO();
         this.welcomeMessagesSetManager = welcomeMessagesSetManager;
     }
 
@@ -33,7 +33,7 @@ public class SetCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length == 0) {
-            message.getChannel().sendMessage("Erreur. !quiz setChoice question/message").queue();
+            message.getChannel().sendMessage("Erreur. "+getCharacter()+"quiz set question/message").queue();
             return;
         }
 
@@ -46,7 +46,7 @@ public class SetCommand implements CommandExecutor {
             this.welcomeMessagesSetManager.onCommand(message);
 
         } else {
-            message.getChannel().sendMessage("Erreur. !quiz setChoice question/message").queue();
+            message.getChannel().sendMessage("Erreur. "+getCharacter()+"quiz set question/message").queue();
         }
 
     }
@@ -54,7 +54,7 @@ public class SetCommand implements CommandExecutor {
     private void setQuestion(Message message, String[] args) {
 
         if (args.length < 1 || !args[0].matches("[0-9]+")) {
-            message.getChannel().sendMessage("Erreur. !quiz setChoice question <numéro de la question> <texte ou vide>").queue();
+            message.getChannel().sendMessage("Erreur. "+getCharacter()+"quiz set question <numéro de la question> <texte ou vide>").queue();
             return;
         }
 

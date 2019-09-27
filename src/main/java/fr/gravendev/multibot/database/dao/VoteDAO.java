@@ -12,14 +12,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class VoteDAO extends DAO<VoteData> {
-
     public VoteDAO(DatabaseConnection databaseConnection) {
         super(databaseConnection);
     }
 
     @Override
     public boolean save(VoteData voteData, Connection connection) throws SQLException {
-
         if (get(String.valueOf(voteData.getMessageId()), connection).getRole() == null) {
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO votes (message_id, role, user_id, accepted) VALUES(?, ?, ?, ?)");
 
@@ -27,7 +25,6 @@ public class VoteDAO extends DAO<VoteData> {
             preparedStatement.setString(2, String.valueOf(voteData.getRole()));
             preparedStatement.setString(3, String.valueOf(voteData.getUserId()));
             preparedStatement.setBoolean(4, voteData.isAccepted());
-
             preparedStatement.execute();
         }
 
@@ -36,7 +33,6 @@ public class VoteDAO extends DAO<VoteData> {
 
             preparedStatement.setBoolean(1, voteData.isAccepted());
             preparedStatement.setString(2, String.valueOf(voteData.isAccepted()));
-
             preparedStatement.execute();
         }
 
@@ -45,32 +41,28 @@ public class VoteDAO extends DAO<VoteData> {
             long voter = vote.getUserId();
 
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?");
+
             preparedStatement.setInt(1, voteData.getVoteId());
             preparedStatement.setString(2, String.valueOf(voter));
             preparedStatement.setString(3, type.name().toLowerCase());
-
             preparedStatement.setString(4, "yes");
-
             preparedStatement.execute();
         }
-
         return false;
     }
 
     @Override
     public VoteData get(String value, Connection connection) throws SQLException {
-
         PreparedStatement preparedStatement = connection.prepareStatement(
                 "SELECT * FROM votes LEFT JOIN voters ON votes.id = voters.id WHERE message_id = ? OR user_id = ?");
+
         preparedStatement.setString(1, value);
         preparedStatement.setString(2, value);
 
         ResultSet resultSet = preparedStatement.executeQuery();
-
         VoteDataBuilder voteDataBuilder = VoteDataBuilder.aVoteData();
 
         while (resultSet.next()) {
-
             int voteId = resultSet.getInt("id");
             long messageId = Long.parseLong(resultSet.getString("message_id"));
             String role = resultSet.getString("role");
@@ -94,10 +86,9 @@ public class VoteDAO extends DAO<VoteData> {
 
             String choice = resultSet.getString("choice");
             VoteType voteType = VoteType.valueOf(choice.toUpperCase());
+
             voteDataBuilder.addVote(new Vote(voterId, voteType));
-
         }
-
         return voteDataBuilder.build();
     }
 
@@ -105,5 +96,4 @@ public class VoteDAO extends DAO<VoteData> {
     protected void delete(VoteData obj, Connection connection) {
 
     }
-
 }

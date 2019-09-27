@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.roles.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.RoleDAO;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
@@ -17,8 +17,8 @@ public class ListCommand implements CommandExecutor {
 
     private final RoleDAO roleDAO;
 
-    ListCommand(DatabaseConnection databaseConnection) {
-        this.roleDAO = new RoleDAO(databaseConnection);
+    ListCommand(DAOManager daoManager) {
+        this.roleDAO = daoManager.getRoleDAO();
     }
 
     @Override

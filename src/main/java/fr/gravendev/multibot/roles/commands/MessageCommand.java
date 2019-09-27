@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.roles.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.RoleDAO;
 import fr.gravendev.multibot.database.data.RoleData;
 import net.dv8tion.jda.api.entities.Message;
@@ -14,8 +14,8 @@ public class MessageCommand implements CommandExecutor {
 
     private final RoleDAO roleDAO;
 
-    MessageCommand(DatabaseConnection databaseConnection) {
-        this.roleDAO = new RoleDAO(databaseConnection);
+    MessageCommand(DAOManager daoManager) {
+        this.roleDAO = daoManager.getRoleDAO();
     }
 
     @Override
@@ -35,11 +35,15 @@ public class MessageCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
+        MessageChannel channel = message.getChannel();
+        if(args.length == 0) {
+            channel.sendMessage("Message: "+roleDAO.get("message").getEmoteId()).queue();
+            return;
+        }
         String roleMessage = String.join(" ", args);
         RoleData roleData = new RoleData("message", roleMessage);
         roleDAO.save(roleData);
 
-        MessageChannel channel = message.getChannel();
         channel.sendMessage("Le message a bien été changé en :\n" + roleMessage).queue();
     }
 

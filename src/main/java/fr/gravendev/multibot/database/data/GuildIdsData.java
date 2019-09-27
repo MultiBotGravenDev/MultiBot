@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.database.data;
 
 public class GuildIdsData {
-
     public final String name;
     public final long id;
 

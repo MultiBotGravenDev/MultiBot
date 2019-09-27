@@ -1,9 +1,7 @@
 package fr.gravendev.multibot.quiz.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
-import fr.gravendev.multibot.database.data.GuildIdsData;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -11,12 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ChannelCommand implements CommandExecutor {
-
-    private final GuildIdDAO guildIdDAO;
-
-    ChannelCommand(DatabaseConnection databaseConnection) {
-        this.guildIdDAO = new GuildIdDAO(databaseConnection);
-    }
 
     @Override
     public String getCommand() {
@@ -38,12 +30,12 @@ public class ChannelCommand implements CommandExecutor {
 
         List<TextChannel> mentionedChannels = message.getMentionedChannels();
         if (mentionedChannels.size() != 1) {
-            message.getChannel().sendMessage("Erreur. !quiz channel #channel").queue();
+            message.getChannel().sendMessage("Erreur. "+getCharacter()+"quiz channel #channel").queue();
             return;
         }
 
         TextChannel textChannel = mentionedChannels.get(0);
-        this.guildIdDAO.save(new GuildIdsData("candids", textChannel.getIdLong()));
+        Configuration.CANDIDS.setValue(textChannel.getId());
         message.getChannel().sendMessage("Le nouveau salon pour envoyer les candidatures a bien été définis à : " + textChannel.getAsMention()).queue();
 
     }

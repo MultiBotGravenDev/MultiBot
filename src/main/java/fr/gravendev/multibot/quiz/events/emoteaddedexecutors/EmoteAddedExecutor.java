@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public interface EmoteAddedExecutor {
 
-    long getSaloonId();
+    String getChannelId();
 
     void execute(MessageReactionAddEvent event);
 

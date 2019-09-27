@@ -2,7 +2,7 @@ package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
@@ -10,6 +10,7 @@ import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -20,10 +21,10 @@ import java.util.regex.Pattern;
 public class UnbanCommand implements CommandExecutor {
 
     private static final Pattern mentionUserPattern = Pattern.compile("<@!?([0-9]{8,})>");
-    private DatabaseConnection databaseConnection;
+    private final InfractionDAO infractionDAO;
 
-    public UnbanCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    public UnbanCommand(DAOManager daoManager) {
+        this.infractionDAO = daoManager.getInfractionDAO();
     }
 
     @Override
@@ -50,7 +51,7 @@ public class UnbanCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (args.length == 0 || extractId(args[0]) == null) {
-            message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: unban @utilisateur")).queue();
+            message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "@utilisateur")).queue();
             return;
         }
 
@@ -62,7 +63,6 @@ public class UnbanCommand implements CommandExecutor {
                 return;
             }
 
-            InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
             InfractionData data;
             try {
                 data = infractionDAO.getLast(id, InfractionType.BAN);
@@ -78,9 +78,16 @@ public class UnbanCommand implements CommandExecutor {
             }
 
             message.getGuild().unban(id).queue();
-            message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, id + " vient d'être unban")).queue();
-            message.getMentionedMembers().get(0).getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unban").queue());
 
+            User user = message.getJDA().getUserCache().getElementById(id);
+
+            message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, (user != null ? user.getName() : id) + " vient d'être unban")).queue();
+
+            if(user == null) {
+                return;
+            }
+
+            user.openPrivateChannel().queue(privateChannel ->  privateChannel.sendMessage("Vous avez été débanni du discord GravenCommunity !").queue());
         });
     }
 

@@ -1,11 +1,12 @@
 package fr.gravendev.multibot.tasks.antiroles;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
+import fr.gravendev.multibot.utils.Configuration;
 
 public class AntiRepost extends AntiRole {
 
-    public AntiRepost(DatabaseConnection databaseConnection) {
-        super(databaseConnection, "anti-repost");
+    public AntiRepost(DAOManager daoManager) {
+        super(daoManager, Configuration.ANTI_REPOST);
     }
 
 }

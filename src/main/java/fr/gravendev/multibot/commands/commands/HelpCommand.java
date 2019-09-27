@@ -1,8 +1,8 @@
 package fr.gravendev.multibot.commands.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.data.CustomCommandData;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -13,13 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelpCommand implements CommandExecutor {
-
     private final List<CommandExecutor> commandExecutors;
-    private final DatabaseConnection databaseConnection;
+    private final CustomCommandDAO customCommandDAO;
 
-    public HelpCommand(List<CommandExecutor> commandExecutors, DatabaseConnection databaseConnection) {
+    public HelpCommand(List<CommandExecutor> commandExecutors, DAOManager daoManager) {
         this.commandExecutors = commandExecutors;
-        this.databaseConnection = databaseConnection;
+        this.customCommandDAO = daoManager.getCustomCommandDAO();
     }
 
     @Override
@@ -51,8 +50,7 @@ public class HelpCommand implements CommandExecutor {
             EmbedBuilder embedBuilder = new EmbedBuilder()
                     .setColor(category.getColor())
                     .setTitle(category.getName());
-            this.commandExecutors
-                    .stream()
+            this.commandExecutors.stream()
                     .filter(command -> command.getCategory() == category && command.isAuthorizedMember(message.getMember()))
                     .forEach(command -> embedBuilder.addField(command.getCommand(), command.getDescription(), false));
             embeds.add(embedBuilder.build());
@@ -61,24 +59,22 @@ public class HelpCommand implements CommandExecutor {
         EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setColor(Color.MAGENTA)
                 .setTitle("Commandes personnalisées");
-        getCustomCommands().forEach(customCommand -> embedBuilder.addField(customCommand.getCommand(), "", false));
+        getCustomCommands().forEach(customCommand -> embedBuilder.addField(customCommand.getCommand(), "", true));
         embeds.add(embedBuilder.build());
 
         for (MessageEmbed embed : embeds) {
-            if (embed.getFields().size() == 0) continue;
+            if (embed.getFields().size() == 0) {
+                continue;
+            }
             message.getChannel().sendMessage(embed).queue();
         }
     }
 
     private List<CustomCommandData> getCustomCommands() {
-
         List<CustomCommandData> customCommands = new ArrayList<>();
-
-        CustomCommandDAO customCommandDAO = new CustomCommandDAO(this.databaseConnection);
 
         for (int i = 0; i < 100; i++) {
             CustomCommandData customCommandData = customCommandDAO.get(String.valueOf(i));
-
             if (customCommandData != null) {
                 customCommands.add(customCommandData);
             }

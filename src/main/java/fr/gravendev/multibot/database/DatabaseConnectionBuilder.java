@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.database;
 
 public class DatabaseConnectionBuilder {
-
     String host, user, password, database;
 
     private DatabaseConnectionBuilder() {
@@ -34,5 +33,4 @@ public class DatabaseConnectionBuilder {
     public DatabaseConnection build() {
         return new DatabaseConnection(this);
     }
-
 }

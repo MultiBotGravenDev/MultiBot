@@ -29,7 +29,7 @@ public class GuildUtils {
     public static AuditableRestAction<Void> removeRole(Member member, String roleId) {
         Guild guild = member.getGuild();
         Role roleToRemove = guild.getRoleById(roleId);
-        return guild.removeRoleFromMember(member, Objects.requireNonNull(roleToRemove));
+        return guild.removeRoleFromMember(member, roleToRemove);
     }
 
 }

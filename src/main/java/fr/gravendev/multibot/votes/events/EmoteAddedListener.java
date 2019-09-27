@@ -1,6 +1,6 @@
 package fr.gravendev.multibot.votes.events;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.VoteDAO;
 import fr.gravendev.multibot.database.data.VoteData;
 import fr.gravendev.multibot.database.data.VoteDataBuilder;
@@ -22,8 +22,8 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
 
     private final VoteDAO voteDAO;
 
-    public EmoteAddedListener(DatabaseConnection databaseConnection) {
-        voteDAO = new VoteDAO(databaseConnection);
+    public EmoteAddedListener(DAOManager daoManager) {
+        voteDAO = daoManager.getVoteDAO();
     }
 
     @Override

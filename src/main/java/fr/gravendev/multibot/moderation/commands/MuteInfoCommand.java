@@ -2,7 +2,7 @@ package fr.gravendev.multibot.moderation.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
@@ -21,10 +21,10 @@ import java.util.List;
 
 public class MuteInfoCommand implements CommandExecutor {
 
-    private final DatabaseConnection databaseConnection;
+    private final InfractionDAO infractionDAO;
 
-    public MuteInfoCommand(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
+    public MuteInfoCommand(DAOManager daoManager) {
+        this.infractionDAO = daoManager.getInfractionDAO();
     }
 
     @Override
@@ -62,7 +62,6 @@ public class MuteInfoCommand implements CommandExecutor {
             return;
         }
 
-        InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
         InfractionData data;
         try {
             data = infractionDAO.getLast(member.getUser().getId(), InfractionType.MUTE);
@@ -83,7 +82,7 @@ public class MuteInfoCommand implements CommandExecutor {
                 .setTitle("Informations de mute " + member.getUser().getName())
                 .addField("Raison:", data.getReason(), false)
                 .addField("Date de fin:", end, false)
-                .addField("Par:", "<@" + data.getPunisher_id() + ">", false)
+                .addField("Par:", "<@" + data.getPunisherId() + ">", false)
                 .addField("Le:", Utils.getDateFormat().format(data.getStart()), false);
 
         messageChannel.sendMessage(embed.build()).queue();

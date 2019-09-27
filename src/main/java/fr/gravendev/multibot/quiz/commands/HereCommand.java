@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.quiz.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -9,15 +9,17 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Queue;
 
 public class HereCommand implements CommandExecutor {
 
     private final WelcomeMessageDAO welcomeMessageDAO;
 
-    HereCommand(DatabaseConnection databaseConnection) {
-        this.welcomeMessageDAO = new WelcomeMessageDAO(databaseConnection);
+    HereCommand(DAOManager daoManager) {
+        this.welcomeMessageDAO = daoManager.getWelcomeMessageDAO();
     }
 
     @Override
@@ -54,9 +56,12 @@ public class HereCommand implements CommandExecutor {
             channel.sendMessage(value).queue();
         }
 
-        if(channel.getName().equals("réglement")) {
+        if(channel.getName().equals("règlement")) {
+            channel.sendMessage("Bonne continuation sur GravenDev - Community !").queue();
             return;
         }
+        channel.sendMessage("Pour devenir membre, il vous suffit de cocher le petit :white_check_mark: présent sous ce message et de suivre les instructions fournies par <@572396802008154112>  !\n" +
+                ":warning: Vous vous devez de répondre a toutes les questions ! Une candidature avec une question non répondue ne sera pas acceptée ! :warning:").queue();
 
         channel.sendMessage(new EmbedBuilder().setTitle("Règles lues et acceptées.")
                 .setColor(Color.GREEN)

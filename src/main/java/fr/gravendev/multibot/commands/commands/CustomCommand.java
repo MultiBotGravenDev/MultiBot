@@ -3,23 +3,23 @@ package fr.gravendev.multibot.commands.commands;
 import fr.gravendev.multibot.commands.ChannelType;
 import fr.gravendev.multibot.commands.commands.customs.RemoveCommand;
 import fr.gravendev.multibot.commands.commands.customs.SetCommand;
-import fr.gravendev.multibot.database.DatabaseConnection;
+import fr.gravendev.multibot.database.dao.DAOManager;
+import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class CustomCommand implements CommandExecutor {
-
     private final List<CommandExecutor> argumentsExecutors;
 
-    public CustomCommand(DatabaseConnection databaseConnection) {
+    public CustomCommand(DAOManager daoManager) {
         this.argumentsExecutors = Arrays.asList(
-                new SetCommand(databaseConnection),
-                new RemoveCommand(databaseConnection)
+                new SetCommand(daoManager),
+                new RemoveCommand(daoManager)
         );
     }
 
@@ -36,9 +36,8 @@ public class CustomCommand implements CommandExecutor {
     @Override
     public String getDescription() {
         return "Permet de créer une command custom \n"
-                + this.argumentsExecutors
-                .stream()
-                .map(executor -> "!custom " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
+                + this.argumentsExecutors.stream()
+                .map(executor -> getCharacter() + "custom " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
                 .reduce((message, executorInfos) -> message += executorInfos)
                 .orElse("");
     }
@@ -55,21 +54,24 @@ public class CustomCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-
         if (args.length == 0) {
-            message.getChannel().sendMessage("Erreur. "
-                    + "!custom ["
-                    + this.argumentsExecutors.stream().map(CommandExecutor::getCommand).collect(Collectors.joining(" - "))
-                    + "]").queue();
+            help(message);
             return;
         }
 
-        this.argumentsExecutors.stream()
+        Optional<CommandExecutor> optionalCommandExecutor = this.argumentsExecutors.stream()
                 .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
                 .filter(commandExecutor -> commandExecutor.canExecute(message))
-                .findAny()
-                .ifPresent(commandExecutor -> commandExecutor.execute(message, Arrays.copyOfRange(args, 1, args.length)));
+                .findAny();
 
+        if (optionalCommandExecutor.isPresent()) {
+            optionalCommandExecutor.get().execute(message, Arrays.copyOfRange(args, 1, args.length));
+            return;
+        }
+        help(message);
     }
 
+    private void help(Message message) {
+        message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "<set,remove> <commande> [valeur]")).queue();
+    }
 }

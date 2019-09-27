@@ -1,26 +1,32 @@
 package fr.gravendev.multibot.tasks;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
-import fr.gravendev.multibot.database.dao.GuildIdDAO;
-import fr.gravendev.multibot.tasks.antiroles.*;
+import fr.gravendev.multibot.database.dao.DAOManager;
+import fr.gravendev.multibot.tasks.antiroles.AntiImage;
+import fr.gravendev.multibot.tasks.antiroles.AntiMeme;
+import fr.gravendev.multibot.tasks.antiroles.AntiRepost;
+import fr.gravendev.multibot.tasks.antiroles.AntiReview;
+import fr.gravendev.multibot.tasks.antiroles.AntiRole;
+import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TimerTask;
 
 public class AntiRolesTask extends TimerTask {
 
     private final Guild guild;
     private final List<AntiRole> antiRoles;
 
-    public AntiRolesTask(JDA jda, DatabaseConnection databaseConnection) {
-        this.guild = jda.getGuildById(new GuildIdDAO(databaseConnection).get("guild").id);
+    public AntiRolesTask(JDA jda, DAOManager daoManager) {
+        this.guild = jda.getGuildById(Configuration.GUILD.getValue());
 
         this.antiRoles = Arrays.asList(
-                new AntiRepost(databaseConnection),
-                new AntiMeme(databaseConnection),
-                new AntiReview(databaseConnection),
-                new AntiImage(databaseConnection)
+                new AntiRepost(daoManager),
+                new AntiMeme(daoManager),
+                new AntiReview(daoManager),
+                new AntiImage(daoManager)
         );
     }
 

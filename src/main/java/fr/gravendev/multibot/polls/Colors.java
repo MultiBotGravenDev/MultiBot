@@ -4,7 +4,6 @@ import java.awt.*;
 import java.util.Arrays;
 
 public enum Colors {
-
     WHITE(Color.WHITE, "WHITE"),
     GREEN(Color.GREEN, "GREEN"),
     RED(Color.RED, "RED"),
@@ -31,5 +30,4 @@ public enum Colors {
                 .findAny()
                 .orElse(Colors.WHITE);
     }
-
 }

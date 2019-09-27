@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
-
     private final CommandManager commandManager;
 
     public MessageReceivedListener(CommandManager commandManager) {
@@ -21,11 +20,11 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
     @Override
     public void executeListener(MessageReceivedEvent event) {
         User messageAuthor = event.getAuthor();
+        Message message = event.getMessage();
+
         if (messageAuthor.isBot()) {
             return;
         }
-
-        Message message = event.getMessage();
         commandManager.executeCommand(message);
     }
 }
