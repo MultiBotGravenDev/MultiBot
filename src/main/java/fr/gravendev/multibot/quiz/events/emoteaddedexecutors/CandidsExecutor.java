@@ -3,6 +3,7 @@ package fr.gravendev.multibot.quiz.events.emoteaddedexecutors;
 import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -24,17 +25,16 @@ public class CandidsExecutor implements EmoteAddedExecutor {
 
         event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(message -> {
 
-            Member member = message.getMentionedMembers().get(0);
-
             MessageEmbed builder = editWithoutMember(event, message);
 
-            if (member != null) {
+            if (message.getMentionedMembers().size() != 0) {
+                Member member = message.getMentionedMembers().get(0);
                 builder = editWithMember(event, memberRoleId, message, member);
             }
 
             if (builder != null) {
                 message.clearReactions().queue();
-                message.editMessage(builder).queue();
+                message.editMessage(new MessageBuilder(builder).build()).queue();
             }
 
         });
@@ -44,13 +44,13 @@ public class CandidsExecutor implements EmoteAddedExecutor {
     private MessageEmbed editWithoutMember(MessageReactionAddEvent event, Message message) {
 
         String validationMessage = " ";
-        Color color = Color.getColor("0xFF0025");
+        Color color = Color.decode("#FF0025");
 
         switch (event.getReactionEmote().getName()) {
 
             case "\u2705":
                 validationMessage += "Acceptée par ";
-                color = Color.getColor("0x008000");
+                color = Color.decode("#008000");
                 break;
 
             case "\u274C":
@@ -63,10 +63,10 @@ public class CandidsExecutor implements EmoteAddedExecutor {
 
         }
 
-        validationMessage += event.getMember().getAsMention();
+        validationMessage += event.getUser().getAsTag();
 
         return new EmbedBuilder(message.getEmbeds().get(0))
-                .setTitle(message.getEmbeds().get(0).getTitle() + ". " + validationMessage)
+                .setTitle(validationMessage)
                 .setColor(color)
                 .build();
 
@@ -74,7 +74,7 @@ public class CandidsExecutor implements EmoteAddedExecutor {
 
     private MessageEmbed editWithMember(MessageReactionAddEvent event, String memberRoleId, Message message, Member member) {
         String validationMessage = "";
-        Color color = Color.getColor("0xFF0025");
+        Color color = Color.decode("#FF0025");
 
         switch (event.getReactionEmote().getName()) {
 
@@ -82,7 +82,7 @@ public class CandidsExecutor implements EmoteAddedExecutor {
                 validationMessage += "Acceptée par ";
                 member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Votre candidature a été acceptée ! Bienvenue sur GravenDev").queue());
                 GuildUtils.addRole(member, String.valueOf(memberRoleId)).queue();
-                color = Color.getColor("0x008000");
+                color = Color.decode("#008000");
                 break;
 
             case "\u274C":
@@ -96,10 +96,10 @@ public class CandidsExecutor implements EmoteAddedExecutor {
 
         }
 
-        validationMessage += event.getMember().getAsMention();
+        validationMessage += event.getUser().getAsTag();
 
         return new EmbedBuilder(message.getEmbeds().get(0))
-                .setTitle(member.getAsMention() + ". " + validationMessage)
+                .setTitle(validationMessage)
                 .setColor(color)
                 .build();
     }
