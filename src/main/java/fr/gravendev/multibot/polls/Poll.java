@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 class Poll {
-
     private static final String[] EMOTES = {"1\u20E3", "2\u20E3", "3\u20E3", "4\u20E3", "5\u20E3", "6\u20E3", "7\u20E3", "8\u20E3", "9\u20E3"};
 
     private final User user;
@@ -75,7 +74,6 @@ class Poll {
     }
 
     void finish(TextChannel channel, boolean isValidated) {
-
         if (isValidated) {
             buildMessage().sendTo(channel).queue(message ->
                     this.emotes.values()
@@ -83,17 +81,15 @@ class Poll {
                             .map(message::addReaction)
                             .forEach(RestAction::queue)
             );
-        } else {
-            buildMessage().setContent(this.user.getAsMention()).sendTo(channel).queue(message -> {
-                message.addReaction("\u2705").queue();
-                message.addReaction("\u274C").queue();
-            });
+            return;
         }
-
+        buildMessage().setContent(this.user.getAsMention()).sendTo(channel).queue(message -> {
+            message.addReaction("\u2705").queue();
+            message.addReaction("\u274C").queue();
+        });
     }
 
     private MessageBuilder buildMessage() {
-
         EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setColor(this.color)
                 .setTitle(this.title)
@@ -107,12 +103,12 @@ class Poll {
                 .append("\n\n"));
 
         return new MessageBuilder().setEmbed(embedBuilder.build());
-
     }
 
     boolean isSameTitle(String title) {
-        if (title == null) title = " ";
+        if (title == null) {
+            title = " ";
+        }
         return title.equalsIgnoreCase(this.title);
     }
-
 }
