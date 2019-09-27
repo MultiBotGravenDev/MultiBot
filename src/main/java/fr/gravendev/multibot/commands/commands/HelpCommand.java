@@ -43,7 +43,6 @@ public class HelpCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-
         List<MessageEmbed> embeds = new ArrayList<>();
 
         for (CommandCategory category : CommandCategory.values()) {
@@ -81,5 +80,4 @@ public class HelpCommand implements CommandExecutor {
         }
         return customCommands;
     }
-
 }

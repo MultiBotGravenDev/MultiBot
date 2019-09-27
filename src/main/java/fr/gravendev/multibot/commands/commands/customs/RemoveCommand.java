@@ -26,7 +26,6 @@ public class RemoveCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-
         if (args.length == 0) {
             message.getChannel().sendMessage(Utils.errorArguments("custom remove", "<commande>")).queue();
             return;
@@ -34,7 +33,5 @@ public class RemoveCommand implements CommandExecutor {
 
         customCommandDAO.delete(new CustomCommandData(args[0], ""));
         message.getChannel().sendMessage("La commande custom ``" + args[0] + "`` a été supprimée.").queue();
-
     }
-
 }

@@ -28,7 +28,6 @@ public class SetCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-
         if (args.length < 2) {
             message.getChannel().sendMessage(Utils.errorArguments("custom set", "<commande> <valeur>")).queue();
             return;
@@ -37,7 +36,5 @@ public class SetCommand implements CommandExecutor {
         CustomCommandData customCommandData = new CustomCommandData(args[0], String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
         this.CustomCommandDAO.save(customCommandData);
         message.getChannel().sendMessage("La commande ``" + args[0] + "`` a été enregistrée").queue();
-
     }
-
 }
