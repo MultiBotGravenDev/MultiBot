@@ -50,7 +50,7 @@ public class HelpCommand implements CommandExecutor {
                     .setColor(category.getColor())
                     .setTitle(category.getName());
             this.commandExecutors.stream()
-                    .filter(command -> command.getCategory() == category && command.isAuthorizedMember(message.getMember()))
+                    .filter(command -> command.getCategory() == category && command.getChannelType().equalsTo(message.getChannelType()) && command.isAuthorizedMember(message.getMember()))
                     .forEach(command -> embedBuilder.addField(command.getCommand(), command.getDescription(), false));
             embeds.add(embedBuilder.build());
         }
