@@ -54,6 +54,7 @@ public class ExperienceDAO extends DAO<ExperienceData> {
         return null;
     }
 
+    // TODO Refactor
     public List<JSONObject> getALL(Guild guild) {
         List<JSONObject> experienceData = new ArrayList<>();
 
@@ -63,9 +64,6 @@ public class ExperienceDAO extends DAO<ExperienceData> {
 
             while (resultSet.next()) {
                 String discord_id = resultSet.getString("discord_id");
-                int experience = resultSet.getInt("experience");
-                int level = resultSet.getInt("level");
-                int messages = resultSet.getInt("messages_count");
                 JSONObject jsonObject = new JSONObject();
                 Member member = guild.getMemberById(discord_id);
 
@@ -74,6 +72,9 @@ public class ExperienceDAO extends DAO<ExperienceData> {
                 }
 
                 User user = member.getUser();
+                int experience = resultSet.getInt("experience");
+                int level = resultSet.getInt("level");
+                int messages = resultSet.getInt("messages_count");
 
                 jsonObject.put("name", user.getName());
                 jsonObject.put("avatarURL", user.getAvatarUrl());

@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+// TODO Remove all duplicated code
 public class InfractionDAO extends DAO<InfractionData> {
     public InfractionDAO(DatabaseConnection databaseConnection) {
         super(databaseConnection);
