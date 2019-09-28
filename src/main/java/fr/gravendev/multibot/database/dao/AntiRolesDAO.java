@@ -30,6 +30,7 @@ public class AntiRolesDAO extends DAO<AntiRoleData> {
         return true;
     }
 
+    // TODO Refactor
     @Override
     public AntiRoleData get(String value, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM anti_roles WHERE user_id = ?");
@@ -47,7 +48,11 @@ public class AntiRolesDAO extends DAO<AntiRoleData> {
 
             roles.put(start, role);
         }
-        return userId != 0L ? new AntiRoleData(userId, roles) : new AntiRoleData(Long.parseLong(value), new HashMap<>());
+
+        if (userId != 0L) {
+            return new AntiRoleData(userId, roles);
+        }
+        return new AntiRoleData(Long.parseLong(value), new HashMap<>());
     }
 
     @Override
