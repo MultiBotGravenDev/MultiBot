@@ -47,7 +47,7 @@ public class RoleDAO extends DAO<RoleData> {
     protected void delete(RoleData roleData, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM roles WHERE role_id = ?");
 
-        preparedStatement.setString(1, roleData.getRoleId() + "");
+        preparedStatement.setString(1, String.valueOf(roleData.getRoleId()));
         preparedStatement.execute();
     }
 }
