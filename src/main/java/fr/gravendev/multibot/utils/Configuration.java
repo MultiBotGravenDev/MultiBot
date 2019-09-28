@@ -27,7 +27,9 @@ public enum Configuration {
     RULES("", "identifiers.channels.rules"),
     READ_THIS_SALOON("", "identifiers.channels.read_this_saloon"),
     SONDAGES("", "identifiers.channels.sondages"),
-    SONDAGES_VERIF("", "identifiers.channels.sondages_verif");
+    SONDAGES_VERIF("", "identifiers.channels.sondages_verif"),
+    PROJECTS("", "identifiers.channels.projects"),
+    PROJECTS_MINECRAFT("", "identifiers.channels.projects_minecraft");
 
     private String value;
     private final String path;

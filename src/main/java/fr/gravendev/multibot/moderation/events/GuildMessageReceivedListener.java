@@ -78,7 +78,10 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
     }
 
     private void warnForDiscordInviteIfNeeded(Message message) {
-        if (message.getContentDisplay().toLowerCase().contains("discord.gg/")) {
+        TextChannel textChannel = message.getTextChannel();
+        String channelId = textChannel.getId();
+        if (message.getContentDisplay().toLowerCase().contains("discord.gg/") &&
+                !channelId.equals(Configuration.PROJECTS.getValue()) && channelId.equals(Configuration.PROJECTS_MINECRAFT.getValue())) {
             warn(message, "Posted invite");
             message.delete().queue();
         }
