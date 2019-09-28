@@ -3,6 +3,7 @@ package fr.gravendev.multibot.database;
 public class DatabaseConnectionBuilder {
     String host, user, password, database;
 
+    // TODO wtf? Find out why is this designed like this
     private DatabaseConnectionBuilder() {
     }
 

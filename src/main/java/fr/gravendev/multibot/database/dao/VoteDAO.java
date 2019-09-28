@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+// TODO Refactor
 public class VoteDAO extends DAO<VoteData> {
     public VoteDAO(DatabaseConnection databaseConnection) {
         super(databaseConnection);
@@ -39,7 +40,6 @@ public class VoteDAO extends DAO<VoteData> {
         for (Vote vote : voteData.getVotes()) {
             VoteType type = vote.getType();
             long voter = vote.getUserId();
-
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?");
 
             preparedStatement.setInt(1, voteData.getVoteId());

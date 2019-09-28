@@ -36,6 +36,7 @@ public class LogsDAO extends DAO<MessageData> {
             String message_id = resultSet.getString("message_id");
             String content = resultSet.getString("content");
             Date creation = resultSet.getDate("creation");
+
             return new MessageData(discord_id, message_id, content, creation.getTime());
         }
         return null;

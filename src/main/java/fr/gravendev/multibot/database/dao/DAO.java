@@ -47,5 +47,4 @@ public abstract class DAO<T> {
     public Connection getConnection() throws SQLException {
         return databaseConnection.getConnection();
     }
-
 }
