@@ -16,17 +16,17 @@ public class DAOManager {
     private WelcomeMessageDAO welcomeMessageDAO;
 
     public DAOManager(DatabaseConnection databaseConnection) {
-        this.antiRolesDAO = new AntiRolesDAO(databaseConnection);
-        this.badWordsDAO = new BadWordsDAO(databaseConnection);
-        this.customCommandDAO = new CustomCommandDAO(databaseConnection);
-        this.experienceDAO = new ExperienceDAO(databaseConnection);
-        this.immunisedIdDAO = new ImmunisedIdDAO(databaseConnection);
-        this.infractionDAO = new InfractionDAO(databaseConnection);
-        this.logsDAO = new LogsDAO(databaseConnection);
-        this.quizMessageDAO = new QuizMessageDAO(databaseConnection);
-        this.roleDAO = new RoleDAO(databaseConnection);
-        this.voteDAO = new VoteDAO(databaseConnection);
-        this.welcomeMessageDAO = new WelcomeMessageDAO(databaseConnection);
+        antiRolesDAO = new AntiRolesDAO(databaseConnection);
+        badWordsDAO = new BadWordsDAO(databaseConnection);
+        customCommandDAO = new CustomCommandDAO(databaseConnection);
+        experienceDAO = new ExperienceDAO(databaseConnection);
+        immunisedIdDAO = new ImmunisedIdDAO(databaseConnection);
+        infractionDAO = new InfractionDAO(databaseConnection);
+        logsDAO = new LogsDAO(databaseConnection);
+        quizMessageDAO = new QuizMessageDAO(databaseConnection);
+        roleDAO = new RoleDAO(databaseConnection);
+        voteDAO = new VoteDAO(databaseConnection);
+        welcomeMessageDAO = new WelcomeMessageDAO(databaseConnection);
     }
 
     public AntiRolesDAO getAntiRolesDAO() {

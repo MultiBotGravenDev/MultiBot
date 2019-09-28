@@ -47,7 +47,7 @@ public class CommandManager {
     private final CustomCommandDAO customCommandDAO;
 
     public CommandManager(DAOManager daoManager, WelcomeMessagesSetManager welcomeMessagesSetManager, PollsManager pollsManager) {
-        this.prefix = Configuration.PREFIX.getValue().charAt(0);
+        prefix = Configuration.PREFIX.getValue().charAt(0);
         commandExecutors = new ArrayList<>(Arrays.asList(
                 new CustomCommand(daoManager),
                 new UserinfoCommand(),
@@ -77,8 +77,9 @@ public class CommandManager {
 
                 new GoogleCommand()
         ));
-        this.commandExecutors.add(new HelpCommand(commandExecutors, daoManager));
-        this.customCommandDAO = daoManager.getCustomCommandDAO();
+        // TODO Find out why is this thing not in the Arrays#asList thing
+        commandExecutors.add(new HelpCommand(commandExecutors, daoManager));
+        customCommandDAO = daoManager.getCustomCommandDAO();
     }
 
     private void executeIfAble(CommandExecutor commandExecutor, Message message, String[] args) {
@@ -94,6 +95,7 @@ public class CommandManager {
     void executeCommand(Message message) {
         String content = message.getContentRaw();
 
+        // for image messages without text
         if (content.length() == 0) {
             return;
         }
@@ -129,7 +131,5 @@ public class CommandManager {
 
             channel.sendMessage(customCommandDataText).queue();
         }
-
     }
-
 }
