@@ -3,6 +3,7 @@ package fr.gravendev.multibot.commands;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.commands.commands.CustomCommand;
 import fr.gravendev.multibot.commands.commands.HelpCommand;
+import fr.gravendev.multibot.commands.commands.RedescendsCommand;
 import fr.gravendev.multibot.commands.commands.UserinfoCommand;
 import fr.gravendev.multibot.database.dao.CustomCommandDAO;
 import fr.gravendev.multibot.database.dao.DAOManager;
@@ -49,6 +50,7 @@ public class CommandManager {
         commandExecutors = new ArrayList<>(Arrays.asList(
                 new CustomCommand(daoManager),
                 new UserinfoCommand(),
+                new RedescendsCommand(),
 
                 new AntiCommand(daoManager),
                 new BanCommand(daoManager),
