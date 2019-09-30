@@ -9,7 +9,6 @@ import fr.gravendev.multibot.database.data.VoteData;
 import fr.gravendev.multibot.database.data.VoteDataBuilder;
 import fr.gravendev.multibot.votes.roles.Developer;
 import fr.gravendev.multibot.votes.roles.Honorable;
-import fr.gravendev.multibot.votes.roles.Pillar;
 import fr.gravendev.multibot.votes.roles.Role;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -33,8 +32,7 @@ public class VoteCommand implements CommandExecutor {
     public VoteCommand(DAOManager daoManager) {
         roles = Arrays.asList(
                 new Honorable(),
-                new Developer(),
-                new Pillar()
+                new Developer()
         );
 
         this.voteDAO = daoManager.getVoteDAO();
@@ -80,8 +78,13 @@ public class VoteCommand implements CommandExecutor {
         List<Member> mentionedMembers = message.getMentionedMembers();
         MessageChannel channel = message.getChannel();
 
-        if (mentionedMembers.size() < 1 || args.length < 2) {
-            channel.sendMessage("Erreur. "+getCharacter()+"vote @personne <présentation>").queue();
+        if (mentionedMembers.size() < 1) {
+            channel.sendMessage("Erreur. " + getCharacter() + "vote @personne <présentation>").queue();
+            return;
+        }
+
+        if (args.length < 2) {
+            channel.sendMessage("Erreur. " + getCharacter() + "vote @personne <présentation>").queue();
             return;
         }
 

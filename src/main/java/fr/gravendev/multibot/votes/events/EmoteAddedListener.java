@@ -16,7 +16,6 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
 
@@ -37,22 +36,22 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
         User user = event.getUser();
         MessageChannel channel = event.getChannel();
         List<String> staffRoles = Arrays.asList("vote-honorable", "vote-developpeur", "votes-piliers");
-        if (user.isBot()){
+        if (user.isBot()) {
             return;
         }
 
         // TODO Check with Luka if staffRoles is a great name for this variable
-        if (!staffRoles.contains(channel.getName())){
+        if (!staffRoles.contains(channel.getName())) {
             return;
         }
         event.getReaction().removeReaction(user).queue();
 
-        if (channel.retrieveMessageById(event.getMessageIdLong()).complete().getTimeCreated().isBefore(OffsetDateTime.now().minusDays(1))){
+        if (channel.retrieveMessageById(event.getMessageIdLong()).complete().getTimeCreated().isBefore(OffsetDateTime.now().minusDays(1))) {
             return;
         }
 
         VoteData voteData = voteDAO.get(event.getMessageId());
-        if (voteData == null){
+        if (voteData == null) {
             return;
         }
 
@@ -65,15 +64,15 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
         VoteDataBuilder voteDataBuilder = VoteDataBuilder.fromVoteData(voteData);
         MessageReaction.ReactionEmote reactionEmote = event.getReactionEmote();
         VoteType voteType = VoteType.getVoteTypeByReaction(reactionEmote.getName());
-        if(voteType == null)
+        if (voteType == null)
             return;
 
         voteDataBuilder.addVote(new Vote(userId, voteType));
 
         voteDAO.save(voteDataBuilder.build());
 
-        channel.sendMessage(user.getAsMention() + ", votre vote a bien été pris en compte")
-                .queue(message -> message.delete().queueAfter(3, TimeUnit.SECONDS));
+        user.openPrivateChannel()
+                .queue(privateChannel -> privateChannel.sendMessage("votre vote a bien été pris en compte").queue());
 
     }
 
