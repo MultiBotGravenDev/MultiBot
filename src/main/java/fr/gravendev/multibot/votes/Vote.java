@@ -18,7 +18,4 @@ public class Vote {
         return type;
     }
 
-    public void setType(VoteType type) {
-        this.type = type;
-    }
 }
