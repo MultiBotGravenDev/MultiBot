@@ -45,7 +45,7 @@ public class VoteDAO extends DAO<VoteData> {
             preparedStatement.setInt(1, voteData.getVoteId());
             preparedStatement.setString(2, String.valueOf(voter));
             preparedStatement.setString(3, type.name().toLowerCase());
-            preparedStatement.setString(4, "yes");
+            preparedStatement.setString(4, type.name().toLowerCase());
             preparedStatement.execute();
         }
         return false;
