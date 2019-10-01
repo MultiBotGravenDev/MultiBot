@@ -62,8 +62,7 @@ public class VoteCommand implements CommandExecutor {
     public List<String> getAuthorizedChannelsNames() {
         return Arrays.asList(
                 "vote-honorable",
-                "vote-developpeur",
-                "votes-piliers");
+                "vote-developpeur");
     }
 
     @Override
@@ -78,17 +77,28 @@ public class VoteCommand implements CommandExecutor {
         List<Member> mentionedMembers = message.getMentionedMembers();
         MessageChannel channel = message.getChannel();
 
-        if (mentionedMembers.size() < 1) {
-            channel.sendMessage("Erreur. " + getCharacter() + "vote @personne <présentation>").queue();
-            return;
-        }
-
         if (args.length < 2) {
-            channel.sendMessage("Erreur. " + getCharacter() + "vote @personne <présentation>").queue();
+            channel.sendMessage("Erreur. " + getCharacter() + "vote <@personne / id> <présentation>").queue();
             return;
         }
 
-        Member member = mentionedMembers.get(0);
+        Member member = null;
+
+        if (args[0].matches("[0-9]+")) {
+            member = message.getGuild().getMemberById(args[0]);
+        }
+
+        if (member == null) {
+
+            if (mentionedMembers.isEmpty()) {
+                channel.sendMessage("Erreur. " + getCharacter() + "vote <@personne / id> <présentation>").queue();
+                return;
+            }
+
+            member = mentionedMembers.get(0);
+
+        }
+
         if(member.getUser().isBot()) {
             channel.sendMessage("Erreur: Vous ne pouvez pas proposer un bot.").queue();
             return;
@@ -124,6 +134,7 @@ public class VoteCommand implements CommandExecutor {
 
         message.getChannel().sendMessage("@everyone").queue();
 
+        Member finalMember = member;
         message.getChannel().sendMessage(messageEmbed).queue(sentMessage -> {
             sentMessage.addReaction("\u2705").queue();
             sentMessage.addReaction("\u274C").queue();
@@ -133,11 +144,11 @@ public class VoteCommand implements CommandExecutor {
                     .aVoteData()
                     .withMessageId(sentMessage.getIdLong())
                     .withRole(role.getRoleName())
-                    .withUserID(member.getUser().getIdLong())
+                    .withUserID(finalMember.getUser().getIdLong())
                     .isAccepted(false)
                     .build());
 
-            sentMessage.getChannel().retrieveMessageById(sentMessage.getIdLong()).queueAfter(24, TimeUnit.HOURS, sentMessage2 -> {
+            sentMessage.getChannel().retrieveMessageById(sentMessage.getIdLong()).queueAfter(10, TimeUnit.SECONDS, sentMessage2 -> {
 
                 VoteData voteData = voteDAO.get(sentMessage.getId());
 
@@ -151,7 +162,7 @@ public class VoteCommand implements CommandExecutor {
 
                 EmbedBuilder embedBuilder = new EmbedBuilder()
                         .setColor(role.getColor())
-                        .setAuthor(member.getUser().getAsTag(), member.getUser().getAvatarUrl(), member.getUser().getAvatarUrl())
+                        .setAuthor(finalMember.getUser().getAsTag(), finalMember.getUser().getAvatarUrl(), finalMember.getUser().getAvatarUrl())
                         .setTitle("Vote " + role.getRoleName())
                         .addField("Présentation :", presentation, false)
                         .addField("Oui :", formatVoters(jda, voteYes), true)
@@ -166,7 +177,7 @@ public class VoteCommand implements CommandExecutor {
                 if (accepted) {
                     net.dv8tion.jda.api.entities.Role voteRole = message.getGuild().getRoleById(role.getRoleId());
                     if(voteRole != null)
-                        message.getGuild().addRoleToMember(member, voteRole).queue();
+                        message.getGuild().addRoleToMember(finalMember, voteRole).queue();
                 }
 
                 sentMessage2.editMessage(embedBuilder.build()).queue();

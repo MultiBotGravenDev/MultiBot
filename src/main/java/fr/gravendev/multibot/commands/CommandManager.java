@@ -2,6 +2,7 @@ package fr.gravendev.multibot.commands;
 
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.commands.commands.CustomCommand;
+import fr.gravendev.multibot.commands.commands.GoogleCommand;
 import fr.gravendev.multibot.commands.commands.HelpCommand;
 import fr.gravendev.multibot.commands.commands.RedescendsCommand;
 import fr.gravendev.multibot.commands.commands.UserinfoCommand;
@@ -72,7 +73,9 @@ public class CommandManager {
                 new RolesCommand(daoManager),
                 new VoteCommand(daoManager),
 
-                new PollCommand(pollsManager)
+                new PollCommand(pollsManager),
+
+                new GoogleCommand()
         ));
         this.commandExecutors.add(new HelpCommand(commandExecutors, daoManager));
         this.customCommandDAO = daoManager.getCustomCommandDAO();
