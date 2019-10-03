@@ -25,6 +25,7 @@ import java.awt.*;
 import java.sql.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -104,7 +105,8 @@ public class AntiCommand implements CommandExecutor {
                     .addField("Fin :", Utils.getDateFormat().format(Date.from(Instant.now().plus(31, ChronoUnit.DAYS))), true)
                     .build()).queue();
 
-            warn(message, "anti-" + args[0]);
+            String reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+            warn(message, reason);
 
         });
 
