@@ -71,7 +71,7 @@ public class CommandManager {
                 new QuizCommand(daoManager, welcomeMessagesSetManager),
                 new RankCommand(daoManager),
                 new RolesCommand(daoManager),
-                new VoteCommand(daoManager),
+//                new VoteCommand(daoManager),
 
                 new PollCommand(pollsManager),
 
