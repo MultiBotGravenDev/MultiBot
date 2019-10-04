@@ -1,6 +1,5 @@
 package fr.gravendev.multibot;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.DatabaseConnectionBuilder;
@@ -31,16 +30,6 @@ class MultiBot {
     private JDA jda;
 
     MultiBot() {
-        CommentedFileConfig config = CommentedFileConfig.builder("configuration.toml")
-                .defaultResource("/configuration.toml")
-                .autosave()
-                .build();
-        config.load();
-        for (Configuration configuration : Configuration.values()) {
-            String path = configuration.getPath();
-            String value = config.get(path).toString();
-            configuration.setValue(value);
-        }
 
         DatabaseConnection databaseConnection = DatabaseConnectionBuilder
                 .aDatabaseConnection()
@@ -62,7 +51,7 @@ class MultiBot {
         try {
 
             this.jda = new JDABuilder(Configuration.TOKEN.getValue())
-                    .addEventListeners(new MultiBotListener( commandManager, daoManager, quizManager, welcomeMessagesSetManager, pollsManager))
+                    .addEventListeners(new MultiBotListener(commandManager, daoManager, quizManager, welcomeMessagesSetManager, pollsManager))
                     .setActivity(Activity.playing(Configuration.PREFIX.getValue() + "help"))
                     .build();
 
@@ -77,6 +66,7 @@ class MultiBot {
             LOGGER.error("Failed to connect the bot");
             System.exit(0);
         }
+
     }
 
     void stop() {

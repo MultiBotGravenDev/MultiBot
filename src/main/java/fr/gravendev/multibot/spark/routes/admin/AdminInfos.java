@@ -42,7 +42,7 @@ public class AdminInfos implements Route {
         }
 
         InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
-        List<InfractionData> allUnfinished = infractionDAO.getALLUnfinished();
+        List<InfractionData> allUnfinished = infractionDAO.getAllFinished();
         long bans = allUnfinished.stream().filter(infraction -> infraction.getType() == InfractionType.BAN).count();
         long mutes = allUnfinished.stream().filter(infraction -> infraction.getType() == InfractionType.MUTE).count();
 

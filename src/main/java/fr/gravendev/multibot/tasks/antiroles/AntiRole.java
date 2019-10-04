@@ -1,7 +1,6 @@
 package fr.gravendev.multibot.tasks.antiroles;
 
 import fr.gravendev.multibot.database.dao.AntiRolesDAO;
-import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.data.AntiRoleData;
 import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
@@ -11,43 +10,45 @@ import net.dv8tion.jda.api.entities.Role;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public abstract class AntiRole {
 
+    private final Guild guild;
     private final AntiRolesDAO antiRolesDAO;
     private final String roleName;
-    private final String roleId;
+    private final Role role;
 
-    AntiRole(DAOManager daoManager, Configuration role) {
-        this.antiRolesDAO = daoManager.getAntiRolesDAO();
+    //TODO: refactor to give AntiRolesDAO, not DAOManager
+    AntiRole(Guild guild, AntiRolesDAO antiRolesDAO, Configuration role) {
+        this.guild = guild;
+        this.antiRolesDAO = antiRolesDAO;
         this.roleName = role.name().toLowerCase().replace("_", "-");
-        this.roleId = role.getValue();
+        this.role = guild.getRoleById(role.getValue());
     }
 
-    public void deleteRoles(Guild guild) {
+    public void deleteRoles() {
 
-        for (Member membersWithRole : guild.getMembersWithRoles(guild.getRoleById(this.roleId))) {
-            this.computeRoleDeleting(membersWithRole);
-        }
+        List<Member> membersWithRole = this.guild.getMembersWithRoles(this.role);
+        membersWithRole.forEach(this::computeRoleDeleting);
 
     }
 
     private void computeRoleDeleting(Member member) {
 
-        Role role = member.getGuild().getRoleById(this.roleId);
         AntiRoleData antiRoleData = this.antiRolesDAO.get(member.getUser().getId());
 
-        if (mustRemoveRole(antiRoleData) & role != null) {
+        if (mustRemoveRole(antiRoleData)) {
 
-            GuildUtils.removeRole(member, role.getId()).queue();
-            this.antiRolesDAO.delete(antiRoleData);
-            member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Le rôle " + role.getName() + " vous a été retiré").queue());
+            removeRoleFromMember(member, antiRoleData);
+            sendMessage(member);
 
         }
 
     }
 
     private boolean mustRemoveRole(AntiRoleData antiRoleData) {
+
         return antiRoleData.getRoles().entrySet().stream()
                 .peek(dateStringEntry -> dateStringEntry.setValue(dateStringEntry.getValue().toLowerCase()))
                 .filter(entry -> entry.getValue().contains(this.roleName))
@@ -60,6 +61,17 @@ public abstract class AntiRole {
 
                     return now.after(calendar.getTime());
                 });
+
+    }
+
+    private void sendMessage(Member member) {
+        String text = "Le rôle " + role.getName() + " vous a été retiré";
+        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(text).queue());
+    }
+
+    private void removeRoleFromMember(Member member, AntiRoleData antiRoleData) {
+        GuildUtils.removeRole(member, this.role.getId()).queue();
+        this.antiRolesDAO.delete(antiRoleData);
     }
 
 }

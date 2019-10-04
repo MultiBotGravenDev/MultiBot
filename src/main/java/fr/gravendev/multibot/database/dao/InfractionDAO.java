@@ -114,7 +114,7 @@ public class InfractionDAO extends DAO<InfractionData> {
         }
     }
 
-    public List<InfractionData> getALLUnfinished() throws SQLException {
+    public List<InfractionData> getAllFinished() throws SQLException {
         try (Connection connection = getConnection()) {
             List<InfractionData> infractions = new ArrayList<>();
             PreparedStatement statement = connection.prepareStatement(

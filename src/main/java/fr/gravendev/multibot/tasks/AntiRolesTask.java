@@ -1,13 +1,11 @@
 package fr.gravendev.multibot.tasks;
 
-import fr.gravendev.multibot.database.dao.DAOManager;
+import fr.gravendev.multibot.database.dao.AntiRolesDAO;
 import fr.gravendev.multibot.tasks.antiroles.AntiImage;
 import fr.gravendev.multibot.tasks.antiroles.AntiMeme;
 import fr.gravendev.multibot.tasks.antiroles.AntiRepost;
 import fr.gravendev.multibot.tasks.antiroles.AntiReview;
 import fr.gravendev.multibot.tasks.antiroles.AntiRole;
-import fr.gravendev.multibot.utils.Configuration;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.Arrays;
@@ -16,23 +14,22 @@ import java.util.TimerTask;
 
 public class AntiRolesTask extends TimerTask {
 
-    private final Guild guild;
     private final List<AntiRole> antiRoles;
 
-    public AntiRolesTask(JDA jda, DAOManager daoManager) {
-        this.guild = jda.getGuildById(Configuration.GUILD.getValue());
+    public AntiRolesTask(Guild guild, AntiRolesDAO antiRolesDAO) {
 
         this.antiRoles = Arrays.asList(
-                new AntiRepost(daoManager),
-                new AntiMeme(daoManager),
-                new AntiReview(daoManager),
-                new AntiImage(daoManager)
+                new AntiRepost(guild, antiRolesDAO),
+                new AntiMeme(guild, antiRolesDAO),
+                new AntiReview(guild, antiRolesDAO),
+                new AntiImage(guild, antiRolesDAO)
         );
+
     }
 
     @Override
     public void run() {
-        antiRoles.forEach(antiRole -> antiRole.deleteRoles(guild));
+        this.antiRoles.forEach(AntiRole::deleteRoles);
     }
 
 }

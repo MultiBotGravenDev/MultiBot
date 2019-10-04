@@ -1,12 +1,13 @@
 package fr.gravendev.multibot.tasks.antiroles;
 
-import fr.gravendev.multibot.database.dao.DAOManager;
+import fr.gravendev.multibot.database.dao.AntiRolesDAO;
 import fr.gravendev.multibot.utils.Configuration;
+import net.dv8tion.jda.api.entities.Guild;
 
 public class AntiImage extends AntiRole {
 
-    public AntiImage(DAOManager daoManager) {
-        super(daoManager, Configuration.ANTI_IMAGE);
+    public AntiImage(Guild guild, AntiRolesDAO antiRolesDAO) {
+        super(guild, antiRolesDAO, Configuration.ANTI_IMAGE);
     }
 
 }

@@ -55,7 +55,4 @@ public class TextFormatter {
         sysout.print(formattedLines);
     }
 
-    /*public static FormattedText listThings(String label, String... lines){
-        return new FormattedText(label + "\n" + formatLines("\t- ", "\n", lines));
-    }*/
 }
