@@ -3,9 +3,12 @@ package fr.gravendev.multibot.roles.commands;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.RoleDAO;
+import fr.gravendev.multibot.database.data.RoleData;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.requests.RestAction;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,15 +43,24 @@ public class HereCommand implements CommandExecutor {
         MessageChannel channel = message.getChannel();
         channel.getHistoryBefore(message, 100).queue(messageHistory -> messageHistory.getRetrievedHistory().forEach(oldMessage -> oldMessage.delete().queue()));
 
-        Guild guild = message.getGuild();
-        channel.sendMessage(roleDAO.get("message").getEmoteId())
-                .queue(sentMessage -> guild.getRoles().stream()
-                        .map(role -> roleDAO.get(role.getId()))
-                        .filter(Objects::nonNull)
-                        .forEach(role -> sentMessage.addReaction(guild.getEmoteById(role.getEmoteId())).queue())
-                );
-
+        String roleMessage = roleDAO.get("message").getEmoteId();
+        channel.sendMessage(roleMessage).queue(this::addEmotes);
         message.delete().queue();
+    }
+
+    private void addEmotes(Message message) {
+
+        Guild guild = message.getGuild();
+
+        guild.getRoles().stream()
+                .map(Role::getId)
+                .map(roleDAO::get)
+                .filter(Objects::nonNull)
+                .map(RoleData::getEmoteId)
+                .map(guild::getEmoteById)
+                .filter(Objects::nonNull)
+                .map(message::addReaction)
+                .forEach(RestAction::queue);
 
     }
 

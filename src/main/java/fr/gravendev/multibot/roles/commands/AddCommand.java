@@ -38,33 +38,39 @@ public class AddCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         List<Role> mentionedRoles = message.getMentionedRoles();
-        if (args.length != 2 || !args[0].matches("[0-9]+") || mentionedRoles.size() != 1) {
-            message.getChannel().sendMessage("Erreur. "+getCharacter()+"roles add <id de l'emote> @role").queue();
+        boolean isIncorrectCommand = args.length != 2 || !args[0].matches("[0-9]+") || mentionedRoles.size() != 1;
+        if (isIncorrectCommand) {
+            message.getChannel().sendMessage("Erreur. " + getCharacter() + "roles add <id de l'emote> @role").queue();
             return;
         }
 
-        Role mentionedRole = mentionedRoles.get(0);
+        String roleId = mentionedRoles.get(0).getId();
+        boolean roleNotExist = roleDAO.get(roleId) == null;
+        if (roleNotExist) {
 
-        if (roleDAO.get(mentionedRole.getId()) == null) {
-
-            Emote emote = message.getGuild().getEmoteById(args[0]);
-
-            if (emote == null) {
-                message.getChannel().sendMessage("Cet emote n'existe pas").queue();
-                return;
-            }
-
-            roleDAO.save(new RoleData(mentionedRole.getId(), args[0]));
-
-            message.getChannel().sendMessage("Le role "
-                    + mentionedRole.getAsMention()
-                    + " a bien été ajouté à la liste des rôles avec la réaction "
-                    + emote.getAsMention()).queue();
-
-        } else {
-            message.getChannel().sendMessage("Ce role existe déjà").queue();
+            saveRole(message, args[0]);
+            return;
         }
 
+        message.getChannel().sendMessage("Ce role existe déjà").queue();
+
+    }
+
+    private void saveRole(Message message, String roleId) {
+        Role mentionedRole = message.getMentionedRoles().get(0);
+        Emote emote = message.getGuild().getEmoteById(roleId);
+
+        if (emote == null) {
+            message.getChannel().sendMessage("Cette emote n'existe pas").queue();
+            return;
+        }
+
+        roleDAO.save(new RoleData(mentionedRole.getId(), roleId));
+
+        message.getChannel().sendMessage("Le role "
+                + mentionedRole.getAsMention()
+                + " a bien été ajouté à la liste des rôles avec la réaction "
+                + emote.getAsMention()).queue();
     }
 
 }

@@ -3,6 +3,7 @@ package fr.gravendev.multibot.roles.commands;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.RoleDAO;
+import fr.gravendev.multibot.database.data.RoleData;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -42,20 +43,47 @@ public class ListCommand implements CommandExecutor {
         Guild guild = message.getGuild();
 
         String roles = guild.getRoles().stream()
-                .map(role -> roleDAO.get(role.getId()))
+                .map(Role::getId)
+                .map(roleDAO::get)
                 .filter(Objects::nonNull)
-                .map(roleData -> {
-                    Role role = guild.getRoleById(roleData.getRoleId());
-                    String roleName = role == null ? "INVALID(" + roleData.getRoleId() + ")" : role.getName();
-
-                    Emote emote = guild.getEmoteById(roleData.getEmoteId());
-                    String emoteName = emote == null ? "INVALID(" + roleData.getEmoteId() + ")" : emote.getAsMention();
-
-                    return roleName + " (" + emoteName + ")";
-                })
+                .map(roleData -> getRoleDescription(guild, roleData))
                 .collect(Collectors.joining(" - "));
 
         message.getChannel().sendMessage("Listes des rôles enregistrés : " + roles).queue();
     }
+
+
+    private String getRoleDescription(Guild guild, RoleData roleData) {
+        String roleName = getRoleName(guild, roleData);
+
+        String emoteName = getRoleEmote(guild, roleData);
+
+        return roleName + " (" + emoteName + ")";
+    }
+
+
+    private String getRoleName(Guild guild, RoleData roleData) {
+        String roleId = roleData.getRoleId();
+        Role role = guild.getRoleById(roleId);
+
+        if (role != null) {
+            return role.getName();
+        }
+
+        return "ERROR(" + roleId + ")";
+    }
+
+
+    private String getRoleEmote(Guild guild, RoleData roleData) {
+        String emoteId = roleData.getEmoteId();
+        Emote emote = guild.getEmoteById(emoteId);
+
+        if (emote != null) {
+            return emote.getAsMention();
+        }
+
+        return "ERROR(" + emoteId + ")";
+    }
+
 
 }

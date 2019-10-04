@@ -1,11 +1,10 @@
 package fr.gravendev.multibot.tasks;
 
-import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
+import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 
@@ -18,39 +17,64 @@ public class InfractionsTask extends TimerTask {
     private final Guild guild;
     private final InfractionDAO infractionDAO;
 
-    public InfractionsTask(JDA jda, DAOManager daoManager) {
-        this.infractionDAO = daoManager.getInfractionDAO();
-        this.guild = jda.getGuildById(Configuration.GUILD.getValue());
+    public InfractionsTask(Guild guild, InfractionDAO infractionDAO) {
+        this.guild = guild;
+        this.infractionDAO = infractionDAO;
     }
 
     @Override
     public void run() {
         try {
-            List<InfractionData> allUnfinished = infractionDAO.getALLUnfinished();
-            allUnfinished.forEach(infraction -> {
-                switch (infraction.getType()) {
-                    case BAN:
-                        guild.unban(infraction.getPunishedId()).queue(success -> {}, throwable -> {});
-                        Member member = guild.getMemberById(infraction.getPunishedId());
-                        if (member == null) {
-                            break;
-                        }
-                        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été débanni du discord GravenDev").queue(), throwable -> {});
-                        break;
-                    case MUTE:
-                        member = guild.getMemberById(infraction.getPunishedId());
-                        if (member == null) {
-                            break;
-                        }
-                        GuildUtils.removeRole(member, Configuration.MUTED.getValue()).queue();
-                        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Vous avez été unmute du discord GravenDev").queue(), throwable -> {});
-                        break;
-                }
-                infraction.setFinished(true);
-                infractionDAO.save(infraction);
-            });
+
+            List<InfractionData> allUnfinished = infractionDAO.getAllFinished();
+            allUnfinished.forEach(this::computeFinishedInfraction);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    private void computeFinishedInfraction(InfractionData infractionData) {
+        String punishedId = infractionData.getPunishedId();
+        Member member = guild.getMemberById(punishedId);
+
+        executeAction(infractionData, punishedId, member);
+
+        infractionData.setFinished(true);
+        infractionDAO.save(infractionData);
+    }
+
+    private void executeAction(InfractionData infractionData, String punishedId, Member member) {
+
+        if (infractionData.getType() == InfractionType.MUTE) {
+            this.muteAction(member);
+            return;
+        }
+
+        this.banAction(punishedId, member);
+    }
+
+    private void muteAction(Member member) {
+
+        if (member == null) {
+            return;
+        }
+
+        GuildUtils.removeRole(member, Configuration.MUTED.getValue()).queue();
+
+        String message = "Vous avez été unmute du discord GravenDev";
+        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
+    }
+
+    private void banAction(String punishedId, Member member) {
+        guild.unban(punishedId).queue();
+
+        if (member == null) {
+            return;
+        }
+
+        String message = "Vous avez été débanni du discord GravenDev";
+        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
+    }
+
 }
