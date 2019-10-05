@@ -1,0 +1,31 @@
+[bot]
+token = ""
+prefix = ""
+
+[database]
+host = ""
+username = ""
+password = ""
+database = ""
+
+[identifiers]
+guild = 
+
+[identifiers.roles]
+anti_image = 
+anti_meme = 
+anti_repost = 
+anti_review = 
+developpeur = 
+honorable = 
+member = 
+muted = 
+pilier = 
+
+[identifiers.channels]
+candids = 
+logs = 
+rules = 
+read_this_saloon = 
+sondages = 
+sondages_verif = 
