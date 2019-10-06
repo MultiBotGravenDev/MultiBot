@@ -19,5 +19,4 @@ public enum ChannelType {
         return this == ChannelType.ALL
                 || this.getChannelType() == targetType;
     }
-
 }
