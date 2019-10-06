@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.entities.User;
 import org.json.JSONObject;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

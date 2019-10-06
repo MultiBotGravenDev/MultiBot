@@ -5,7 +5,6 @@ import fr.gravendev.multibot.database.data.CustomCommandData;
 import fr.gravendev.multibot.utils.PreparedStatementBuilder;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

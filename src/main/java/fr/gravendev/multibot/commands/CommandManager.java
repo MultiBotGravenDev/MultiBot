@@ -30,7 +30,6 @@ import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.rank.RankCommand;
 import fr.gravendev.multibot.roles.commands.RolesCommand;
 import fr.gravendev.multibot.utils.Configuration;
-import fr.gravendev.multibot.votes.VoteCommand;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 

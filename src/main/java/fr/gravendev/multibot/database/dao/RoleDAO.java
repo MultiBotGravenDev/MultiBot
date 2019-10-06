@@ -6,7 +6,6 @@ import fr.gravendev.multibot.database.data.RoleData;
 import fr.gravendev.multibot.utils.PreparedStatementBuilder;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

@@ -1,6 +1,5 @@
 package fr.gravendev.multibot.votes.events;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.VoteDAO;
 import fr.gravendev.multibot.database.data.VoteData;

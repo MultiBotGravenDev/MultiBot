@@ -1,6 +1,5 @@
 package fr.gravendev.multibot.roles.listeners;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.RoleDAO;
 import fr.gravendev.multibot.database.data.RoleData;

@@ -8,7 +8,6 @@ import fr.gravendev.multibot.votes.Vote;
 import fr.gravendev.multibot.votes.VoteType;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
