@@ -29,6 +29,7 @@ public class AdminInfos implements Route {
         this.databaseConnection = databaseConnection;
     }
 
+    // TODO Refactor it more
     @Override
     public Object handle(Request request, Response response) throws Exception {
         String id = request.queryParams("id");
@@ -37,27 +38,29 @@ public class AdminInfos implements Route {
         }
 
         Member member = guild.getMemberById(id);
-        if(member == null || !member.hasPermission(Permission.ADMINISTRATOR)) {
+        if (member == null || !member.hasPermission(Permission.ADMINISTRATOR)) {
             return "{}";
         }
 
         InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
         List<InfractionData> allUnfinished = infractionDAO.getAllFinished();
-        long bans = allUnfinished.stream().filter(infraction -> infraction.getType() == InfractionType.BAN).count();
-        long mutes = allUnfinished.stream().filter(infraction -> infraction.getType() == InfractionType.MUTE).count();
 
         JSONObject lastCandid = new JSONObject();
 
         String candids = Configuration.CANDIDS.getValue();
         for (Message message : getHistory(candids)) {
-            if(!message.getAuthor().isBot() || message.getReactions().size() > 0 || message.getEmbeds().size() != 1) continue;
+            if (!message.getAuthor().isBot()
+                    || message.getReactions().size() > 0
+                    || message.getEmbeds().size() != 1) {
+                continue;
+            }
             MessageEmbed messageEmbed = message.getEmbeds().get(0);
 
             lastCandid.put("author", messageEmbed.getAuthor().getName());
 
             List<MessageEmbed.Field> fields = new ArrayList<>();
             for (MessageEmbed.Field field : messageEmbed.getFields()) {
-                String value = field.getValue().replaceAll("<[^>]*>","");
+                String value = field.getValue().replaceAll("<[^>]*>", "");
                 MessageEmbed.Field newField = new MessageEmbed.Field(field.getName(), value, field.isInline());
                 fields.add(newField);
             }
@@ -70,7 +73,11 @@ public class AdminInfos implements Route {
         JSONObject lastPoll = new JSONObject();
 
         for (Message message : getHistory(polls)) {
-            if(!message.getAuthor().isBot() || message.getReactions().size() == 0 || message.getEmbeds().size() != 1) continue;
+            if (!message.getAuthor().isBot()
+                    || message.getReactions().size() == 0
+                    || message.getEmbeds().size() != 1) {
+                continue;
+            }
             MessageEmbed messageEmbed = message.getEmbeds().get(0);
 
             lastPoll.put("author", messageEmbed.getFooter().getText());
@@ -78,14 +85,26 @@ public class AdminInfos implements Route {
 
             List<String> fields = new ArrayList<>();
             for (String field : messageEmbed.getDescription().split("\n")) {
-                if(field.length() == 0) continue;
+                if (field.length() == 0) {
+                    continue;
+                }
                 fields.add(field);
             }
             lastPoll.put("fields", fields);
             break;
         }
 
-        return new JSONObject().put("bans", bans).put("mutes", mutes).put("candid", lastCandid).put("lastPoll", lastPoll);
+        return new JSONObject() {{
+            long bans = allUnfinished.stream()
+                    .filter(infraction -> infraction.getType() == InfractionType.BAN).count();
+            long mutes = allUnfinished.stream()
+                    .filter(infraction -> infraction.getType() == InfractionType.MUTE).count();
+
+            put("bans", bans);
+            put("mutes", mutes);
+            put("candid", lastCandid);
+            put("lastPoll", lastPoll);
+        }};
     }
 
     private List<Message> getHistory(String channelID) {

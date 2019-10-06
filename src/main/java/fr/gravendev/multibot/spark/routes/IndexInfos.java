@@ -43,6 +43,7 @@ public class IndexInfos implements Route {
             String joinDate = member.getTimeJoined().format(Utils.getDateTimeFormatter());
             int userLevel = new ExperienceDAO(databaseConnection).get(id).getLevels();
             List<InfractionData> allInfractions = new InfractionDAO(databaseConnection).getAll(id);
+            // TODO In terms of performance, it's better to do one loop and increment each counter
             long infractions = allInfractions.stream()
                     .filter(infraction -> infraction.getType() == InfractionType.WARN).count();
             long bans = allInfractions.stream()
