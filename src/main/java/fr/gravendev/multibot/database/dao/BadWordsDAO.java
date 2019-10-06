@@ -2,6 +2,7 @@ package fr.gravendev.multibot.database.dao;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.BadWordsData;
+import fr.gravendev.multibot.utils.PreparedStatementBuilder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,20 +16,24 @@ public class BadWordsDAO extends DAO<BadWordsData> {
 
     @Override
     protected boolean save(BadWordsData obj, Connection connection) throws SQLException {
-        connection.prepareStatement("TRUNCATE TABLE bad_words").execute();
-        for (String badWord : obj.getBadWords().split(" ")) {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO bad_words(word) VALUE(?)");
+        PreparedStatementBuilder statementBuilder = new PreparedStatementBuilder(connection);
 
-            preparedStatement.setString(1, badWord);
-            preparedStatement.execute();
+        statementBuilder
+                .prepareStatement("TRUNCATE TABLE bad_words")
+                .execute();
+        for (String badWord : obj.getBadWords().split(" ")) {
+            statementBuilder.prepareStatement("INSERT INTO bad_words(word) VALUE(?)")
+                    .setString(badWord)
+                    .execute();
         }
         return true;
     }
 
     @Override
     protected BadWordsData get(String value, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM bad_words");
-        ResultSet result = preparedStatement.executeQuery();
+        ResultSet result = new PreparedStatementBuilder(connection)
+                .prepareStatement("SELECT * FROM bad_words")
+                .executeQuery();
         StringBuilder badWords = new StringBuilder();
 
         while (result.next()) {

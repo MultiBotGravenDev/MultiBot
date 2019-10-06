@@ -3,6 +3,7 @@ package fr.gravendev.multibot.database.dao;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.RoleData;
+import fr.gravendev.multibot.utils.PreparedStatementBuilder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,23 +17,22 @@ public class RoleDAO extends DAO<RoleData> {
 
     @Override
     protected boolean save(RoleData roleData, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO roles VALUES(?, ?) ON DUPLICATE KEY UPDATE emote_id = ?");
-
-        preparedStatement.setString(1, roleData.getRoleId());
-        preparedStatement.setString(2, roleData.getEmoteId());
-        preparedStatement.setString(3, roleData.getEmoteId());
-        preparedStatement.execute();
+        new PreparedStatementBuilder(connection)
+                .prepareStatement("INSERT INTO roles VALUES(?, ?) ON DUPLICATE KEY UPDATE emote_id = ?")
+                .setString(roleData.getRoleId())
+                .setString(roleData.getEmoteId())
+                .setString(roleData.getEmoteId())
+                .execute();
         return true;
     }
 
     @Override
     protected RoleData get(String value, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM roles WHERE role_id = ? OR emote_id = ?");
-
-        preparedStatement.setString(1, value);
-        preparedStatement.setString(2, value);
-
-        ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = new PreparedStatementBuilder(connection)
+                .prepareStatement("SELECT * FROM roles WHERE role_id = ? OR emote_id = ?")
+                .setString(value)
+                .setString(value)
+                .executeQuery();
 
         if (resultSet.next()) {
             String roleId = resultSet.getString("role_id");
@@ -45,9 +45,9 @@ public class RoleDAO extends DAO<RoleData> {
 
     @Override
     protected void delete(RoleData roleData, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM roles WHERE role_id = ?");
-
-        preparedStatement.setString(1, String.valueOf(roleData.getRoleId()));
-        preparedStatement.execute();
+        new PreparedStatementBuilder(connection)
+                .prepareStatement("DELETE FROM roles WHERE role_id = ?")
+                .setString(String.valueOf(roleData.getRoleId()))
+                .execute();
     }
 }

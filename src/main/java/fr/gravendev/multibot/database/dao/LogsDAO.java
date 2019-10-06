@@ -2,6 +2,7 @@ package fr.gravendev.multibot.database.dao;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.logs.MessageData;
+import fr.gravendev.multibot.utils.PreparedStatementBuilder;
 
 import java.sql.*;
 
@@ -12,32 +13,30 @@ public class LogsDAO extends DAO<MessageData> {
 
     @Override
     protected boolean save(MessageData message, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO logs(`discord_id`, `message_id`, `content`, `creation`) VALUES (?, ?, ?, NOW())");
-
-        statement.setString(1, message.getDiscordID());
-        statement.setString(2, message.getMessage_id());
-        statement.setString(3, message.getContent());
-        statement.executeUpdate();
+        new PreparedStatementBuilder(connection)
+                .prepareStatement("INSERT INTO logs(`discord_id`, `message_id`, `content`, `creation`) VALUES (?, ?, ?, NOW())")
+                .setString(message.getDiscordID())
+                .setString(message.getMessage_id())
+                .setString(message.getContent())
+                .executeUpdate();
         return true;
     }
 
 
     @Override
     protected MessageData get(String value, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM logs WHERE message_id = ?");
-
-        preparedStatement.setString(1, value);
-
-        ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = new PreparedStatementBuilder(connection)
+                .prepareStatement("SELECT * FROM logs WHERE message_id = ?")
+                .setString(value)
+                .executeQuery();
 
         if (resultSet.next()) {
-            String discord_id = resultSet.getString("discord_id");
-            String message_id = resultSet.getString("message_id");
+            String discordId = resultSet.getString("discordId");
+            String messageId = resultSet.getString("messageId");
             String content = resultSet.getString("content");
             Date creation = resultSet.getDate("creation");
 
-            return new MessageData(discord_id, message_id, content, creation.getTime());
+            return new MessageData(discordId, messageId, content, creation.getTime());
         }
         return null;
     }

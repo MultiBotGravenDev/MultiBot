@@ -3,6 +3,7 @@ package fr.gravendev.multibot.database.dao;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.VoteData;
 import fr.gravendev.multibot.database.data.VoteDataBuilder;
+import fr.gravendev.multibot.utils.PreparedStatementBuilder;
 import fr.gravendev.multibot.votes.Vote;
 import fr.gravendev.multibot.votes.VoteType;
 
@@ -19,47 +20,48 @@ public class VoteDAO extends DAO<VoteData> {
 
     @Override
     public boolean save(VoteData voteData, Connection connection) throws SQLException {
+        PreparedStatementBuilder statementBuilder = new PreparedStatementBuilder(connection);
         if (get(String.valueOf(voteData.getMessageId()), connection).getRole() == null) {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO votes (message_id, role, user_id, accepted) VALUES(?, ?, ?, ?)");
-
-            preparedStatement.setString(1, String.valueOf(voteData.getMessageId()));
-            preparedStatement.setString(2, String.valueOf(voteData.getRole()));
-            preparedStatement.setString(3, String.valueOf(voteData.getUserId()));
-            preparedStatement.setBoolean(4, voteData.isAccepted());
-            preparedStatement.execute();
+            statementBuilder
+                    .prepareStatement("INSERT INTO votes (message_id, role, user_id, accepted) VALUES(?, ?, ?, ?)")
+                    .setString(String.valueOf(voteData.getMessageId()))
+                    .setString(String.valueOf(voteData.getRole()))
+                    .setString(String.valueOf(voteData.getUserId()))
+                    .setBoolean(voteData.isAccepted())
+                    .execute();
         }
 
         if (get(String.valueOf(voteData.getMessageId())).isAccepted() != voteData.isAccepted()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE votes SET accepted = ? WHERE message_id = ?");
-
-            preparedStatement.setBoolean(1, voteData.isAccepted());
-            preparedStatement.setString(2, String.valueOf(voteData.isAccepted()));
-            preparedStatement.execute();
+            statementBuilder
+                    .prepareStatement("UPDATE votes SET accepted = ? WHERE message_id = ?")
+                    .setBoolean(voteData.isAccepted())
+                    .setString(String.valueOf(voteData.isAccepted()))
+                    .execute();
         }
 
         for (Vote vote : voteData.getVotes()) {
             VoteType type = vote.getType();
             long voter = vote.getUserId();
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?");
+            String typeName = type.name().toLowerCase();
 
-            preparedStatement.setInt(1, voteData.getVoteId());
-            preparedStatement.setString(2, String.valueOf(voter));
-            preparedStatement.setString(3, type.name().toLowerCase());
-            preparedStatement.setString(4, type.name().toLowerCase());
-            preparedStatement.execute();
+            statementBuilder
+                    .prepareStatement("INSERT INTO voters VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE choice = ?")
+                    .setInt(voteData.getVoteId())
+                    .setString(String.valueOf(voter))
+                    .setString(typeName)
+                    .setString(typeName)
+                    .execute();
         }
         return false;
     }
 
     @Override
     public VoteData get(String value, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement(
-                "SELECT * FROM votes LEFT JOIN voters ON votes.id = voters.id WHERE message_id = ? OR user_id = ?");
-
-        preparedStatement.setString(1, value);
-        preparedStatement.setString(2, value);
-
-        ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = new PreparedStatementBuilder(connection)
+                .prepareStatement("SELECT * FROM votes LEFT JOIN voters ON votes.id = voters.id WHERE message_id = ? OR user_id = ?")
+                .setString(value)
+                .setString(value)
+                .executeQuery();
         VoteDataBuilder voteDataBuilder = VoteDataBuilder.aVoteData();
 
         while (resultSet.next()) {

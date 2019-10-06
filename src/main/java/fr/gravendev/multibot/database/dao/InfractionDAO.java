@@ -3,6 +3,7 @@ package fr.gravendev.multibot.database.dao;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
+import fr.gravendev.multibot.utils.PreparedStatementBuilder;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,31 +19,28 @@ public class InfractionDAO extends DAO<InfractionData> {
 
     @Override
     protected boolean save(InfractionData data, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO infractions(`uuid`, `punished_id`, `punisher_id`, `type`, `reason`, `start`, `end`, `finished`)" +
+        new PreparedStatementBuilder(connection)
+                .prepareStatement("INSERT INTO infractions(`uuid`, `punished_id`, `punisher_id`, `type`, `reason`, `start`, `end`, `finished`)" +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?)" +
-                        "ON DUPLICATE KEY UPDATE end = VALUES(end), finished = VALUES(finished)");
-
-        statement.setString(1, data.getUUID().toString());
-        statement.setString(2, data.getPunishedId());
-        statement.setString(3, data.getPunisherId());
-        statement.setString(4, data.getType().name());
-        statement.setString(5, data.getReason());
-        statement.setTimestamp(6, new Timestamp(data.getStart().getTime()));
-        statement.setTimestamp(7, data.getEnd() != null ? new Timestamp(data.getEnd().getTime()) : null);
-        statement.setBoolean(8, data.isFinished());
-        statement.executeUpdate();
+                        "ON DUPLICATE KEY UPDATE end = VALUES(end), finished = VALUES(finished)")
+                .setString(data.getUUID().toString())
+                .setString(data.getPunishedId())
+                .setString(data.getPunisherId())
+                .setString(data.getType().name())
+                .setString(data.getReason())
+                .setTimestamp(new Timestamp(data.getStart().getTime()))
+                .setTimestamp(data.getEnd() != null ? new Timestamp(data.getEnd().getTime()) : null)
+                .setBoolean(data.isFinished())
+                .executeUpdate();
         return true;
     }
 
     @Override
     protected InfractionData get(String discordID, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM infractions WHERE punished_id = ? AND (END < NOW() OR END IS NULL) ORDER BY start DESC");
-
-        statement.setString(1, discordID);
-
-        ResultSet resultSet = statement.executeQuery();
+        ResultSet resultSet = new PreparedStatementBuilder(connection)
+                .prepareStatement("SELECT * FROM infractions WHERE punished_id = ? AND (END < NOW() OR END IS NULL) ORDER BY start DESC")
+                .setString(discordID)
+                .executeQuery();
 
         if (resultSet.next()) {
             UUID uuid = UUID.fromString(resultSet.getString("uuid"));
@@ -63,12 +61,10 @@ public class InfractionDAO extends DAO<InfractionData> {
     public List<InfractionData> getAllInfractions(String discordID) throws SQLException {
         try (Connection connection = getConnection()) {
             List<InfractionData> infractions = new ArrayList<>();
-            PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM infractions WHERE punished_id = ? AND type = 'warn' ORDER BY start DESC");
-
-            statement.setString(1, discordID);
-
-            ResultSet resultSet = statement.executeQuery();
+            ResultSet resultSet = new PreparedStatementBuilder(connection)
+                    .prepareStatement("SELECT * FROM infractions WHERE punished_id = ? AND type = 'warn' ORDER BY start DESC")
+                    .setString(discordID)
+                    .executeQuery();
 
             while (resultSet.next()) {
                 UUID uuid = UUID.fromString(resultSet.getString("uuid"));
@@ -90,12 +86,10 @@ public class InfractionDAO extends DAO<InfractionData> {
     public List<InfractionData> getAll(String discordID) throws SQLException {
         try (Connection connection = getConnection()) {
             List<InfractionData> infractions = new ArrayList<>();
-            PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM infractions WHERE punished_id = ? ORDER BY start DESC");
-
-            statement.setString(1, discordID);
-
-            ResultSet resultSet = statement.executeQuery();
+            ResultSet resultSet = new PreparedStatementBuilder(connection)
+                    .prepareStatement("SELECT * FROM infractions WHERE punished_id = ? ORDER BY start DESC")
+                    .setString(discordID)
+                    .executeQuery();
 
             while (resultSet.next()) {
                 UUID uuid = UUID.fromString(resultSet.getString("uuid"));
@@ -117,9 +111,9 @@ public class InfractionDAO extends DAO<InfractionData> {
     public List<InfractionData> getAllFinished() throws SQLException {
         try (Connection connection = getConnection()) {
             List<InfractionData> infractions = new ArrayList<>();
-            PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM infractions WHERE END < NOW() AND FINISHED = 0");
-            ResultSet resultSet = statement.executeQuery();
+            ResultSet resultSet = new PreparedStatementBuilder(connection)
+                    .prepareStatement("SELECT * FROM infractions WHERE END < NOW() AND FINISHED = 0")
+                    .executeQuery();
 
             while (resultSet.next()) {
                 UUID uuid = UUID.fromString(resultSet.getString("uuid"));
@@ -140,13 +134,11 @@ public class InfractionDAO extends DAO<InfractionData> {
 
     public InfractionData getLast(String discordID, InfractionType infractionType) throws SQLException {
         try (Connection connection = getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM infractions WHERE punished_id = ? AND type = ? ORDER BY start DESC");
-
-            statement.setString(1, discordID);
-            statement.setString(2, infractionType.name());
-
-            ResultSet resultSet = statement.executeQuery();
+            ResultSet resultSet = new PreparedStatementBuilder(connection)
+                    .prepareStatement("SELECT * FROM infractions WHERE punished_id = ? AND type = ? ORDER BY start DESC")
+                    .setString(discordID)
+                    .setString(infractionType.name())
+                    .executeQuery();
 
             if (resultSet.next()) {
                 UUID uuid = UUID.fromString(resultSet.getString("uuid"));

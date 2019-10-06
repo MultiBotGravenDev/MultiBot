@@ -2,6 +2,7 @@ package fr.gravendev.multibot.database.dao;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.ImmunisedIdsData;
+import fr.gravendev.multibot.utils.PreparedStatementBuilder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,21 +18,26 @@ public class ImmunisedIdDAO extends DAO<ImmunisedIdsData> {
 
     @Override
     protected boolean save(ImmunisedIdsData obj, Connection connection) throws SQLException {
-        connection.prepareStatement("TRUNCATE TABLE immunised_ids").execute();
-        for (Long immunisedId : obj.immunisedIds) {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO immunised_ids(id) VALUE(?)");
+        PreparedStatementBuilder statementBuilder = new PreparedStatementBuilder(connection);
 
-            preparedStatement.setString(1, String.valueOf(immunisedId));
-            preparedStatement.execute();
+        statementBuilder
+                .prepareStatement("TRUNCATE TABLE immunised_ids")
+                .execute();
+        for (Long immunisedId : obj.immunisedIds) {
+            statementBuilder
+                    .prepareStatement("INSERT INTO immunised_ids(id) VALUE(?)")
+                    .setString(String.valueOf(immunisedId))
+                    .execute();
         }
-        return false;
+        return false; // TODO Wtf??
     }
 
     @Override
     protected ImmunisedIdsData get(String value, Connection connection) throws SQLException {
         List<Long> ids = new ArrayList<>();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM immunised_ids");
-        ResultSet result = preparedStatement.executeQuery();
+        ResultSet result = new PreparedStatementBuilder(connection)
+                .prepareStatement("SELECT * FROM immunised_ids")
+                .executeQuery();
 
         while (result.next()) {
             ids.add(Long.valueOf(result.getString("id")));

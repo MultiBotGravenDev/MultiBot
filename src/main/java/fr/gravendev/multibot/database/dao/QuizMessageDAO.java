@@ -2,6 +2,7 @@ package fr.gravendev.multibot.database.dao;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.MessageData;
+import fr.gravendev.multibot.utils.PreparedStatementBuilder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,22 +16,21 @@ public class QuizMessageDAO extends DAO<MessageData> {
 
     @Override
     protected boolean save(MessageData data, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO quiz_messages VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?");
-
-        preparedStatement.setString(1, data.getId());
-        preparedStatement.setString(2, data.getMessage());
-        preparedStatement.setString(3, data.getMessage());
-        preparedStatement.executeUpdate();
+        new PreparedStatementBuilder(connection)
+                .prepareStatement("INSERT INTO quiz_messages VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?")
+                .setString(data.getId())
+                .setString(data.getMessage())
+                .setString(data.getMessage())
+                .executeUpdate();
         return true;
     }
 
     @Override
     protected MessageData get(String value, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM quiz_messages WHERE id = ?");
-
-        statement.setString(1, value);
-
-        ResultSet resultSet = statement.executeQuery();
+        ResultSet resultSet = new PreparedStatementBuilder(connection)
+                .prepareStatement("SELECT * FROM quiz_messages WHERE id = ?")
+                .setString(value)
+                .executeQuery();
 
         if (resultSet.next()) {
             String id = resultSet.getString("id");
@@ -43,9 +43,9 @@ public class QuizMessageDAO extends DAO<MessageData> {
 
     @Override
     protected void delete(MessageData obj, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM quiz_messages WHERE id = ?");
-
-        preparedStatement.setString(1, obj.getId());
-        preparedStatement.execute();
+        new PreparedStatementBuilder(connection)
+                .prepareStatement("DELETE FROM quiz_messages WHERE id = ?")
+                .setString(obj.getId())
+                .execute();
     }
 }

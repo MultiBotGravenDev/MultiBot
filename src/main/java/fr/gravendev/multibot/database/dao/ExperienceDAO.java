@@ -2,6 +2,7 @@ package fr.gravendev.multibot.database.dao;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.ExperienceData;
+import fr.gravendev.multibot.utils.PreparedStatementBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -22,26 +23,24 @@ public class ExperienceDAO extends DAO<ExperienceData> {
 
     @Override
     protected boolean save(ExperienceData data, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO experience(`discord_id`, `experience`, `level`, `messages_count`, `last_message`) " +
+        new PreparedStatementBuilder(connection)
+                .prepareStatement("INSERT INTO experience(`discord_id`, `experience`, `level`, `messages_count`, `last_message`) " +
                         "VALUES (?, ?, ?, ?, NOW()) ON DUPLICATE KEY UPDATE " +
-                        "experience = VALUES(experience), level = VALUES(level), messages_count = VALUES(messages_count), last_message = VALUES(last_message)");
-
-        statement.setString(1, data.getDiscordID());
-        statement.setInt(2, data.getExperiences());
-        statement.setInt(3, data.getLevels());
-        statement.setInt(4, data.getMessages());
-        statement.executeUpdate();
+                        "experience = VALUES(experience), level = VALUES(level), messages_count = VALUES(messages_count), last_message = VALUES(last_message)")
+                .setString(data.getDiscordID())
+                .setInt(data.getExperiences())
+                .setInt(data.getLevels())
+                .setInt(data.getMessages())
+                .executeUpdate();
         return true;
     }
 
     @Override
     protected ExperienceData get(String discordID, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM experience WHERE discord_id = ?");
-
-        statement.setString(1, discordID);
-
-        ResultSet resultSet = statement.executeQuery();
+        ResultSet resultSet = new PreparedStatementBuilder(connection)
+                .prepareStatement("SELECT * FROM experience WHERE discord_id = ?")
+                .setString(discordID)
+                .executeQuery();
 
         if (resultSet.next()) {
             int experience = resultSet.getInt("experience");
@@ -59,8 +58,9 @@ public class ExperienceDAO extends DAO<ExperienceData> {
         List<JSONObject> experienceData = new ArrayList<>();
 
         try (Connection connection = getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM experience ORDER BY level DESC, experience DESC");
-            ResultSet resultSet = statement.executeQuery();
+            ResultSet resultSet = new PreparedStatementBuilder(connection)
+                    .prepareStatement("SELECT * FROM experience ORDER BY level DESC, experience DESC")
+                    .executeQuery();
 
             while (resultSet.next()) {
                 String discordId = resultSet.getString("discordId");

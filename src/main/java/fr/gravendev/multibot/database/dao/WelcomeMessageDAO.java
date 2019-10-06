@@ -2,6 +2,7 @@ package fr.gravendev.multibot.database.dao;
 
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.data.MessageData;
+import fr.gravendev.multibot.utils.PreparedStatementBuilder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,22 +16,21 @@ public class WelcomeMessageDAO extends DAO<MessageData> {
 
     @Override
     protected boolean save(MessageData obj, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO welcome_messages VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?");
-
-        preparedStatement.setString(1, obj.getId());
-        preparedStatement.setString(2, obj.getMessage());
-        preparedStatement.setString(3, obj.getMessage());
-        preparedStatement.execute();
+        new PreparedStatementBuilder(connection)
+                .prepareStatement("INSERT INTO welcome_messages VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?")
+                .setString(obj.getId())
+                .setString(obj.getMessage())
+                .setString(obj.getMessage())
+                .execute();
         return true;
     }
 
     @Override
     protected MessageData get(String value, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM welcome_messages WHERE id = ?");
-
-        statement.setInt(1, Integer.valueOf(value));
-
-        ResultSet resultSet = statement.executeQuery();
+        ResultSet resultSet = new PreparedStatementBuilder(connection)
+                .prepareStatement("SELECT * FROM welcome_messages WHERE id = ?")
+                .setInt(Integer.valueOf(value))
+                .executeQuery();
 
         if (resultSet.next()) {
             String id = resultSet.getString("id");
