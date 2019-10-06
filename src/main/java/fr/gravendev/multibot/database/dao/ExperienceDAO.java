@@ -63,24 +63,26 @@ public class ExperienceDAO extends DAO<ExperienceData> {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                String discord_id = resultSet.getString("discord_id");
-                JSONObject jsonObject = new JSONObject();
-                Member member = guild.getMemberById(discord_id);
+                String discordId = resultSet.getString("discordId");
+                Member member = guild.getMemberById(discordId);
 
                 if (member == null) {
                     continue;
                 }
 
-                User user = member.getUser();
-                int experience = resultSet.getInt("experience");
-                int level = resultSet.getInt("level");
-                int messages = resultSet.getInt("messages_count");
+                JSONObject jsonObject = new JSONObject() {{
+                    User user = member.getUser();
+                    int experience = resultSet.getInt("experience");
+                    int level = resultSet.getInt("level");
+                    int messages = resultSet.getInt("messages_count");
 
-                jsonObject.put("name", user.getName());
-                jsonObject.put("avatarURL", user.getAvatarUrl());
-                jsonObject.put("messages", messages);
-                jsonObject.put("experience", experience);
-                jsonObject.put("level", level);
+                    put("name", user.getName());
+                    put("avatarURL", user.getAvatarUrl());
+                    put("messages", messages);
+                    put("experience", experience);
+                    put("level", level);
+                }};
+
                 experienceData.add(jsonObject);
             }
         } catch (SQLException e) {
