@@ -43,7 +43,7 @@ public class IndexInfos implements Route {
         ExperienceData experienceData = experienceDAO.get(id);
 
         InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
-        List<InfractionData> allInfractions = infractionDAO.getALL(id);
+        List<InfractionData> allInfractions = infractionDAO.getAll(id);
 
         long infractions = allInfractions.stream().filter(infraction -> infraction.getType() == InfractionType.WARN).count();
         long bans = allInfractions.stream().filter(infraction -> infraction.getType() == InfractionType.BAN).count();

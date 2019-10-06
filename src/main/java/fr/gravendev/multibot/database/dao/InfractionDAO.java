@@ -60,7 +60,7 @@ public class InfractionDAO extends DAO<InfractionData> {
         return null;
     }
 
-    public List<InfractionData> getALLInfractions(String discordID) throws SQLException {
+    public List<InfractionData> getAllInfractions(String discordID) throws SQLException {
         try (Connection connection = getConnection()) {
             List<InfractionData> infractions = new ArrayList<>();
             PreparedStatement statement = connection.prepareStatement(
@@ -87,7 +87,7 @@ public class InfractionDAO extends DAO<InfractionData> {
         }
     }
 
-    public List<InfractionData> getALL(String discordID) throws SQLException {
+    public List<InfractionData> getAll(String discordID) throws SQLException {
         try (Connection connection = getConnection()) {
             List<InfractionData> infractions = new ArrayList<>();
             PreparedStatement statement = connection.prepareStatement(

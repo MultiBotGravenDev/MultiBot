@@ -55,7 +55,7 @@ public class ExperienceDAO extends DAO<ExperienceData> {
     }
 
     // TODO Refactor
-    public List<JSONObject> getALL(Guild guild) {
+    public List<JSONObject> getAll(Guild guild) {
         List<JSONObject> experienceData = new ArrayList<>();
 
         try (Connection connection = getConnection()) {

@@ -59,7 +59,7 @@ public class InfractionsCommand implements CommandExecutor {
 
             Member member = mentionedMembers.get(0);
 
-            List<InfractionData> allInfractions = infractionDAO.getALLInfractions(member.getUser().getId());
+            List<InfractionData> allInfractions = infractionDAO.getAllInfractions(member.getUser().getId());
 
             Date lastDayDate = Date.from(Instant.now().minusSeconds(60 * 60 * 24));
             Date lastWeekDate = Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 7));

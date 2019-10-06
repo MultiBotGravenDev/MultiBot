@@ -19,6 +19,6 @@ public class LeaderboardRoute implements Route {
     @Override
     public Object handle(Request request, Response response) {
         ExperienceDAO experienceDAO = new ExperienceDAO(databaseConnection);
-        return experienceDAO.getALL(guild);
+        return experienceDAO.getAll(guild);
     }
 }
