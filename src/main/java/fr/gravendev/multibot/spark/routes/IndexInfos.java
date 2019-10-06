@@ -3,7 +3,6 @@ package fr.gravendev.multibot.spark.routes;
 import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
-import fr.gravendev.multibot.database.data.ExperienceData;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Utils;
@@ -29,35 +28,37 @@ public class IndexInfos implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
         String id = request.queryParams("id");
+
         if (id == null) {
             return "{}";
         }
+
         Member member = guild.getMemberById(id);
-        if(member == null) {
+
+        if (member == null) {
             return "{}";
         }
 
-        JSONObject object = new JSONObject();
+        return new JSONObject() {{
+            String joinDate = member.getTimeJoined().format(Utils.getDateTimeFormatter());
+            int userLevel = new ExperienceDAO(databaseConnection).get(id).getLevels();
+            List<InfractionData> allInfractions = new InfractionDAO(databaseConnection).getAll(id);
+            long infractions = allInfractions.stream()
+                    .filter(infraction -> infraction.getType() == InfractionType.WARN).count();
+            long bans = allInfractions.stream()
+                    .filter(infraction -> infraction.getType() == InfractionType.BAN).count();
+            long mutes = allInfractions.stream()
+                    .filter(infraction -> infraction.getType() == InfractionType.MUTE).count();
+            int memberCount = guild.getMembers().size();
+            String guildCreationDate = guild.getTimeCreated().format(Utils.getDateTimeFormatter());
 
-        ExperienceDAO experienceDAO = new ExperienceDAO(databaseConnection);
-        ExperienceData experienceData = experienceDAO.get(id);
-
-        InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
-        List<InfractionData> allInfractions = infractionDAO.getAll(id);
-
-        long infractions = allInfractions.stream().filter(infraction -> infraction.getType() == InfractionType.WARN).count();
-        long bans = allInfractions.stream().filter(infraction -> infraction.getType() == InfractionType.BAN).count();
-        long mutes = allInfractions.stream().filter(infraction -> infraction.getType() == InfractionType.MUTE).count();
-
-        object.put("joinDate", member.getTimeJoined().format(Utils.getDateTimeFormatter()));
-        object.put("userLevel", experienceData.getLevels());
-        object.put("infractions", infractions);
-        object.put("bans", bans);
-        object.put("mutes", mutes);
-
-        object.put("members", guild.getMembers().size());
-        object.put("age", guild.getTimeCreated().format(Utils.getDateTimeFormatter()));
-
-        return object;
+            put("joinDate", joinDate);
+            put("userLevel", userLevel);
+            put("infractions", infractions);
+            put("bans", bans);
+            put("mutes", mutes);
+            put("members", memberCount);
+            put("age", guildCreationDate);
+        }};
     }
 }
