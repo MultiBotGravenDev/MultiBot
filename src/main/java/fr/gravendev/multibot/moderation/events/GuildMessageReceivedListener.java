@@ -112,12 +112,23 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
 
     private void warnForCapitalsLettersIfNeeded(Message message) {
         String content = removeEmojisFromMessage(message);
+        content = removeMentionsFromMessage(content, message);
+        
         int capitalLettersCount = countCapitalLetters(content);
         int length = content.length();
 
         if (length >= 8 && capitalLettersCount * 100 / length >= 75) {
             warn(message, "Capital letters");
         }
+    }
+
+    private String removeMentionsFromMessage(String content, Message message) {
+
+        content = message.getMentionedMembers().stream().map(Member::getEffectiveName)
+                .reduce((finalContent, name) -> finalContent = finalContent.replace(name, ""))
+                .orElse("");
+
+        return content;
     }
 
     // TODO Refactor this, that's a too long and messy
