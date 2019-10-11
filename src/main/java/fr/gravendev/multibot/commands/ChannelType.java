@@ -15,11 +15,9 @@ public enum ChannelType {
         return channelType;
     }
 
-    // TODO Uncomment or remove!
-    /*
     public boolean equalsTo(net.dv8tion.jda.api.entities.ChannelType targetType) {
         return this == ChannelType.ALL
                 || this.getChannelType() == targetType;
     }
-     */
+
 }
