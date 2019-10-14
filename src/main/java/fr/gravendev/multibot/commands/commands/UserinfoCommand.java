@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class UserinfoCommand implements CommandExecutor {
@@ -41,7 +42,7 @@ public class UserinfoCommand implements CommandExecutor {
             member = mentionedMembers.get(0);
         }
 
-        User user = member.getUser();
+        User user = Objects.requireNonNull(member, "Le membre dont les userinfos sont demandées est null!").getUser();
         String joinDate = member.getTimeJoined().format(Utils.getDateTimeFormatter());
         String createdDate = user.getTimeCreated().format(Utils.getDateTimeFormatter());
         String roles = member.getRoles().stream()
