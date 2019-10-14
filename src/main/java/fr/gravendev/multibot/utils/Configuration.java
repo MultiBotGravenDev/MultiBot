@@ -27,6 +27,7 @@ public enum Configuration {
     CANDIDS("identifiers.channels.candids"),
     LOGS("identifiers.channels.logs"),
     RULES("identifiers.channels.rules"),
+    // TODO Refactor rename this lolilol
     READ_THIS_SALOON("identifiers.channels.read_this_saloon"),
     SONDAGES("identifiers.channels.sondages"),
     SONDAGES_VERIF("identifiers.channels.sondages_verif"),

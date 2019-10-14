@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -22,28 +23,32 @@ class CandidatureSender {
     }
 
     private static Message buildMessage(User user, Quiz quiz) {
+        String userMention = user.getAsMention();
+        MessageBuilder builder = new MessageBuilder()
+                .setContent(userMention);
 
-        MessageBuilder builder = new MessageBuilder();
-        builder.setContent(user.getAsMention());
-
+        Color blue = Color.decode("#1A8CFE");
+        String avatarUrl = user.getAvatarUrl();
+        String userTag = user.getAsTag();
+        String userName = user.getName();
         EmbedBuilder embedBuilder = new EmbedBuilder()
-                .setColor(Color.decode("#1A8CFE"))
-                .setAuthor(user.getAsTag(), user.getAvatarUrl(), user.getAvatarUrl());
-
-        embedBuilder.setTitle(user.getName());
-
+                .setColor(blue)
+                .setAuthor(userTag, avatarUrl, avatarUrl)
+                .setTitle(userName);
+        
         while (quiz.hasNextAnswer()) {
             embedBuilder.addField(quiz.getCurrentAnswer());
         }
 
-        return builder.setEmbed(embedBuilder.build()).build();
+        MessageEmbed messageEmbed = embedBuilder.build();
 
+        return builder.setEmbed(messageEmbed).build();
     }
 
     private static TextChannel getCandidsChannel(User user) {
         String candidsChannelId = Configuration.CANDIDS.getValue();
-
         Guild guild = user.getJDA().getGuildById(Configuration.GUILD.getValue());
+
         if (guild == null) {
             return null;
         }
