@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -43,8 +44,9 @@ public class UserinfoCommand implements CommandExecutor {
         }
 
         User user = Objects.requireNonNull(member, "Le membre dont les userinfos sont demandées est null!").getUser();
-        String joinDate = member.getTimeJoined().format(Utils.getDateTimeFormatter());
-        String createdDate = user.getTimeCreated().format(Utils.getDateTimeFormatter());
+        DateTimeFormatter dateTimeFormatter = Utils.getDateTimeFormatter();
+        String joinDate = member.getTimeJoined().format(dateTimeFormatter);
+        String createdDate = user.getTimeCreated().format(dateTimeFormatter);
         String roles = member.getRoles().stream()
                 .map(Role::getName)
                 .collect(Collectors.joining(", "));
@@ -52,19 +54,21 @@ public class UserinfoCommand implements CommandExecutor {
         String game = member.getActivities().size() == 0 ? "N/A" : member.getActivities().stream()
                 .map(Activity::getName)
                 .collect(Collectors.joining(", "));
-        EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.magenta)
+        String onlineStatus = member.getOnlineStatus().getKey();
+        String userMention = user.getAsMention();
+        MessageEmbed messageEmbed = new EmbedBuilder().setColor(Color.magenta)
                 .setAuthor(user.getName(), user.getAvatarUrl(), user.getAvatarUrl())
                 .setThumbnail(user.getAvatarUrl())
                 .addField("ID", user.getId(), true)
                 .addField("Surnom", nickname, true)
-                .addField("État", member.getOnlineStatus().getKey(), true)
+                .addField("État", onlineStatus, true)
                 .addField("Joue à", game, true)
-                .addField("Mention", user.getAsMention(), true)
+                .addField("Mention", userMention, true)
                 .addField("A rejoint", joinDate, true)
                 .addField("Roles", roles, true)
-                .setFooter("Crée le " + createdDate, null);
+                .setFooter("Crée le " + createdDate, null).build();
 
-        message.getChannel().sendMessage(embedBuilder.build()).queue();
+        message.getChannel().sendMessage(messageEmbed).queue();
     }
 
     public List<String> getAuthorizedChannelsNames() {
