@@ -83,11 +83,8 @@ public class CommandManager {
 
     private void executeIfAble(CommandExecutor commandExecutor, Message message, String[] args) {
         if (commandExecutor.canExecute(message)) {
-            int argsLength = args.length;
-            // TODO Find a better name for that
-            String[] stringArray = Arrays.copyOfRange(args, 1, argsLength);
-
-            commandExecutor.execute(message, stringArray);
+            String[] arrayWithoutFirstElement = Arrays.copyOfRange(args, 1, args.length);
+            commandExecutor.execute(message, arrayWithoutFirstElement);
         }
     }
 
@@ -106,7 +103,7 @@ public class CommandManager {
         String contentWithoutPrefix = content.substring(1);
         String[] args = contentWithoutPrefix.split(" +");
 
-        Optional<CommandExecutor> optionalCommandExecutor = this.commandExecutors.stream()
+        Optional<CommandExecutor> optionalCommandExecutor = commandExecutors.stream()
                 .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
                 .findAny();
 
@@ -125,7 +122,6 @@ public class CommandManager {
 
         if (customCommandData != null) {
             String customCommandDataText = customCommandData.getText();
-
             channel.sendMessage(customCommandDataText).queue();
         }
     }
