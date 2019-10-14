@@ -29,8 +29,10 @@ public class GoogleCommand implements CommandExecutor {
             return;
         }
 
-        String encode = Arrays.stream(args).map(URLEncoder::encode).collect(Collectors.joining("+"));
-        message.getChannel().sendMessage("https://www.google.com/search?q=" + encode).queue();
+        String encodedSearch = Arrays.stream(args)
+                .map(URLEncoder::encode)
+                .collect(Collectors.joining("+"));
+        message.getChannel().sendMessage("https://www.google.com/search?q=" + encodedSearch).queue();
 
     }
 
