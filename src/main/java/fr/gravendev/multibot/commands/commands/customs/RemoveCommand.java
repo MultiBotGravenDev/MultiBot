@@ -6,6 +6,7 @@ import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.data.CustomCommandData;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
 public class RemoveCommand implements CommandExecutor {
     private final CustomCommandDAO customCommandDAO;
@@ -27,11 +28,14 @@ public class RemoveCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
         if (args.length == 0) {
-            message.getChannel().sendMessage(Utils.errorArguments("custom remove", "<commande>")).queue();
+            MessageEmbed removeCommand = Utils.errorArguments("custom remove", "<commande>");
+            message.getChannel().sendMessage(removeCommand).queue();
             return;
         }
 
-        customCommandDAO.delete(new CustomCommandData(args[0], ""));
+        CustomCommandData toDelete = new CustomCommandData(args[0], "");
+
+        customCommandDAO.delete(toDelete);
         message.getChannel().sendMessage("La commande custom ``" + args[0] + "`` a été supprimée.").queue();
     }
 }
