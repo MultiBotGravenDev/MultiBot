@@ -124,17 +124,17 @@ public class AntiCommand implements CommandExecutor {
     }
 
     private void warn(Message message, String reason) {
-        User user = message.getAuthor();
+        Member member = message.getMentionedMembers().get(0);
         Guild guild = message.getGuild();
 
-        InfractionData data = new InfractionData(user.getId(), user.getId(), InfractionType.WARN, reason, new java.util.Date(), null);
+        InfractionData data = new InfractionData(member.getId(), member.getId(), InfractionType.WARN, reason, new java.util.Date(), null);
 
         infractionsDAO.save(data);
         String logs = Configuration.LOGS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
-                .setAuthor("[WARN] " + user.getAsTag(), user.getAvatarUrl())
-                .addField("Utilisateur:", user.getAsMention(), true)
+                .setAuthor("[WARN] " + member.getUser().getAsTag(), member.getUser().getAvatarUrl())
+                .addField("Utilisateur:", member.getAsMention(), true)
                 .addField("Modérateur:", message.getJDA().getSelfUser().getAsMention(), true)
                 .addField("Raison:", reason, true);
 
@@ -143,7 +143,7 @@ public class AntiCommand implements CommandExecutor {
             logsChannel.sendMessage(embedBuilder.build()).queue();
         }
 
-        message.getChannel().sendMessage(Utils.getWarnEmbed(user, reason)).queue();
+        message.getChannel().sendMessage(Utils.getWarnEmbed(member.getUser(), reason)).queue();
     }
 
 }

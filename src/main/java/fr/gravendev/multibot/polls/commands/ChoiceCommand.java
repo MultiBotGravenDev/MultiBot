@@ -26,8 +26,8 @@ public class ChoiceCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         if (this.pollsManager.hasNotPoll(message.getAuthor())) return;
-        if (args.length < 2 || !args[0].matches("[0-9]+") || args[0].equals("0")) {
-            message.getChannel().sendMessage("Erreur. "+getCharacter()+"poll choice <0-10> <choix>").queue();
+        if (args.length == 0 || !args[0].matches("[0-9]+") || args[0].equals("0")) {
+            message.getChannel().sendMessage("Erreur. "+getCharacter()+"poll choice <numéro du choix> <choix / rien>").queue();
             return;
         }
 
