@@ -7,14 +7,15 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
+ * PreparedStatementBuilder (v2)
+ *
  * @author Antoine James Tournepiche
- * @version 1.0.0
+ * @version 1.0.1
  */
 @SuppressWarnings("unused")
 public class PreparedStatementBuilder {
     private int parameterIndex = 1;
     private boolean hasPreparedStatement = false;
-    private boolean hasExecutedBefore = false;
     private final Connection connection;
     private PreparedStatement preparedStatement;
 
@@ -43,10 +44,9 @@ public class PreparedStatementBuilder {
      * @since 1.0.0
      */
     public PreparedStatementBuilder prepareStatement(String sql) throws SQLException {
-        preparedStatement = connection.prepareStatement(sql);
-        parameterIndex = 1; // reset it to be able to chain statements
-        hasPreparedStatement = true;
-        hasExecutedBefore = false;
+        PreparedStatementBuilder newInstance = new PreparedStatementBuilder(connection);
+		preparedStatement = newInstance.connection.prepareStatement(sql);
+        newInstance.hasPreparedStatement = true;
         return this;
     }
 
@@ -60,23 +60,6 @@ public class PreparedStatementBuilder {
     }
 
     /**
-     * @since 1.0.0
-     */
-    private void throwExceptionIfAlreadyExecuted(){
-        if (hasExecutedBefore){
-            throw new IllegalStateException("You cannot set a value to a previously executed query!");
-        }
-    }
-
-    /**
-     * @since 1.0.0
-     */
-    private void tryToThrowSettersExceptions(){
-        throwExceptionIfNotAlreadyPrepared();
-        throwExceptionIfAlreadyExecuted();
-    }
-
-    /**
      *
      * @param str A string value
      * @return this instance
@@ -84,7 +67,7 @@ public class PreparedStatementBuilder {
      * @since 1.0.0
      */
     public PreparedStatementBuilder setString(String str) throws SQLException {
-        tryToThrowSettersExceptions();
+        throwExceptionIfNotAlreadyPrepared();
         preparedStatement.setString(parameterIndex, str);
         incrementParameterIndex();
         return this;
@@ -98,7 +81,7 @@ public class PreparedStatementBuilder {
      * @since 1.0.0
      */
     public PreparedStatementBuilder setInt(int i) throws SQLException {
-        tryToThrowSettersExceptions();
+        throwExceptionIfNotAlreadyPrepared();
         preparedStatement.setInt(parameterIndex, i);
         incrementParameterIndex();
         return this;
@@ -112,7 +95,7 @@ public class PreparedStatementBuilder {
      * @since 1.0.0
      */
     public PreparedStatementBuilder setTimestamp(Timestamp timestamp) throws SQLException {
-        tryToThrowSettersExceptions();
+        throwExceptionIfNotAlreadyPrepared();
         preparedStatement.setTimestamp(parameterIndex, timestamp);
         incrementParameterIndex();
         return this;
@@ -126,7 +109,7 @@ public class PreparedStatementBuilder {
      * @since 1.0.0
      */
     public PreparedStatementBuilder setBoolean(boolean bool) throws SQLException {
-        tryToThrowSettersExceptions();
+        throwExceptionIfNotAlreadyPrepared();
         preparedStatement.setBoolean(parameterIndex, bool);
         incrementParameterIndex();
         return this;
@@ -140,7 +123,6 @@ public class PreparedStatementBuilder {
      */
     public int executeUpdate() throws SQLException {
         throwExceptionIfNotAlreadyPrepared();
-        hasExecutedBefore = true;
         return preparedStatement.executeUpdate();
     }
 
@@ -152,7 +134,6 @@ public class PreparedStatementBuilder {
      */
     public ResultSet executeQuery() throws SQLException {
         throwExceptionIfNotAlreadyPrepared();
-        hasExecutedBefore = true;
         return preparedStatement.executeQuery();
     }
 
@@ -164,7 +145,6 @@ public class PreparedStatementBuilder {
      */
     public boolean execute() throws SQLException {
         throwExceptionIfNotAlreadyPrepared();
-        hasExecutedBefore = true;
         return preparedStatement.execute();
     }
 }
