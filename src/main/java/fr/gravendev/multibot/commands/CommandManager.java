@@ -99,14 +99,12 @@ public class CommandManager {
             return;
         }
 
-        char firstContentChar = content.charAt(0);
-
-        if (firstContentChar != prefix) {
+        if (content.charAt(0) != prefix) {
             return;
         }
 
-        String contentWithoutFirstChar = content.substring(1);
-        String[] args = contentWithoutFirstChar.split(" +");
+        String contentWithoutPrefix = content.substring(1);
+        String[] args = contentWithoutPrefix.split(" +");
 
         Optional<CommandExecutor> optionalCommandExecutor = this.commandExecutors.stream()
                 .filter(commandExecutor -> commandExecutor.getCommand().equalsIgnoreCase(args[0]))
