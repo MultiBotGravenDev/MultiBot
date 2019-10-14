@@ -35,13 +35,13 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
         ExperienceData experienceData = experienceDAO.get(author.getId());
         if (experienceData != null) {
             if (experienceData.getLastMessage().getTime() + 60000 < System.currentTimeMillis()) {
-                experienceData.addMessage();
-                experienceData.addExperience(xpEarned);
+                experienceData.incrementMessageCount();
+                experienceData.addExperiencePoints(xpEarned);
 
                 int requireToLevelUp = levelToExp(experienceData.getLevels());
                 if (experienceData.getExperiences() > requireToLevelUp) {
-                    experienceData.addLevel();
-                    experienceData.removeExperience(requireToLevelUp);
+                    experienceData.incrementLevel();
+                    experienceData.removeExperiencePoints(requireToLevelUp);
                 }
 
                 experienceDAO.save(experienceData);

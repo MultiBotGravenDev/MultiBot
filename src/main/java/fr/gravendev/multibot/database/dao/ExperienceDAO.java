@@ -29,7 +29,7 @@ public class ExperienceDAO extends DAO<ExperienceData> {
                 .setString(data.getDiscordID())
                 .setInt(data.getExperiences())
                 .setInt(data.getLevels())
-                .setInt(data.getMessages())
+                .setInt(data.getMessageCount())
                 .executeUpdate();
         return true;
     }
