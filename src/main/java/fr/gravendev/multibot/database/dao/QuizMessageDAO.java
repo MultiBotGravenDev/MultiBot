@@ -15,11 +15,13 @@ public class QuizMessageDAO extends DAO<MessageData> {
 
     @Override
     protected boolean save(MessageData data, Connection connection) throws SQLException {
+        String message = data.getMessage();
+        String id = data.getId();
         new PreparedStatementBuilder(connection)
                 .prepareStatement("INSERT INTO quiz_messages VALUES(?, ?) ON DUPLICATE KEY UPDATE text = ?")
-                .setString(data.getId())
-                .setString(data.getMessage())
-                .setString(data.getMessage())
+                .setString(id)
+                .setString(message)
+                .setString(message)
                 .executeUpdate();
         return true;
     }
@@ -42,9 +44,10 @@ public class QuizMessageDAO extends DAO<MessageData> {
 
     @Override
     protected void delete(MessageData obj, Connection connection) throws SQLException {
+        String messageId = obj.getId();
         new PreparedStatementBuilder(connection)
                 .prepareStatement("DELETE FROM quiz_messages WHERE id = ?")
-                .setString(obj.getId())
+                .setString(messageId)
                 .execute();
     }
 }
