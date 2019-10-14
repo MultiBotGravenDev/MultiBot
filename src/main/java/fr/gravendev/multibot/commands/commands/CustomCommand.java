@@ -8,6 +8,7 @@ import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,11 +36,13 @@ public class CustomCommand implements CommandExecutor {
 
     @Override
     public String getDescription() {
-        return "Permet de créer une command custom \n"
-                + this.argumentsExecutors.stream()
+        String usage = argumentsExecutors.stream()
                 .map(executor -> getCharacter() + "custom " + executor.getCommand() + " (" + executor.getDescription() + ")\n")
                 .reduce((message, executorInfos) -> message += executorInfos)
                 .orElse("");
+
+        return "Permet de créer une command custom \n"
+                + usage; // can use TextFormatter here, but I don't think that would help
     }
 
     @Override
@@ -65,13 +68,15 @@ public class CustomCommand implements CommandExecutor {
                 .findAny();
 
         if (optionalCommandExecutor.isPresent()) {
-            optionalCommandExecutor.get().execute(message, Arrays.copyOfRange(args, 1, args.length));
+            String[] arrayWithoutFirstElement = Arrays.copyOfRange(args, 1, args.length);
+            optionalCommandExecutor.get().execute(message, arrayWithoutFirstElement);
             return;
         }
         help(message);
     }
 
     private void help(Message message) {
-        message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "<set,remove> <commande> [valeur]")).queue();
+        MessageEmbed messageEmbed = Utils.errorArguments(getCommand(), "<set,remove> <commande> [valeur]");
+        message.getChannel().sendMessage(messageEmbed).queue();
     }
 }
