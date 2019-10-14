@@ -38,28 +38,23 @@ public class GuildMessageDeleteListener implements Listener<GuildMessageDeleteEv
             return;
         }
 
-        String messageId = event.getMessageId();
-        MessageData messageData = logsDAO.get(messageId);
+        MessageData messageData = logsDAO.get(event.getMessageId());
 
         if (messageData == null) {
             return;
         }
 
         String logs = Configuration.LOGS.getValue();
-        JDA jda = event.getJDA();
         String discordID = messageData.getDiscordID();
-        User user = jda.getUserById(discordID);
+        User user = event.getJDA().getUserById(discordID);
         String content = messageData.getContent();
+        // TODO Catch case when user is null
         String userName = user.getName();
         String userAvatarUrl = user.getAvatarUrl();
-        String channelAsMention = channel.getAsMention();
-        String description = "Projet supprimé dans " + channelAsMention;
-        long messageCreation = messageData.getCreation();
-        Date messageCreationDate = new Date(messageCreation);
+        String description = "Projet supprimé dans " + channel.getAsMention();
         // TODO Find a better name for this
-        String stringifiedMessageCreationDate = messageCreationDate.toString();
-        int contentLength = content.length();
-        int contentSize = Math.min(contentLength, 20);
+        String messageCreationDate = new Date(messageData.getCreation()).toString();
+        int contentSize = Math.min(content.length(), 20);
         String displayedContent = content.substring(0, contentSize);
         String userId = user.getId();
 
@@ -67,7 +62,7 @@ public class GuildMessageDeleteListener implements Listener<GuildMessageDeleteEv
                 .setColor(Color.ORANGE)
                 .setAuthor(userName, userAvatarUrl)
                 .setDescription(description)
-                .addField("Date de création :", stringifiedMessageCreationDate, false)
+                .addField("Date de création :", messageCreationDate, false)
                 .addField("Contenu :", displayedContent, false)
                 .setFooter("User ID: " + userId, userAvatarUrl);
 
