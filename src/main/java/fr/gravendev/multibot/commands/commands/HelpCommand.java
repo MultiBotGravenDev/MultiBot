@@ -46,9 +46,12 @@ public class HelpCommand implements CommandExecutor {
         List<MessageEmbed> embeds = new ArrayList<>();
 
         for (CommandCategory category : CommandCategory.values()) {
+            Color color = category.getColor();
+            String name = category.getName();
             EmbedBuilder embedBuilder = new EmbedBuilder()
-                    .setColor(category.getColor())
-                    .setTitle(category.getName());
+                    .setColor(color)
+                    .setTitle(name);
+
             this.commandExecutors.stream()
                     .filter(command -> command.getCategory() == category && command.getChannelType().equalsTo(message.getChannelType()) && command.isAuthorizedMember(message.getMember()))
                     .forEach(command -> embedBuilder.addField(command.getCommand(), command.getDescription(), false));

@@ -24,16 +24,14 @@ public class GoogleCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-
         if (args.length == 0) {
             return;
         }
 
+        // TODO Replace deprecated URLEncoder::encode by something else
         String encodedSearch = Arrays.stream(args)
                 .map(URLEncoder::encode)
                 .collect(Collectors.joining("+"));
         message.getChannel().sendMessage("https://www.google.com/search?q=" + encodedSearch).queue();
-
     }
-
 }
