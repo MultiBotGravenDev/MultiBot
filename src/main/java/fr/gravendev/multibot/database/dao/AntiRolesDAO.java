@@ -21,10 +21,12 @@ public class AntiRolesDAO extends DAO<AntiRoleData> {
     @Override
     public boolean save(AntiRoleData antiRoleData, Connection connection) throws SQLException {
         for (Map.Entry<Date, String> entry : antiRoleData.getRoles().entrySet()) {
+            String userId = String.valueOf(antiRoleData.getUserId());
+            String roleName = entry.getValue();
             new PreparedStatementBuilder(connection)
                     .prepareStatement("INSERT IGNORE INTO anti_roles VALUES(?, ?, NOW())")
-                    .setString(String.valueOf(antiRoleData.getUserId()))
-                    .setString(entry.getValue())
+                    .setString(userId)
+                    .setString(roleName)
                     .execute();
         }
         return true;
@@ -54,19 +56,25 @@ public class AntiRolesDAO extends DAO<AntiRoleData> {
         return new AntiRoleData(Long.parseLong(value), new HashMap<>());
     }
 
+    // TODO Refactor it, it has sort of duplicated code
     @Override
-    public void delete(AntiRoleData obj, Connection connection) throws SQLException {
-        for (Map.Entry<Date, String> entry : obj.getRoles().entrySet()) {
+    public void delete(AntiRoleData antiRoleData, Connection connection) throws SQLException {
+        for (Map.Entry<Date, String> entry : antiRoleData.getRoles().entrySet()) {
+            Date roleDate = entry.getKey();
             Calendar calendar = Calendar.getInstance();
 
-            calendar.setTime(entry.getKey());
+            calendar.setTime(roleDate);
             calendar.add(Calendar.MONTH, 1);
 
-            if (new Date().after(calendar.getTime())) {
+            boolean hasExpired = new Date().after(calendar.getTime());
+
+            if (hasExpired) {
+                String userId = String.valueOf(antiRoleData.getUserId());
+                String roleName = entry.getValue();
                 new PreparedStatementBuilder(connection)
                         .prepareStatement("DELETE FROM anti_roles WHERE user_id = ? AND role = ?")
-                        .setString(String.valueOf(obj.getUserId()))
-                        .setString(entry.getValue())
+                        .setString(userId)
+                        .setString(roleName)
                         .execute();
             }
         }
