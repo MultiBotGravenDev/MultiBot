@@ -6,10 +6,13 @@ import java.util.Date;
 import java.util.UUID;
 
 public class InfractionData {
-    private UUID uuid;
-    private String punishedId, punisherId, reason;
-    private InfractionType type;
-    private Date start, end;
+    private final UUID uuid;
+    private final String punishedId;
+    private final String punisherId;
+    private final String reason;
+    private final InfractionType type;
+    private final Date start;
+    private Date end;
     private boolean finished;
 
     public InfractionData(String punishedId, String punisherId, InfractionType type, String reason, Date start, Date end) {
