@@ -60,10 +60,10 @@ public interface CommandExecutor {
     // TODO: To try!
     default boolean canExecute(Message message) {
         Member member = message.getMember();
-        boolean isMemberNullOrAdmin = member != null && member.hasPermission(Permission.ADMINISTRATOR);
+        boolean isMemberNotNullAndAdmin = member != null && member.hasPermission(Permission.ADMINISTRATOR);
 
         // TODO To refactor again : revert condition + remove member != null as long as it has already been tested!
-        return isMemberNullOrAdmin
+        return isMemberNotNullAndAdmin
                 || !(!isAuthorizedChannel(message.getChannel()) || (member != null && !isAuthorizedMember(member)));
     }
 }
