@@ -23,6 +23,7 @@ import java.awt.*;
 import java.util.Date;
 
 public class GuildMessageReceivedListener implements Listener<GuildMessageReceivedEvent> {
+
     private final BadWordsDAO badWordsDAO;
     private final InfractionDAO infractionDAO;
     private final ImmunisedIdDAO immunisedIdsDAO;
@@ -32,7 +33,6 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
         this.infractionDAO = daoManager.getInfractionDAO();
         this.immunisedIdsDAO = daoManager.getImmunisedIdDAO();
     }
-
 
     @Override
     public Class<GuildMessageReceivedEvent> getEventClass() {
@@ -98,6 +98,18 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
         return content;
     }
 
+    private void warnForCapitalsLettersIfNeeded(Message message) {
+        String content = removeEmojisFromMessage(message);
+        content = removeMentionsFromMessage(content, message);
+
+        int capitalLettersCount = countCapitalLetters(content);
+        int length = content.length();
+
+        if (length >= 8 && capitalLettersCount * 100 / length >= 75) {
+            warn(message, "Capital letters");
+        }
+    }
+
     // TODO Try to refactor this using regex
     private int countCapitalLetters(String text) {
         int capitalLettersCount = 0;
@@ -110,23 +122,11 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
         return capitalLettersCount;
     }
 
-    private void warnForCapitalsLettersIfNeeded(Message message) {
-        String content = removeEmojisFromMessage(message);
-        content = removeMentionsFromMessage(content, message);
-        
-        int capitalLettersCount = countCapitalLetters(content);
-        int length = content.length();
-
-        if (length >= 8 && capitalLettersCount * 100 / length >= 75) {
-            warn(message, "Capital letters");
-        }
-    }
-
     private String removeMentionsFromMessage(String content, Message message) {
 
-        content = message.getMentionedMembers().stream().map(Member::getEffectiveName)
-                .reduce((finalContent, name) -> finalContent = finalContent.replace(name, ""))
-                .orElse("");
+        for (Member mentionedMember : message.getMentionedMembers()) {
+            content = content.replace(mentionedMember.getEffectiveName(), "");
+        }
 
         return content;
     }
