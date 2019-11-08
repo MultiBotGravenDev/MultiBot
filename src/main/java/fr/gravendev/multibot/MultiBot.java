@@ -6,6 +6,7 @@ import fr.gravendev.multibot.database.DatabaseConnectionBuilder;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.events.MultiBotListener;
 import fr.gravendev.multibot.polls.PollsManager;
+import fr.gravendev.multibot.quiz.MemberQuestionsManager;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.utils.Configuration;
@@ -26,6 +27,7 @@ class MultiBot {
     private final QuizManager quizManager;
     private final WelcomeMessagesSetManager welcomeMessagesSetManager;
     private final PollsManager pollsManager;
+    private final MemberQuestionsManager questionsManager;
 
     private JDA jda;
 
@@ -45,13 +47,14 @@ class MultiBot {
         this.welcomeMessagesSetManager = new WelcomeMessagesSetManager(daoManager);
         this.pollsManager = new PollsManager();
         this.commandManager = new CommandManager(daoManager, welcomeMessagesSetManager, pollsManager);
+        this.questionsManager = new MemberQuestionsManager();
     }
 
     void start() {
         try {
 
             this.jda = new JDABuilder(Configuration.TOKEN.getValue())
-                    .addEventListeners(new MultiBotListener(commandManager, daoManager, quizManager, welcomeMessagesSetManager, pollsManager))
+                    .addEventListeners(new MultiBotListener(commandManager, daoManager, quizManager, welcomeMessagesSetManager, pollsManager, this.questionsManager))
                     .setActivity(Activity.playing(Configuration.PREFIX.getValue() + "help"))
                     .build();
 
