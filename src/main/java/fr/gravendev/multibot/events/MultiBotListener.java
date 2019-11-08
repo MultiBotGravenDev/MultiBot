@@ -4,6 +4,7 @@ import fr.gravendev.multibot.commands.CommandManager;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.logs.GuildMessageDeleteListener;
 import fr.gravendev.multibot.polls.PollsManager;
+import fr.gravendev.multibot.quiz.MemberQuestionsManager;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.rank.GuildMessageReceivedListener;
@@ -18,15 +19,15 @@ public class MultiBotListener implements EventListener {
 
     private final List<Listener> events;
 
-    public MultiBotListener(CommandManager commandManager, DAOManager daoManager, QuizManager quizManager, WelcomeMessagesSetManager welcomeMessagesSetManager, PollsManager pollsManager) {
+    public MultiBotListener(CommandManager commandManager, DAOManager daoManager, QuizManager quizManager, WelcomeMessagesSetManager welcomeMessagesSetManager, PollsManager pollsManager, MemberQuestionsManager questionsManager) {
 
         events = Arrays.asList(
                 new fr.gravendev.multibot.commands.MessageReceivedListener(commandManager),
                 new GuildMessageReceivedListener(daoManager),
                 new fr.gravendev.multibot.logs.GuildMessageReceivedListener(daoManager),
                 new GuildMessageDeleteListener(daoManager),
-                new fr.gravendev.multibot.quiz.events.MessageReceivedListener(quizManager, welcomeMessagesSetManager),
-                new fr.gravendev.multibot.quiz.events.EmoteAddedListener(quizManager),
+                new fr.gravendev.multibot.quiz.events.MessageReceivedListener(quizManager, welcomeMessagesSetManager, questionsManager),
+                new fr.gravendev.multibot.quiz.events.EmoteAddedListener(quizManager, questionsManager),
                 new fr.gravendev.multibot.quiz.events.EmoteRemovedListener(quizManager),
                 new fr.gravendev.multibot.roles.listeners.ReactionAddedListener(daoManager),
                 new fr.gravendev.multibot.roles.listeners.ReactionRemovedListener(daoManager),

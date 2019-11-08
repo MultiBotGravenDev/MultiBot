@@ -4,6 +4,7 @@ import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.WelcomeMessageDAO;
 import fr.gravendev.multibot.database.data.MessageData;
 import fr.gravendev.multibot.utils.Configuration;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 
@@ -74,5 +75,9 @@ public class WelcomeMessagesSetManager {
 
     public boolean isWaitingFor(User user) {
         return this.setters.containsKey(user.getIdLong());
+    }
+
+    public boolean hasLessOneSentence(Member member) {
+        return this.setters.get(member.getIdLong()).size() != 0;
     }
 }

@@ -1,6 +1,8 @@
 package fr.gravendev.multibot.utils;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import fr.gravendev.multibot.Main;
+import org.slf4j.LoggerFactory;
 
 public enum Configuration {
 
@@ -43,8 +45,12 @@ public enum Configuration {
 
         for (Configuration configuration : Configuration.values()) {
             String path = configuration.getPath();
-            String value = fileConfig.get(path).toString();
-            configuration.setValue(value);
+            Object value = fileConfig.get(path);
+            if(value == null) {
+                LoggerFactory.getLogger(Main.class).error("ERROR WHILE LOADING CONFIGURATION: Key "+path + " not exists !");
+                continue;
+            }
+            configuration.setValue(value.toString());
         }
     }
 

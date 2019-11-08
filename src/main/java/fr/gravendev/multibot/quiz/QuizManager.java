@@ -2,6 +2,7 @@ package fr.gravendev.multibot.quiz;
 
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.QuizMessageDAO;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.HashMap;
@@ -44,5 +45,6 @@ public class QuizManager {
     public void registerResponse(User user, String response) {
         this.quizs.get(user.getIdLong()).registerResponse(response);
     }
+
 
 }

@@ -2,6 +2,7 @@ package fr.gravendev.multibot.quiz.events;
 
 
 import fr.gravendev.multibot.events.Listener;
+import fr.gravendev.multibot.quiz.MemberQuestionsManager;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import net.dv8tion.jda.api.entities.Message;
@@ -12,10 +13,12 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
 
     private final QuizManager quizManager;
     private final WelcomeMessagesSetManager welcomeMessagesSetManager;
+    private final MemberQuestionsManager questionsManager;
 
-    public MessageReceivedListener(QuizManager quizManager, WelcomeMessagesSetManager welcomeMessagesSetManager) {
+    public MessageReceivedListener(QuizManager quizManager, WelcomeMessagesSetManager welcomeMessagesSetManager, MemberQuestionsManager questionsManager) {
         this.quizManager = quizManager;
         this.welcomeMessagesSetManager = welcomeMessagesSetManager;
+        this.questionsManager = questionsManager;
     }
 
     @Override
@@ -31,13 +34,18 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
 
         if (author.isBot()) return;
 
-        if (this.quizManager.isWaitingFor(author)) {
+        if (this.questionsManager.isWaitingFor(author)) {
 
-            this.quizManager.registerResponse(author, message.getContentDisplay());
-            this.quizManager.send(author);
+            this.questionsManager.registerResponse(author, message.getContentDisplay());
+
+//            this.quizManager.registerResponse(author, message.getContentDisplay());
+//            this.quizManager.send(author);
 
         } else if (this.welcomeMessagesSetManager.isWaitingFor(message.getAuthor())) {
 
+            if (message.getContentDisplay().startsWith("&quiz") && welcomeMessagesSetManager.hasLessOneSentence(message.getMember())) {
+                return;
+            }
             this.welcomeMessagesSetManager.registerMessage(message);
 
         }

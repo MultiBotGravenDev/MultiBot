@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.quiz.events;
 
 import fr.gravendev.multibot.events.Listener;
+import fr.gravendev.multibot.quiz.MemberQuestionsManager;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.events.emoteaddedexecutors.CandidsExecutor;
 import fr.gravendev.multibot.quiz.events.emoteaddedexecutors.EmoteAddedExecutor;
@@ -14,9 +15,9 @@ public class EmoteAddedListener implements Listener<MessageReactionAddEvent> {
 
     private final List<EmoteAddedExecutor> executors;
 
-    public EmoteAddedListener(QuizManager quizManager) {
+    public EmoteAddedListener(QuizManager quizManager, MemberQuestionsManager questionsManager) {
         this.executors = Arrays.asList(
-                new ReadThisChannelExecutor(quizManager),
+                new ReadThisChannelExecutor(quizManager, questionsManager),
                 new CandidsExecutor()
         );
     }
