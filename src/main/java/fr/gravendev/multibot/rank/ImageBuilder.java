@@ -16,7 +16,7 @@ class ImageBuilder {
 
     private static final String FONT_NAME = "Regular";
     private static final int FONT_STYLE = Font.BOLD;
-    private static final int FONT_SIZE = 25;
+    private static final int FONT_SIZE = 20;
 
     private BufferedImage image;
     private Graphics graphics;
