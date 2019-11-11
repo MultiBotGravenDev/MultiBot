@@ -81,9 +81,13 @@ public class RankCommand implements CommandExecutor {
 
             builder.drawProgress(color, experiences, expToLevelUp);
 
-            builder.drawString(String.format("%d/%d", experiences, expToLevelUp), color, 785, 190, 25);
-            builder.drawString(member.getUser().getAsTag(), color, 280, 185, 35);
-            builder.drawString(String.format("Niveau %d", levels), Color.WHITE, levels >= 100 ? 730 : 750, 90, 35);
+            builder.drawString(String.format("%d/%d", experiences, expToLevelUp), color, 730, 190, 25);
+            String name = user.getName();
+            if(name.length() >= 11) {
+                name = name.substring(0, 11);
+            }
+            builder.drawString(name+"#"+user.getDiscriminator(), color, 280, 185, 35);
+            builder.drawString(String.format("Niveau %d", levels), Color.WHITE, levels >= 100 ? 680 : 710, 90, 35);
 
             message.getChannel().sendFile(builder.toInputStream(), "card.png").queue();
         } catch (IOException e) {
