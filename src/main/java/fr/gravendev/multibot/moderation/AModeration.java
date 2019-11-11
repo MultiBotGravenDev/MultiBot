@@ -5,8 +5,8 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.utils.Utils;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.internal.utils.PermissionUtil;
 
 import java.awt.*;
 import java.util.Calendar;
@@ -43,7 +43,6 @@ public abstract class AModeration implements CommandExecutor {
 
         Guild guild = message.getGuild();
         Member member = mentionedMembers.get(0);
-        Member bot = guild.getMember(message.getJDA().getSelfUser());
         User victim = member.getUser();
 
         String reason = "Non définie";
@@ -51,7 +50,7 @@ public abstract class AModeration implements CommandExecutor {
             reason = Stream.of(args).skip(isTemporary() ? 2 : 1).collect(Collectors.joining(" "));
         }
 
-        if (!PermissionUtil.canInteract(bot, member)) {
+        if (member.hasPermission(Permission.ADMINISTRATOR)) {
             messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Impossible d'appliquer une sanction sur cet utilisateur !")).queue();
             return;
         }
