@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HelpCommand implements CommandExecutor {
@@ -39,6 +40,11 @@ public class HelpCommand implements CommandExecutor {
     @Override
     public ChannelType getChannelType() {
         return ChannelType.GUILD;
+    }
+
+    @Override
+    public List<String> getAuthorizedChannelsNames() {
+        return Collections.singletonList("commandes");
     }
 
     @Override
@@ -80,4 +86,5 @@ public class HelpCommand implements CommandExecutor {
         }
         return customCommands;
     }
+
 }
