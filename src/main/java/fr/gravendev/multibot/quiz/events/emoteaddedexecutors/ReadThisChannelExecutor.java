@@ -8,8 +8,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
-import java.util.Random;
-
 public class ReadThisChannelExecutor implements EmoteAddedExecutor {
 
     private final String[][] questions = new String[][]{
@@ -49,12 +47,12 @@ public class ReadThisChannelExecutor implements EmoteAddedExecutor {
 
         if (GuildUtils.hasRole(member, "Membre")) return;
 
-        int randomNumber = new Random().nextInt(questions.length);
+//        int randomNumber = new Random().nextInt(questions.length);
+//
+//        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Répondez correctement à cette question pour obtenir le grade membre :\n``" + questions[randomNumber][0] + "``").queue());
+//        this.questionsManager.addMember(member, questions[randomNumber][1]);
 
-        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Répondez correctement à cette question pour obtenir le grade membre :\n``" + questions[randomNumber][0] + "``").queue());
-        this.questionsManager.addMember(member, questions[randomNumber][1]);
-
-//        this.quizManager.createQuiz(member.getUser());
+        this.quizManager.createQuiz(member.getUser());
 
     }
 
