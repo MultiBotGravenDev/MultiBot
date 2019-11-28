@@ -34,19 +34,32 @@ public class MessageReceivedListener implements Listener<MessageReceivedEvent> {
 
         if (author.isBot()) return;
 
-        if (this.questionsManager.isWaitingFor(author)) {
+        doQuizActions(message, author);
+        doWelcomeMessageActions(message);
 
-            this.questionsManager.registerResponse(author, message.getContentDisplay());
+    }
 
-//            this.quizManager.registerResponse(author, message.getContentDisplay());
-//            this.quizManager.send(author);
-
-        } else if (this.welcomeMessagesSetManager.isWaitingFor(message.getAuthor())) {
+    private void doWelcomeMessageActions(Message message) {
+        if (this.welcomeMessagesSetManager.isWaitingFor(message.getAuthor())) {
 
             if (message.getContentDisplay().startsWith("&quiz") && welcomeMessagesSetManager.hasLessOneSentence(message.getMember())) {
                 return;
             }
             this.welcomeMessagesSetManager.registerMessage(message);
+
+        }
+    }
+
+    private void doQuizActions(Message message, User author) {
+
+//        if (this.questionsManager.isWaitingFor(author)) {
+
+        if (this.quizManager.isWaitingFor(author)) {
+
+//            this.questionsManager.registerResponse(author, message.getContentDisplay());
+
+            this.quizManager.registerResponse(author, message.getContentDisplay());
+            this.quizManager.send(author);
 
         }
 
