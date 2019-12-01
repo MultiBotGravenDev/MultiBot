@@ -63,7 +63,7 @@ public class SparkAPI {
     private Filter getFilter() {
         return (request, response) -> {
             response.header("Access-Control-Allow-Credentials", "true");
-            response.header("Access-Control-Allow-Origin", "https://multibot.fr");
+            response.header("Access-Control-Allow-Origin", Configuration.ALLOWED_ORIGIN.getValue());
         };
     }
 

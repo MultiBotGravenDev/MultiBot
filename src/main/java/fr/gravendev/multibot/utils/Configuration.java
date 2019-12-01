@@ -38,7 +38,8 @@ public enum Configuration {
     CLIENT_ID("website.client_id"),
     CLIENT_SECRET("website.client_secret"),
     URL("website.url"),
-    REDIRECT_URL("website.redirect_url");
+    REDIRECT_URL("website.redirect_url"),
+    ALLOWED_ORIGIN("website.allowed_origin");
 
     static {
         CommentedFileConfig fileConfig = CommentedFileConfig.builder("configuration.toml")
