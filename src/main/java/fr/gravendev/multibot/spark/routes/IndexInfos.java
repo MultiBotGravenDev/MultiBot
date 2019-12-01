@@ -1,6 +1,5 @@
 package fr.gravendev.multibot.spark.routes;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.ExperienceData;
@@ -16,14 +15,17 @@ import spark.Route;
 
 import java.util.List;
 
+@Deprecated
 public class IndexInfos implements Route {
 
     private final Guild guild;
-    private final DatabaseConnection databaseConnection;
+    private final InfractionDAO infractionDAO;
+    private final ExperienceDAO experienceDAO;
 
-    public IndexInfos(Guild guild, DatabaseConnection databaseConnection) {
+    public IndexInfos(Guild guild, InfractionDAO infractionDAO, ExperienceDAO experienceDAO) {
         this.guild = guild;
-        this.databaseConnection = databaseConnection;
+        this.infractionDAO = infractionDAO;
+        this.experienceDAO = experienceDAO;
     }
 
     @Override
@@ -39,10 +41,7 @@ public class IndexInfos implements Route {
 
         JSONObject object = new JSONObject();
 
-        ExperienceDAO experienceDAO = new ExperienceDAO(databaseConnection);
         ExperienceData experienceData = experienceDAO.get(id);
-
-        InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
         List<InfractionData> allInfractions = infractionDAO.getALL(id);
 
         long infractions = allInfractions.stream().filter(infraction -> infraction.getType() == InfractionType.WARN).count();
