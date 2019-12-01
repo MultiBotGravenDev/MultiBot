@@ -7,6 +7,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+@Deprecated
 public class IsAdminRoute implements Route {
 
     private final Guild guild;

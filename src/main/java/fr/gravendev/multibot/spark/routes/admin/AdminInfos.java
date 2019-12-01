@@ -1,6 +1,5 @@
 package fr.gravendev.multibot.spark.routes.admin;
 
-import fr.gravendev.multibot.database.DatabaseConnection;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
@@ -20,13 +19,14 @@ import spark.Route;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class AdminInfos implements Route {
     private Guild guild;
-    private DatabaseConnection databaseConnection;
+    private InfractionDAO infractionDAO;
 
-    public AdminInfos(Guild guild, DatabaseConnection databaseConnection) {
+    public AdminInfos(Guild guild, InfractionDAO infractionDAO) {
         this.guild = guild;
-        this.databaseConnection = databaseConnection;
+        this.infractionDAO = infractionDAO;
     }
 
     @Override
@@ -41,8 +41,8 @@ public class AdminInfos implements Route {
             return "{}";
         }
 
-        InfractionDAO infractionDAO = new InfractionDAO(databaseConnection);
-        List<InfractionData> allUnfinished = infractionDAO.getAllFinished();
+        //List<InfractionData> allUnfinished = infractionDAO.getALLUnfinished();
+        List<InfractionData> allUnfinished = new ArrayList<>();
         long bans = allUnfinished.stream().filter(infraction -> infraction.getType() == InfractionType.BAN).count();
         long mutes = allUnfinished.stream().filter(infraction -> infraction.getType() == InfractionType.MUTE).count();
 

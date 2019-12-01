@@ -9,6 +9,7 @@ import fr.gravendev.multibot.polls.PollsManager;
 import fr.gravendev.multibot.quiz.MemberQuestionsManager;
 import fr.gravendev.multibot.quiz.QuizManager;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
+import fr.gravendev.multibot.spark.SparkAPI;
 import fr.gravendev.multibot.utils.Configuration;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -58,13 +59,12 @@ class MultiBot {
                     .setActivity(Activity.playing(Configuration.PREFIX.getValue() + "help"))
                     .build();
 
-            //SparkAPI sparkAPI = new SparkAPI(jda, databaseConnection);
-            //sparkAPI.initRoutes();
-            // TODO: Finish the website kappa
+            SparkAPI sparkAPI = new SparkAPI(jda, daoManager);
+            sparkAPI.initRoutes();
 
             LOGGER.info("Bot connected");
 
-        } catch (LoginException ex) {
+        } catch (LoginException | InterruptedException ex) {
             ex.printStackTrace();
             LOGGER.error("Failed to connect the bot");
             System.exit(0);

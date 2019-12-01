@@ -1,7 +1,7 @@
 package fr.gravendev.multibot.utils;
 
+import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import fr.gravendev.multibot.Main;
 import org.slf4j.LoggerFactory;
 
 public enum Configuration {
@@ -33,7 +33,12 @@ public enum Configuration {
     SONDAGES("identifiers.channels.sondages"),
     SONDAGES_VERIF("identifiers.channels.sondages_verif"),
     PROJECTS("identifiers.channels.projects"),
-    PROJECTS_MINECRAFT("identifiers.channels.projects_minecraft");
+    PROJECTS_MINECRAFT("identifiers.channels.projects_minecraft"),
+
+    CLIENT_ID("website.client_id"),
+    CLIENT_SECRET("website.client_secret"),
+    URL("website.url"),
+    REDIRECT_URL("website.redirect_url");
 
     static {
         CommentedFileConfig fileConfig = CommentedFileConfig.builder("configuration.toml")
@@ -47,7 +52,7 @@ public enum Configuration {
             String path = configuration.getPath();
             Object value = fileConfig.get(path);
             if(value == null) {
-                LoggerFactory.getLogger(Main.class).error("ERROR WHILE LOADING CONFIGURATION: Key "+path + " not exists !");
+                LoggerFactory.getLogger(Configuration.class).error("ERROR WHILE LOADING CONFIGURATION: Key "+path + " not exists !");
                 continue;
             }
             configuration.setValue(value.toString());
