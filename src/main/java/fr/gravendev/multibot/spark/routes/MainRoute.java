@@ -6,6 +6,7 @@ import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.Utils;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import org.json.JSONObject;
 import spark.Request;
@@ -29,11 +30,15 @@ public class MainRoute implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
         Session session = request.session();
-        JSONObject jsonUser = new JSONObject(session.attribute("user").toString());
-        if (jsonUser == null) {
+        String user = session.attribute("user");
+        if (user == null) {
             response.status(403);
             return response.status();
         }
+        JSONObject jsonUser = new JSONObject(user);
+
+        Member guildMember = guild.getMemberById(jsonUser.getString("id"));
+        boolean isAdmin = guildMember != null && guildMember.hasPermission(Permission.ADMINISTRATOR);
 
         JSONObject count = new JSONObject();
         int membres = countMembersWithRole(Configuration.MEMBER.getValue());
@@ -44,7 +49,7 @@ public class MainRoute implements Route {
         count.put("developpeurs", countMembersWithRole(Configuration.DEVELOPPEUR.getValue()));
         count.put("piliers", countMembersWithRole(Configuration.PILIER.getValue()));
 
-        List<InfractionData> allInfractions = infractionDAO.getALL(jsonUser.get("id").toString());
+        List<InfractionData> allInfractions = infractionDAO.getALL(jsonUser.getString("id"));
         JSONObject member = new JSONObject();
         member.put("bans", countSanctionWithType(allInfractions, InfractionType.BAN));
         member.put("mutes", countSanctionWithType(allInfractions, InfractionType.MUTE));
@@ -55,22 +60,24 @@ public class MainRoute implements Route {
         String polls = Configuration.SONDAGES.getValue();
         JSONObject lastPoll = new JSONObject();
 
-        for (Message message : getHistory(polls)) {
-            if(!message.getAuthor().isBot() || message.getReactions().size() == 0 || message.getEmbeds().size() != 1) continue;
-            MessageEmbed messageEmbed = message.getEmbeds().get(0);
+        if(isAdmin) {
+            for (Message message : getHistory(polls)) {
+                if(!message.getAuthor().isBot() || message.getReactions().size() == 0 || message.getEmbeds().size() != 1) continue;
+                MessageEmbed messageEmbed = message.getEmbeds().get(0);
 
-            lastPoll.put("author", messageEmbed.getFooter().getText());
-            lastPoll.put("title", messageEmbed.getTitle());
+                lastPoll.put("author", messageEmbed.getFooter().getText());
+                lastPoll.put("title", messageEmbed.getTitle());
 
-            List<String> fields = new ArrayList<>();
-            for (String field : messageEmbed.getDescription().split("\n")) {
-                if(field.length() == 0) continue;
-                fields.add(field);
+                List<String> fields = new ArrayList<>();
+                for (String field : messageEmbed.getDescription().split("\n")) {
+                    if(field.length() == 0) continue;
+                    fields.add(field);
+                }
+                lastPoll.put("fields", fields);
+                break;
             }
-            lastPoll.put("fields", fields);
-            break;
+            discord.put("lastPoll", lastPoll);
         }
-        discord.put("lastPoll", lastPoll);
 
         JSONObject data = new JSONObject();
         data.put("count", count);
