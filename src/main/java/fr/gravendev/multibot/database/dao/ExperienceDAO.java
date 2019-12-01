@@ -80,6 +80,7 @@ public class ExperienceDAO extends DAO<ExperienceData> {
                 jsonObject.put("avatarURL", user.getAvatarUrl());
                 jsonObject.put("messages", messages);
                 jsonObject.put("experience", experience);
+                jsonObject.put("maxExperience", levelToExp(level));
                 jsonObject.put("level", level);
                 experienceData.add(jsonObject);
             }
@@ -93,4 +94,9 @@ public class ExperienceDAO extends DAO<ExperienceData> {
     protected void delete(ExperienceData obj, Connection connection) {
 
     }
+
+    private int levelToExp(int level) {
+        return 5 * level * level + 50 * level + 100;
+    }
+
 }
