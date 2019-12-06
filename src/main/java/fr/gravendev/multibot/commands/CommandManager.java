@@ -28,6 +28,7 @@ import fr.gravendev.multibot.polls.commands.PollCommand;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.rank.RankCommand;
+import fr.gravendev.multibot.roles.commands.PingCommand;
 import fr.gravendev.multibot.roles.commands.RolesCommand;
 import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.votes.VoteCommand;
@@ -71,6 +72,7 @@ public class CommandManager {
                 new QuizCommand(daoManager, welcomeMessagesSetManager),
                 new RankCommand(daoManager),
                 new RolesCommand(daoManager),
+                new PingCommand(daoManager),
 //                new VoteCommand(daoManager),
 
                 new PollCommand(pollsManager),

@@ -38,9 +38,9 @@ public class AddCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         List<Role> mentionedRoles = message.getMentionedRoles();
-        boolean isIncorrectCommand = args.length != 2 || !args[0].matches("[0-9]+") || mentionedRoles.size() != 1;
+        boolean isIncorrectCommand = args.length != 3 || !args[0].matches("[0-9]+") || !args[1].matches("[0-9]+") || mentionedRoles.size() != 1;
         if (isIncorrectCommand) {
-            message.getChannel().sendMessage("Erreur. " + getCharacter() + "roles add <id de l'emote> @role").queue();
+            message.getChannel().sendMessage("Erreur. " + getCharacter() + "roles add <id de l'emote> <id du channel> @role").queue();
             return;
         }
 
@@ -48,7 +48,7 @@ public class AddCommand implements CommandExecutor {
         boolean roleNotExist = roleDAO.get(roleId) == null;
         if (roleNotExist) {
 
-            saveRole(message, args[0]);
+            saveRole(message, args[0], args[1]);
             return;
         }
 
@@ -56,7 +56,7 @@ public class AddCommand implements CommandExecutor {
 
     }
 
-    private void saveRole(Message message, String roleId) {
+    private void saveRole(Message message, String roleId, String channelId) {
         Role mentionedRole = message.getMentionedRoles().get(0);
         Emote emote = message.getGuild().getEmoteById(roleId);
 
@@ -65,7 +65,7 @@ public class AddCommand implements CommandExecutor {
             return;
         }
 
-        roleDAO.save(new RoleData(mentionedRole.getId(), roleId));
+        roleDAO.save(new RoleData(mentionedRole.getId(), roleId, channelId));
 
         message.getChannel().sendMessage("Le role "
                 + mentionedRole.getAsMention()
