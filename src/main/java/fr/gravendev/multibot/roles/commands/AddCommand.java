@@ -38,17 +38,17 @@ public class AddCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
 
         List<Role> mentionedRoles = message.getMentionedRoles();
-        boolean isIncorrectCommand = args.length != 3 || !args[0].matches("[0-9]+") || !args[1].matches("[0-9]+") || mentionedRoles.size() != 1;
+        boolean isIncorrectCommand = args.length != 3 || !args[0].matches("[0-9]+") || !args[1].matches("[0-9]+");
         if (isIncorrectCommand) {
-            message.getChannel().sendMessage("Erreur. " + getCharacter() + "roles add <id de l'emote> <id du channel> @role").queue();
+            message.getChannel().sendMessage("Erreur. " + getCharacter() + "roles add <id de l'emote> <id du channel> <nom du role>").queue();
             return;
         }
 
-        String roleId = mentionedRoles.get(0).getId();
-        boolean roleNotExist = roleDAO.get(roleId) == null;
+        List<Role> rolesByName = message.getGuild().getRolesByName(args[2], true);
+        boolean roleNotExist = rolesByName.size() != 0 && roleDAO.get(rolesByName.get(0).getId()) == null;
         if (roleNotExist) {
 
-            saveRole(message, args[0], args[1]);
+            saveRole(message, args[0], args[1], args);
             return;
         }
 
@@ -56,16 +56,16 @@ public class AddCommand implements CommandExecutor {
 
     }
 
-    private void saveRole(Message message, String roleId, String channelId) {
-        Role mentionedRole = message.getMentionedRoles().get(0);
-        Emote emote = message.getGuild().getEmoteById(roleId);
+    private void saveRole(Message message, String emoteId, String channelId, String[] args) {
+        Role mentionedRole = message.getGuild().getRolesByName(args[2], true).get(0);
+        Emote emote = message.getGuild().getEmoteById(emoteId);
 
         if (emote == null) {
             message.getChannel().sendMessage("Cette emote n'existe pas").queue();
             return;
         }
 
-        roleDAO.save(new RoleData(mentionedRole.getId(), roleId, channelId));
+        roleDAO.save(new RoleData(mentionedRole.getId(), emoteId, channelId));
 
         message.getChannel().sendMessage("Le role "
                 + mentionedRole.getAsMention()
