@@ -28,7 +28,7 @@ public class RoleDAO extends DAO<RoleData> {
 
     @Override
     protected RoleData get(String value, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM roles WHERE role_id = ? OR emote_id = ? OR channel_id LIKE ?");
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM roles WHERE role_id = ? OR emote_id = ? OR channel_id = ?");
 
         preparedStatement.setString(1, value);
         preparedStatement.setString(2, value);
