@@ -36,13 +36,13 @@ public class ListCommand implements CommandExecutor {
         MessageChannel channel = message.getChannel();
         
         EmbedBuilder currentEmbedBuilder = new EmbedBuilder();
-        currentEmbedBuilder.setTitle("Custom Commands");
+        currentEmbedBuilder.setTitle("Commandes Customs");
         currentEmbedBuilder.setColor(Color.MAGENTA);
         
         Collection<CustomCommandData> commands = this.customCommandDAO.getAll();
         
         if (commands.isEmpty()) {
-            currentEmbedBuilder.setDescription(":no_entry_sign: No custom command available!");
+            currentEmbedBuilder.setDescription(":no_entry_sign: Aucune commande custom disponible !");
         }
         
         for(CustomCommandData command : commands) {
