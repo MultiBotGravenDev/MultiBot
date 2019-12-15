@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.commands.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
+import fr.gravendev.multibot.commands.commands.customs.ListCommand;
 import fr.gravendev.multibot.commands.commands.customs.RemoveCommand;
 import fr.gravendev.multibot.commands.commands.customs.SetCommand;
 import fr.gravendev.multibot.database.dao.DAOManager;
@@ -18,6 +19,7 @@ public class CustomCommand implements CommandExecutor {
 
     public CustomCommand(DAOManager daoManager) {
         this.argumentsExecutors = Arrays.asList(
+                new ListCommand(daoManager),
                 new SetCommand(daoManager),
                 new RemoveCommand(daoManager)
         );
@@ -72,6 +74,6 @@ public class CustomCommand implements CommandExecutor {
     }
 
     private void help(Message message) {
-        message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "<set,remove> <commande> [valeur]")).queue();
+        message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "<list,set,remove> <commande> [valeur]")).queue();
     }
 }
