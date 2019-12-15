@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomCommandDAO extends DAO<CustomCommandData> {
     public CustomCommandDAO(DatabaseConnection databaseConnection) {
@@ -39,6 +41,31 @@ public class CustomCommandDAO extends DAO<CustomCommandData> {
             return new CustomCommandData(command, text);
         }
         return null;
+    }
+    
+    public List<CustomCommandData> getAll(Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM custom_commands");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        
+        List<CustomCommandData> commands = new ArrayList<>();
+        
+        while (resultSet.next()) {
+            String command = resultSet.getString("command");
+            String text = resultSet.getString("text");
+            
+            CustomCommandData commandData = new CustomCommandData(command, text);
+            commands.add(commandData);
+        }
+        
+        return commands;
+    }
+    public List<CustomCommandData> getAll() {
+        try (Connection connection = this.getConnection()) {
+            return this.getAll(connection);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return null;
+        }
     }
 
     @Override
