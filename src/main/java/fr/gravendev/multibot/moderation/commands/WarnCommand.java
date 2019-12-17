@@ -65,7 +65,7 @@ public class WarnCommand extends AModeration {
                 victim.getId(), user.getId(), InfractionType.WARN, reason, new Date(), null);
         infractionDAO.save(data);
 
-        String logs = Configuration.LOGS.getValue();
+        String logs = Configuration.SANCTIONS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[WARN] " + victim.getAsTag(), victim.getAvatarUrl())

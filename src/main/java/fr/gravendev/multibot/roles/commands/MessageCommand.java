@@ -41,7 +41,7 @@ public class MessageCommand implements CommandExecutor {
             return;
         }
         String roleMessage = String.join(" ", args);
-        RoleData roleData = new RoleData("message", roleMessage, "");
+        RoleData roleData = new RoleData("message", roleMessage);
         roleDAO.save(roleData);
 
         channel.sendMessage("Le message a bien été changé en :\n" + roleMessage).queue();

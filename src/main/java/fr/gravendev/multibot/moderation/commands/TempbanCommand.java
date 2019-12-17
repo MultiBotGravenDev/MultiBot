@@ -38,7 +38,7 @@ public class TempbanCommand extends AModeration {
         InfractionData infractionData = new InfractionData(victim.getId(), moderator.getId(), InfractionType.BAN, reason, start, end);
         infractionDAO.save(infractionData);
 
-        String logs = Configuration.LOGS.getValue();
+        String logs = Configuration.SANCTIONS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[TEMPBAN] " + victim.getAsTag(), victim.getAvatarUrl())

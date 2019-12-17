@@ -65,7 +65,7 @@ public class AddCommand implements CommandExecutor {
             return;
         }
 
-        roleDAO.save(new RoleData(mentionedRole.getId(), emoteId, channelId));
+        roleDAO.save(new RoleData(mentionedRole.getId(), emoteId));
 
         message.getChannel().sendMessage("Le role "
                 + mentionedRole.getAsMention()

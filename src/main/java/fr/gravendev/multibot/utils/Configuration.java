@@ -1,6 +1,5 @@
 package fr.gravendev.multibot.utils;
 
-import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import org.slf4j.LoggerFactory;
 
@@ -27,13 +26,14 @@ public enum Configuration {
     PILIER("identifiers.roles.pilier"),
 
     CANDIDS("identifiers.channels.candids"),
-    LOGS("identifiers.channels.logs"),
+    SANCTIONS("identifiers.channels.sanctions"),
     RULES("identifiers.channels.rules"),
     READ_THIS_SALOON("identifiers.channels.read_this_saloon"),
     SONDAGES("identifiers.channels.sondages"),
     SONDAGES_VERIF("identifiers.channels.sondages_verif"),
     PROJECTS("identifiers.channels.projects"),
     PROJECTS_MINECRAFT("identifiers.channels.projects_minecraft"),
+    LOGS("identifiers.channels.logs"),
 
     CLIENT_ID("website.client_id"),
     CLIENT_SECRET("website.client_secret"),
@@ -52,41 +52,41 @@ public enum Configuration {
         for (Configuration configuration : Configuration.values()) {
             String path = configuration.getPath();
             Object value = fileConfig.get(path);
-            if(value == null) {
-                LoggerFactory.getLogger(Configuration.class).error("ERROR WHILE LOADING CONFIGURATION: Key "+path + " not exists !");
+            if (value == null) {
+                LoggerFactory.getLogger(Configuration.class).error("ERROR WHILE LOADING CONFIGURATION: Key " + path + " not exists !");
                 continue;
             }
             configuration.setValue(value.toString());
         }
     }
 
-    private String value;
     private final String path;
+    private String value;
 
     Configuration(String path) {
         this.value = "";
         this.path = path;
     }
 
-    public String getValue() {
-        return value;
+    public static Configuration getConfigByName(String name) {
+        for (Configuration value : values()) {
+            if (value.name().equalsIgnoreCase(name)) {
+                return value;
+            }
+        }
+        return null;
     }
 
-    public String getPath() {
-        return path;
+    public String getValue() {
+        return value;
     }
 
     public void setValue(String value) {
         this.value = value;
     }
 
-    public static Configuration getConfigByName(String name) {
-        for (Configuration value : values()) {
-            if(value.name().equalsIgnoreCase(name)) {
-                return value;
-            }
-        }
-        return null;
+    public String getPath() {
+        return path;
     }
 
 }

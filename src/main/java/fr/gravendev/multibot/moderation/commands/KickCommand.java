@@ -56,7 +56,7 @@ public class KickCommand extends AModeration {
                 victim.getId(), moderator.getId(), InfractionType.KICK, reason, new Date(), null);
         infractionDAO.save(data);
 
-        String logs = Configuration.LOGS.getValue();
+        String logs = Configuration.SANCTIONS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[KICK] " + victim.getAsTag(), victim.getAvatarUrl())

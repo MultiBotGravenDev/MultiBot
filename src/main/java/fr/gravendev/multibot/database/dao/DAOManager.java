@@ -14,6 +14,7 @@ public class DAOManager {
     private RoleDAO roleDAO;
     private VoteDAO voteDAO;
     private WelcomeMessageDAO welcomeMessageDAO;
+    private RoleChannelsDAO roleChannelsDAO;
 
     public DAOManager(DatabaseConnection databaseConnection) {
         antiRolesDAO = new AntiRolesDAO(databaseConnection);
@@ -27,6 +28,7 @@ public class DAOManager {
         roleDAO = new RoleDAO(databaseConnection);
         voteDAO = new VoteDAO(databaseConnection);
         welcomeMessageDAO = new WelcomeMessageDAO(databaseConnection);
+        roleChannelsDAO = new RoleChannelsDAO(databaseConnection);
     }
 
     public AntiRolesDAO getAntiRolesDAO() {
@@ -72,4 +74,9 @@ public class DAOManager {
     public WelcomeMessageDAO getWelcomeMessageDAO() {
         return welcomeMessageDAO;
     }
+
+    public RoleChannelsDAO getRoleChannelsDAO() {
+        return roleChannelsDAO;
+    }
+
 }
