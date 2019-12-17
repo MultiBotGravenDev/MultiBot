@@ -82,7 +82,7 @@ public class MuteCommand extends AModeration {
                 victim.getId(), moderator.getId(), InfractionType.MUTE, reason, new Date(), null);
         infractionDAO.save(data);
 
-        String logs = Configuration.LOGS.getValue();
+        String logs = Configuration.SANCTIONS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[MUTE] " + victim.getAsTag(), victim.getAvatarUrl())

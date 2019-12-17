@@ -3,8 +3,8 @@ package fr.gravendev.multibot.roles.commands;
 import fr.gravendev.multibot.commands.commands.CommandCategory;
 import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.dao.DAOManager;
-import fr.gravendev.multibot.database.dao.RoleDAO;
-import fr.gravendev.multibot.database.data.RoleData;
+import fr.gravendev.multibot.database.dao.RoleChannelsDAO;
+import fr.gravendev.multibot.database.data.RoleChannelData;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.Role;
@@ -12,14 +12,14 @@ import net.dv8tion.jda.api.entities.Role;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PingCommand implements CommandExecutor {
+public class AideCommand implements CommandExecutor {
 
-    private final RoleDAO roleDAO;
+    private final RoleChannelsDAO roleChannelsDAO;
 
     private final Map<Long, Long> coolDowns;
 
-    public PingCommand(DAOManager daoManager) {
-        this.roleDAO = daoManager.getRoleDAO();
+    public AideCommand(DAOManager daoManager) {
+        this.roleChannelsDAO = daoManager.getRoleChannelsDAO();
         this.coolDowns = new HashMap<>();
     }
 
@@ -43,17 +43,17 @@ public class PingCommand implements CommandExecutor {
 
         MessageChannel channel = message.getChannel();
 
-        RoleData roleData = this.roleDAO.get(message.getChannel().getId());
+        RoleChannelData roleData = this.roleChannelsDAO.get(message.getChannel().getId());
 
         if (roleData == null) {
             channel.sendMessage("La commande n'est pas disponible dans ce salon").queue();
             return;
         }
 
-        Role role = message.getGuild().getRoleById(roleData.getRoleId());
+        Role role = message.getGuild().getRoleById(roleData.roleId);
 
         if (role == null) {
-            channel.sendMessage("Ce rôle n'existe pas").queue();
+            channel.sendMessage("Erreur").queue();
             return;
         }
 

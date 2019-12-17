@@ -42,7 +42,7 @@ public class BanCommand extends AModeration {
                 victim.getId(), moderator.getId(), InfractionType.BAN, reason, new Date(), null);
         infractionDAO.save(data);
 
-        String logs = Configuration.LOGS.getValue();
+        String logs = Configuration.SANCTIONS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[BAN] " + victim.getAsTag(), victim.getAvatarUrl())

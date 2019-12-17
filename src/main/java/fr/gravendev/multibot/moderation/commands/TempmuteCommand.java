@@ -67,7 +67,7 @@ public class TempmuteCommand extends AModeration {
 
         Role muted = guild.getRoleById(Configuration.MUTED.getValue());
 
-        String logs = Configuration.LOGS.getValue();
+        String logs = Configuration.SANCTIONS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[TEMPMUTE] " + victim.getAsTag(), victim.getAvatarUrl())
