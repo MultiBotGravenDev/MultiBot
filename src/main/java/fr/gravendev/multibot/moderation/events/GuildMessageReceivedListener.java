@@ -139,7 +139,7 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
         InfractionData data = new InfractionData(user.getId(), user.getId(), InfractionType.WARN, reason, new Date(), null);
 
         infractionDAO.save(data);
-        String logs = Configuration.LOGS.getValue();
+        String logs = Configuration.SANCTIONS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[WARN] " + user.getAsTag(), user.getAvatarUrl())

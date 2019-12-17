@@ -28,10 +28,10 @@ import fr.gravendev.multibot.polls.commands.PollCommand;
 import fr.gravendev.multibot.quiz.WelcomeMessagesSetManager;
 import fr.gravendev.multibot.quiz.commands.QuizCommand;
 import fr.gravendev.multibot.rank.RankCommand;
-import fr.gravendev.multibot.roles.commands.PingCommand;
+import fr.gravendev.multibot.roles.commands.ChannelCommand;
+import fr.gravendev.multibot.roles.commands.AideCommand;
 import fr.gravendev.multibot.roles.commands.RolesCommand;
 import fr.gravendev.multibot.utils.Configuration;
-import fr.gravendev.multibot.votes.VoteCommand;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
@@ -44,8 +44,8 @@ import java.util.Optional;
 public class CommandManager {
 
     private final char prefix;
-    private List<CommandExecutor> commandExecutors;
     private final CustomCommandDAO customCommandDAO;
+    private List<CommandExecutor> commandExecutors;
 
     public CommandManager(DAOManager daoManager, WelcomeMessagesSetManager welcomeMessagesSetManager, PollsManager pollsManager) {
         prefix = Configuration.PREFIX.getValue().charAt(0);
@@ -72,7 +72,8 @@ public class CommandManager {
                 new QuizCommand(daoManager, welcomeMessagesSetManager),
                 new RankCommand(daoManager),
                 new RolesCommand(daoManager),
-                new PingCommand(daoManager),
+                new AideCommand(daoManager),
+                new ChannelCommand(daoManager),
 //                new VoteCommand(daoManager),
 
                 new PollCommand(pollsManager),

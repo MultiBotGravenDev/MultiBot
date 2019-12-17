@@ -90,7 +90,7 @@ public class AntiCommand implements CommandExecutor {
 
             saveInDatabase(args[0], member);
 
-            TextChannel logsTextChannel = guild.getTextChannelById(Configuration.LOGS.getValue());
+            TextChannel logsTextChannel = guild.getTextChannelById(Configuration.SANCTIONS.getValue());
             if (logsTextChannel == null) {
                 return;
             }
@@ -130,7 +130,7 @@ public class AntiCommand implements CommandExecutor {
         InfractionData data = new InfractionData(member.getId(), member.getId(), InfractionType.WARN, reason, new java.util.Date(), null);
 
         infractionsDAO.save(data);
-        String logs = Configuration.LOGS.getValue();
+        String logs = Configuration.SANCTIONS.getValue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[WARN] " + member.getUser().getAsTag(), member.getUser().getAvatarUrl())
