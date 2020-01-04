@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -100,7 +101,7 @@ public class AntiCommand implements CommandExecutor {
             message.getChannel().sendMessage("Le rôle anti-" + args[0] + " a bien été attribué.").queue();
 
             String reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-            warn(message, reason);
+            warn(targetMember, message.getChannel(), reason);
 
             TextChannel logsTextChannel = guild.getTextChannelById(Configuration.LOGS.getValue());
             if (logsTextChannel == null) {
@@ -129,9 +130,8 @@ public class AntiCommand implements CommandExecutor {
         antiRolesDAO.save(antiRoleData);
     }
 
-    private void warn(Message message, String reason) {
-        Member member = message.getMentionedMembers().get(0);
-        Guild guild = message.getGuild();
+    private void warn(Member member, MessageChannel channel, String reason) {
+        Guild guild = member.getGuild();
 
         InfractionData data = new InfractionData(member.getId(), member.getId(), InfractionType.WARN, reason, new java.util.Date(), null);
 
@@ -141,7 +141,7 @@ public class AntiCommand implements CommandExecutor {
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[WARN] " + member.getUser().getAsTag(), member.getUser().getAvatarUrl())
                 .addField("Utilisateur:", member.getAsMention(), true)
-                .addField("Modérateur:", message.getJDA().getSelfUser().getAsMention(), true)
+                .addField("Modérateur:", guild.getJDA().getSelfUser().getAsMention(), true)
                 .addField("Raison:", reason, true);
 
         TextChannel logsChannel = guild.getTextChannelById(logs);
@@ -149,7 +149,7 @@ public class AntiCommand implements CommandExecutor {
             logsChannel.sendMessage(embedBuilder.build()).queue();
         }
 
-        message.getChannel().sendMessage(Utils.getWarnEmbed(member.getUser(), reason)).queue();
+        channel.sendMessage(Utils.getWarnEmbed(member.getUser(), reason)).queue();
     }
 
 }

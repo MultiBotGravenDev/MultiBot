@@ -45,7 +45,8 @@ public abstract class AModeration implements CommandExecutor {
 
         Guild guild = message.getGuild();
         
-        Optional<Member> opMember = UserSearchUtils.searchMember(guild, args[0]);
+        Optional<Member> opMember =
+                UserSearchUtils.searchMember(guild, args[0], UserSearchUtils.SearchMode.SAFE);
         
         if (!opMember.isPresent()) {
             UserSearchUtils.sendUserNotFound(messageChannel);
