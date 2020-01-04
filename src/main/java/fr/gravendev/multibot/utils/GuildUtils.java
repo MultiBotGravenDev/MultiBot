@@ -12,7 +12,7 @@ public class GuildUtils {
 
     public static boolean hasRole(Member member, String roleName) {
         Guild guild = member.getGuild();
-        List<Role> memberRoles = guild.getRolesByName(roleName, false);
+        List<Role> memberRoles = guild.getRolesByName(roleName, true);
         return memberRoles.stream()
                 .findAny()
                 .map(role -> guild.getMembersWithRoles(role).contains(member))
