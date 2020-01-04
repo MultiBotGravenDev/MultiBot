@@ -75,7 +75,7 @@ public class AntiCommand implements CommandExecutor {
         }
 
         if (GuildUtils.hasRole(mentionedMembers.get(0), "anti-" + args[0])) {
-            message.getChannel().sendMessage("Ce membre possède déjà le rôle anti-" + args[1]).queue();
+            message.getChannel().sendMessage("Ce membre possède déjà le rôle anti-" + args[0]).queue();
             return;
         }
 
