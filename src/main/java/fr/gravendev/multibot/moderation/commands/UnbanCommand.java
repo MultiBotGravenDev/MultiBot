@@ -55,11 +55,12 @@ public class UnbanCommand implements CommandExecutor {
             return;
         }
 
+        // TODO: Replace this by UserSearchUtils, when it is possible to get the user id without retrieving it.
         String id = extractId(args[0]);
 
         message.getGuild().retrieveBanList().queue((banList) -> {
             if (banList.stream().noneMatch(ban -> ban.getUser().getId().equals(id))) {
-                message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Cet utilisateur n'est pas bannis")).queue();
+                message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Cet utilisateur n'est pas banni !")).queue();
                 return;
             }
 

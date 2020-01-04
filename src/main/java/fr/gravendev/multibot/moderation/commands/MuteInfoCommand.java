@@ -7,9 +7,11 @@ import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.GuildUtils;
+import fr.gravendev.multibot.utils.UserSearchUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -17,7 +19,7 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
+import java.util.Optional;
 
 public class MuteInfoCommand implements CommandExecutor {
 
@@ -49,14 +51,23 @@ public class MuteInfoCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-        List<Member> mentionedMembers = message.getMentionedMembers();
         MessageChannel messageChannel = message.getChannel();
-        if (mentionedMembers.size() == 0) {
+
+        if (args.length == 0) {
             messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Utilisation: muteinfo @member")).queue();
             return;
         }
+        
+        Guild guild = message.getGuild();
+        Optional<Member> opMember = UserSearchUtils.searchMember(guild, args[0]);
 
-        Member member = mentionedMembers.get(0);
+        if (!opMember.isPresent()) {
+            UserSearchUtils.sendUserNotFound(message.getChannel());
+            return;
+        }
+
+        Member member = opMember.get();
+        
         if (!GuildUtils.hasRole(member, "Muted")) {
             messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Ce membre n'est pas mute")).queue();
             return;

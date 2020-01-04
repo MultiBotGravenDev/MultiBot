@@ -6,9 +6,11 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
+import fr.gravendev.multibot.utils.UserSearchUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -18,6 +20,7 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class InfractionsCommand implements CommandExecutor {
 
@@ -50,15 +53,20 @@ public class InfractionsCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
         try {
-
-            List<Member> mentionedMembers = message.getMentionedMembers();
-            if (mentionedMembers.size() == 0) {
+            if (args.length == 0) {
                 message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "@membre")).queue();
                 return;
             }
+            
+            Guild guild = message.getGuild();
+            Optional<Member> opMember = UserSearchUtils.searchMember(guild, args[0]);
+            
+            if (!opMember.isPresent()) {
+                UserSearchUtils.sendUserNotFound(message.getChannel());
+                return;
+            }
 
-            Member member = mentionedMembers.get(0);
-
+            Member member = opMember.get();
             List<InfractionData> allInfractions = infractionDAO.getALLInfractions(member.getUser().getId());
 
             Date lastDayDate = Date.from(Instant.now().minusSeconds(60 * 60 * 24));

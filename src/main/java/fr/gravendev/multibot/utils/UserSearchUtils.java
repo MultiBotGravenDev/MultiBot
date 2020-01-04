@@ -51,7 +51,8 @@ public class UserSearchUtils {
 
         if (matcher.matches()) {
             try {
-                User user = jda.getUserById(matcher.group(1));
+                // TODO: Avoid completing and let the user decide
+                User user = jda.retrieveUserById(matcher.group(1)).complete();
                 return Optional.ofNullable(user);
             } catch (NumberFormatException e) {
                 return Optional.empty();
@@ -63,7 +64,8 @@ public class UserSearchUtils {
 
     public static Optional<User> searchUserById(JDA jda, String id) {
         try {
-            return Optional.ofNullable(jda.getUserById(id));
+            // TODO: Avoid completing and let the user decide
+            return Optional.ofNullable(jda.retrieveUserById(id).complete());
         } catch (NumberFormatException e) {
             return Optional.empty();
         }
