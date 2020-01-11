@@ -22,6 +22,7 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 public class BanInfoCommand implements CommandExecutor {
 
@@ -58,22 +59,26 @@ public class BanInfoCommand implements CommandExecutor {
             return;
         }
 
-        Optional<User> opUser = UserSearchUtils.searchUser(message.getJDA(), args[0]);
+        OptionalLong opUserId = UserSearchUtils.searchId(args[0]);
         
-        if (!opUser.isPresent()) {
+        if (!opUserId.isPresent()) {
             UserSearchUtils.sendUserNotFound(message.getChannel());
             return;
         }
         
-        User user = opUser.get();
+        long id = opUserId.getAsLong();
         Guild guild = message.getGuild();
 
         guild.retrieveBanList().queue(banList -> {
-
             MessageEmbed embed;
 
-            if (banList.stream().anyMatch(ban -> ban.getUser().getId().equals(user.getId()))) {
-
+            Optional<Guild.Ban> opBan = banList.stream()
+                    .filter(ban -> ban.getUser().getIdLong() == id)
+                    .findAny();
+            
+            if (opBan.isPresent()) {
+                User user = opBan.get().getUser();
+                
                 InfractionData data;
                 try {
                     data = infractionDAO.getLast(user.getId(), InfractionType.BAN);
@@ -83,7 +88,6 @@ public class BanInfoCommand implements CommandExecutor {
                 }
 
                 if (data != null) {
-
                     Date dateEnd = data.getEnd();
                     String end = dateEnd == null ? "Jamais" : Utils.getDateFormat().format(dateEnd);
 
@@ -93,11 +97,12 @@ public class BanInfoCommand implements CommandExecutor {
                             .addField("Date de fin:", end, false)
                             .addField("Par:", "<@" + data.getPunisherId() + ">", false)
                             .addField("Le:", Utils.getDateFormat().format(data.getStart()), false).build();
-
-                } else
+                } else {
                     embed = Utils.buildEmbed(Color.RED, "Impossible de trouver les informations de bannissement");
-            } else
+                }
+            } else {
                 embed = Utils.buildEmbed(Color.RED, "Cet utilisateur n'est pas banni !");
+            }
 
             message.getChannel().sendMessage(embed).queue();
         });

@@ -7,10 +7,13 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.utils.MiscUtil;
 
 import java.awt.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalLong;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,69 +47,110 @@ public class UserSearchUtils {
          */
         SAFE
     }
+    
+    private static <T> CompletableFuture<T> failedFuture(String message) {
+        CompletableFuture<T> failed = new CompletableFuture<>();
+        failed.completeExceptionally(new IllegalArgumentException(message));
 
-    public static Optional<User> searchUserByMention(JDA jda, String message) {
+        return failed;
+    }
+    
+    private static OptionalLong parsePotentialId(String id) {
+        if (id == null || id.isEmpty()) {
+            return OptionalLong.empty();
+        }
+        
+        try {
+            return OptionalLong.of(MiscUtil.parseSnowflake(id));
+        }
+        catch (NumberFormatException e) {
+            return OptionalLong.empty();
+        }
+    }
+    
+    public static OptionalLong searchIdFromMention(String message) {
         Pattern pattern = Message.MentionType.USER.getPattern();
         Matcher matcher = pattern.matcher(message);
 
-        if (matcher.matches()) {
-            try {
-                // TODO: Avoid completing and let the user decide
-                User user = jda.retrieveUserById(matcher.group(1)).complete();
-                return Optional.ofNullable(user);
-            } catch (NumberFormatException e) {
-                return Optional.empty();
-            }
+        if (!matcher.matches()) {
+            return OptionalLong.empty();
         }
-
-        return Optional.empty();
+        
+        return parsePotentialId(matcher.group(1));
     }
+    
+    public static OptionalLong searchId(String message) {
+        OptionalLong mentionResult = searchIdFromMention(message);
+        
+        if (mentionResult.isPresent()) {
+            return mentionResult;
+        }
+        
+        return parsePotentialId(message);
+    }
+        
 
-    public static Optional<User> searchUserById(JDA jda, String id) {
+    public static CompletableFuture<User> searchUserByMention(JDA jda, String message) {
+        Pattern pattern = Message.MentionType.USER.getPattern();
+        Matcher matcher = pattern.matcher(message);
+
+        if (!matcher.matches()) {
+            return failedFuture("Message doesn't match any user mention");
+        }
+        
         try {
-            // TODO: Avoid completing and let the user decide
-            return Optional.ofNullable(jda.retrieveUserById(id).complete());
+            return jda.retrieveUserById(matcher.group(1))
+                    .submit();
         } catch (NumberFormatException e) {
-            return Optional.empty();
+            return failedFuture("Message doesn't match any user mention");
         }
     }
 
-    public static Optional<User> searchUserByTag(JDA jda, String tag) {
+    public static CompletableFuture<User> searchUserById(JDA jda, String id) {
         try {
-            return Optional.ofNullable(jda.getUserByTag(tag));
-        } catch (IllegalArgumentException e) {
-            return Optional.empty();
+            return jda.retrieveUserById(id)
+                    .submit();
+        } catch (NumberFormatException e) {
+            return failedFuture("Message doesn't match any user id");
         }
     }
 
-    public static Optional<User> searchUserByName(JDA jda, String name) {
+    public static CompletableFuture<User> searchUserByTag(JDA jda, String tag) {
+        try {
+            return CompletableFuture.completedFuture(jda.getUserByTag(tag));
+        } catch (IllegalArgumentException e) {
+            return failedFuture("Message doesn't match any user tag");
+        }
+    }
+
+    public static CompletableFuture<User> searchUserByFullName(JDA jda, String name) {
         List<User> users = jda.getUsersByName(name, true);
 
         if (users.size() != 1) {
-            return Optional.empty();
+            return failedFuture("Message doesn't match any user full name");
         }
 
-        return Optional.of(users.get(0));
+        return CompletableFuture.completedFuture(users.get(0));
     }
 
-    public static Optional<User> searchUserByPartialName(JDA jda, String name) {
+    public static CompletableFuture<User> searchUserByPartialName(JDA jda, String name) {
         List<User> users = jda.getUsers().stream()
                 .filter(user -> user.getName().startsWith(name))
                 .collect(Collectors.toList());
         
         if (users.size() != 1) {
-            return Optional.empty();
+            return failedFuture("Message doesn't match any user partial name");
         }
         
-        return Optional.of(users.get(0));
+        return CompletableFuture.completedFuture(users.get(0));
     }
     
-    public static Optional<User> searchUser(JDA jda, String message) {
+    public static CompletableFuture<User> searchUser(JDA jda, String message) {
         return searchUser(jda, message, SearchMode.NORMAL);
     }
 
-    public static Optional<User> searchUser(JDA jda, String message, SearchMode mode) {
-        Stream<Supplier<Optional<User>>> stream;
+    public static CompletableFuture<User> searchUser(JDA jda, String message, SearchMode mode) {
+        Stream<Supplier<CompletableFuture<User>>> stream;
         
         switch (mode) {
             case SENSITIVE:
@@ -114,7 +158,7 @@ public class UserSearchUtils {
                         () -> searchUserByMention(jda, message),
                         () -> searchUserById(jda, message),
                         () -> searchUserByTag(jda, message),
-                        () -> searchUserByName(jda, message),
+                        () -> searchUserByFullName(jda, message),
                         () -> searchUserByPartialName(jda, message)
                 );
                 break;
@@ -123,7 +167,7 @@ public class UserSearchUtils {
                         () -> searchUserByMention(jda, message),
                         () -> searchUserById(jda, message),
                         () -> searchUserByTag(jda, message),
-                        () -> searchUserByName(jda, message)
+                        () -> searchUserByFullName(jda, message)
                 );
                 break;
             case SAFE:
@@ -137,10 +181,10 @@ public class UserSearchUtils {
                 throw new UnsupportedOperationException();
         }
 
-        return stream.map(Supplier::get)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst();
+        return CompletableFuture.anyOf(
+                stream.map(Supplier::get)
+                    .toArray(CompletableFuture[]::new))
+                .thenApply(User.class::cast);
     }
 
     public static Optional<Member> searchMemberByMention(Guild guild, String message) {
@@ -175,7 +219,7 @@ public class UserSearchUtils {
         }
     }
 
-    public static Optional<Member> searchMemberByName(Guild guild, String name) {
+    public static Optional<Member> searchMemberByFullName(Guild guild, String name) {
         List<Member> members = guild.getMembersByEffectiveName(name, true);
 
         if (members.size() != 1) {
@@ -210,7 +254,7 @@ public class UserSearchUtils {
                         () -> searchMemberByMention(guild, message),
                         () -> searchMemberById(guild, message),
                         () -> searchMemberByTag(guild, message),
-                        () -> searchMemberByName(guild, message),
+                        () -> searchMemberByFullName(guild, message),
                         () -> searchMemberByPartialName(guild, message)
                 );
                 break;
@@ -219,7 +263,7 @@ public class UserSearchUtils {
                         () -> searchMemberByMention(guild, message),
                         () -> searchMemberById(guild, message),
                         () -> searchMemberByTag(guild, message),
-                        () -> searchMemberByName(guild, message)
+                        () -> searchMemberByFullName(guild, message)
                 );
                 break;
             case SAFE:
