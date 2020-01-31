@@ -18,15 +18,22 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import org.eclipse.jetty.util.thread.ScheduledExecutorScheduler;
 
 import java.awt.*;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class GuildMessageReceivedListener implements Listener<GuildMessageReceivedEvent> {
 
     private final BadWordsDAO badWordsDAO;
     private final InfractionDAO infractionDAO;
     private final ImmunisedIdDAO immunisedIdsDAO;
+
+    private final ScheduledExecutorScheduler scheduledExecutorScheduler = new ScheduledExecutorScheduler();
+    private final Map<String, Integer> spamCounter = new HashMap<>();
 
     public GuildMessageReceivedListener(DAOManager daoManager) {
         this.badWordsDAO = daoManager.getBadWordsDAO();
@@ -50,6 +57,7 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
         warnForBadWordIfNeeded(message);
         warnForCapitalsLettersIfNeeded(message);
         warnForDiscordInviteIfNeeded(message);
+        warnForSpamIfNeeded(message);
     }
 
     private boolean isImmunised(Member member) {
@@ -107,6 +115,21 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
 
         if (length >= 8 && capitalLettersCount * 100 / length >= 75) {
             warn(message, "Capital letters");
+        }
+    }
+
+    private void warnForSpamIfNeeded(Message message){
+        if(message.getContentDisplay().length() > 5) return;
+        if(spamCounter.containsKey(message.getAuthor().getId())){
+            if(spamCounter.get(message.getAuthor().getId()) == 5){
+                warn(message, "Spam");
+                spamCounter.remove(message.getAuthor().getId());
+            }else{
+                spamCounter.put(message.getAuthor().getId(), spamCounter.get(message.getAuthor().getId()) + 1);
+            }
+        }else{
+            scheduledExecutorScheduler.schedule(() -> spamCounter.remove(message.getAuthor().getId()), 3, TimeUnit.SECONDS);
+            spamCounter.put(message.getAuthor().getId(), 1);
         }
     }
 
