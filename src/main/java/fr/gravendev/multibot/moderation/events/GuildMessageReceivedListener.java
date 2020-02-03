@@ -38,17 +38,17 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
     private final Map<String, Integer> spamCounter = Collections.synchronizedMap(new HashMap<>());
 
     /**
-    * Represent the minimum of messages to be sent by the user to be considered as spam
+    * Represents the minimum amount of messages to be sent by the user to be considered as spam.
     */
     private static final int MIN_MESSAGES_FOR_SPAM = 5;
 
     /**
-     * Represent the maximum of characters to consider a message like a potential spam
+     * Represents the maximum amount of characters to consider a message like a potential spam.
      */
     private static final int MAX_CHAR_FOR_SPAM = 5;
 
     /**
-     * Represents the interval during which {@value MIN_MESSAGES_FOR_SPAM} messages must be sent to be considered as spam
+     * Represents the interval during which {@value MIN_MESSAGES_FOR_SPAM} messages must be sent to be considered as spam.
      */
     private static final int SPAM_INTERVAL = 3;
 
@@ -103,7 +103,6 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
     }
 
     private void warnForDiscordInviteIfNeeded(Message message) {
-
         if (message.getChannel().getName().contains("présentation")) {
             return;
         }
@@ -136,9 +135,9 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
     }
 
     /**
-     * Warn the author of the {@link Message} if his last {@value MIN_MESSAGES_FOR_SPAM} messages
-     * are sent in of less than {@value SPAM_INTERVAL} seconds and if they all contain
-     * {@value MAX_CHAR_FOR_SPAM} characters or less
+     * Warns the author of the {@link Message} if its last {@value MIN_MESSAGES_FOR_SPAM} messages
+     * are sent in less than {@value SPAM_INTERVAL} seconds and if they all contain
+     * {@value MAX_CHAR_FOR_SPAM} characters or less.
      *
      * @param message The message to analyze
      */
@@ -158,7 +157,7 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
         }
     }
 
-    // TODO Try to refactor this using regex
+    // TODO: Try to refactor this using regex
     private int countCapitalLetters(String text) {
         int capitalLettersCount = 0;
 
@@ -179,7 +178,7 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
         return content;
     }
 
-    // TODO Refactor this, that's a too long and messy
+    // TODO: Refactor this, that's a too long and messy
     private void warn(Message message, String reason) {
         User user = message.getAuthor();
         Guild guild = message.getGuild();
@@ -191,9 +190,9 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
 
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[WARN] " + user.getAsTag(), user.getAvatarUrl())
-                .addField("Utilisateur:", user.getAsMention(), true)
-                .addField("Modérateur:", message.getJDA().getSelfUser().getAsMention(), true)
-                .addField("Raison:", reason, true);
+                .addField("Utilisateur :", user.getAsMention(), true)
+                .addField("Modérateur :", message.getJDA().getSelfUser().getAsMention(), true)
+                .addField("Raison :", reason, true);
 
         TextChannel logsChannel = guild.getTextChannelById(logs);
         if (logsChannel != null) {
