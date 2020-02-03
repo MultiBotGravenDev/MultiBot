@@ -18,12 +18,14 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import org.eclipse.jetty.util.thread.ScheduledExecutorScheduler;
 
 import java.awt.*;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class GuildMessageReceivedListener implements Listener<GuildMessageReceivedEvent> {
@@ -32,8 +34,23 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
     private final InfractionDAO infractionDAO;
     private final ImmunisedIdDAO immunisedIdsDAO;
 
-    private final ScheduledExecutorScheduler scheduledExecutorScheduler = new ScheduledExecutorScheduler();
-    private final Map<String, Integer> spamCounter = new HashMap<>();
+    private final ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
+    private final Map<String, Integer> spamCounter = Collections.synchronizedMap(new HashMap<>());
+
+    /**
+    * Represent the minimum of messages to be sent by the user to be considered as spam
+    */
+    private static final int MIN_MESSAGES_FOR_SPAM = 5;
+
+    /**
+     * Represent the maximum of characters to consider a message like a potential spam
+     */
+    private static final int MAX_CHAR_FOR_SPAM = 5;
+
+    /**
+     * Represents the interval during which {@value MIN_MESSAGES_FOR_SPAM} messages must be sent to be considered as spam
+     */
+    private static final int SPAM_INTERVAL = 3;
 
     public GuildMessageReceivedListener(DAOManager daoManager) {
         this.badWordsDAO = daoManager.getBadWordsDAO();
@@ -118,18 +135,26 @@ public class GuildMessageReceivedListener implements Listener<GuildMessageReceiv
         }
     }
 
-    private void warnForSpamIfNeeded(Message message){
-        if(message.getContentDisplay().length() > 5) return;
-        if(spamCounter.containsKey(message.getAuthor().getId())){
-            if(spamCounter.get(message.getAuthor().getId()) == 5){
+    /**
+     * Warn the author of the {@link Message} if his last {@value MIN_MESSAGES_FOR_SPAM} messages
+     * are sent in of less than {@value SPAM_INTERVAL} seconds and if they all contain
+     * {@value MAX_CHAR_FOR_SPAM} characters or less
+     *
+     * @param message The message to analyze
+     */
+    private void warnForSpamIfNeeded(Message message) {
+        String authorId = message.getAuthor().getId();
+        if(message.getContentDisplay().length() > MAX_CHAR_FOR_SPAM) return;
+        if(spamCounter.containsKey(authorId)){
+            if(spamCounter.get(authorId) == MIN_MESSAGES_FOR_SPAM){
                 warn(message, "Spam");
-                spamCounter.remove(message.getAuthor().getId());
+                spamCounter.remove(authorId);
             }else{
-                spamCounter.put(message.getAuthor().getId(), spamCounter.get(message.getAuthor().getId()) + 1);
+                spamCounter.put(authorId, spamCounter.get(authorId) + 1);
             }
         }else{
-            scheduledExecutorScheduler.schedule(() -> spamCounter.remove(message.getAuthor().getId()), 3, TimeUnit.SECONDS);
-            spamCounter.put(message.getAuthor().getId(), 1);
+            scheduledExecutorService.schedule(() -> spamCounter.remove(authorId), SPAM_INTERVAL, TimeUnit.SECONDS);
+            spamCounter.put(authorId, 1);
         }
     }
 
