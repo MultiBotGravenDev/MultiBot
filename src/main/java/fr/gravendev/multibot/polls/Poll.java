@@ -2,17 +2,23 @@ package fr.gravendev.multibot.polls;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.requests.RestAction;
 
 import java.awt.*;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
 class Poll {
-    private static final String[] EMOTES = {"1\u20E3", "2\u20E3", "3\u20E3", "4\u20E3", "5\u20E3", "6\u20E3", "7\u20E3", "8\u20E3", "9\u20E3"};
+    private static final String[] EMOTES = {
+            "1\ufe0f\u20e3", "2\ufe0f\u20e3", "3\ufe0f\u20e3",
+            "4\ufe0f\u20e3", "5\ufe0f\u20e3", "6\ufe0f\u20e3",
+            "7\ufe0f\u20e3", "8\ufe0f\u20e3", "9\ufe0f\u20e3"
+    };
 
     private final User user;
     private final long messageId;
@@ -48,23 +54,54 @@ class Poll {
         }
         update();
     }
+    
+    boolean hasEmote(String emote) {
+        return this.emotes.containsValue(emote);
+    }
 
     void setEmote(int numberEmote, String emote) {
         if (this.choices.containsKey(numberEmote)) {
+            // Find any choice with the same emote and
+            // swap its emote with this choice
+            this.emotes.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(emote))
+                    .findAny()
+                    .ifPresent(entry -> {
+                        String newEmote = this.emotes.get(numberEmote);
+                        entry.setValue(newEmote);
+                    });
+            
             this.emotes.put(numberEmote, emote);
         }
+
         update();
     }
 
+    private void removeWrongReactions(List<MessageReaction> reactions) {
+        boolean removeNexts = false;
+        
+        for (int i = 0; i < reactions.size(); i++) {
+            MessageReaction reaction = reactions.get(i);
+
+            if (!reaction.isSelf()) {
+                continue;
+            }
+
+            String emote = reaction.getReactionEmote().getName();
+            
+            if (removeNexts || !emote.equals(this.emotes.get(i + 1))) {
+                reaction.removeReaction().queue();
+                removeNexts = true;
+            }
+        }
+    }
+    
     private void update() {
         this.user.openPrivateChannel().queue(privateChannel ->
                 privateChannel.retrieveMessageById(this.messageId).queue(message -> {
-                    User selfUser = message.getJDA().getSelfUser();
-                    message.getReactions().forEach(messageReaction -> {
-                        if (!this.emotes.containsValue(messageReaction.getReactionEmote().getName())) {
-                            messageReaction.removeReaction(selfUser).queue();
-                        }
-                    });
+                    List<MessageReaction> reactions = message.getReactions();
+                    removeWrongReactions(reactions);
+                    
                     message.editMessage(buildMessage().build()).queue(message1 -> this.emotes.values()
                             .stream()
                             .filter(emote -> !emote.equalsIgnoreCase(" "))

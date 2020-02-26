@@ -7,6 +7,7 @@ import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.VoteDAO;
 import fr.gravendev.multibot.database.data.VoteData;
 import fr.gravendev.multibot.database.data.VoteDataBuilder;
+import fr.gravendev.multibot.utils.UserSearchUtils;
 import fr.gravendev.multibot.votes.roles.Developer;
 import fr.gravendev.multibot.votes.roles.Honorable;
 import fr.gravendev.multibot.votes.roles.Role;
@@ -21,6 +22,7 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -78,27 +80,19 @@ public class VoteCommand implements CommandExecutor {
         MessageChannel channel = message.getChannel();
 
         if (args.length < 2) {
-            channel.sendMessage("Erreur. " + getCharacter() + "vote <@personne / id> <présentation>").queue();
+            channel.sendMessage("Erreur. " + getCharacter() + "vote <@membre> <présentation>").queue();
             return;
         }
 
-        Member member = null;
+        Optional<Member> opMember = UserSearchUtils.searchMember(message.getGuild(), args[0]);
 
-        if (args[0].matches("[0-9]+")) {
-            member = message.getGuild().getMemberById(args[0]);
+        if (!opMember.isPresent()) {
+            UserSearchUtils.sendUserNotFound(message.getChannel());
+            return;
         }
-
-        if (member == null) {
-
-            if (mentionedMembers.isEmpty()) {
-                channel.sendMessage("Erreur. " + getCharacter() + "vote <@personne / id> <présentation>").queue();
-                return;
-            }
-
-            member = mentionedMembers.get(0);
-
-        }
-
+        
+        Member member = opMember.get();
+        
         if(member.getUser().isBot()) {
             channel.sendMessage("Erreur: Vous ne pouvez pas proposer un bot.").queue();
             return;
@@ -134,7 +128,6 @@ public class VoteCommand implements CommandExecutor {
 
         message.getChannel().sendMessage("@everyone").queue();
 
-        Member finalMember = member;
         message.getChannel().sendMessage(messageEmbed).queue(sentMessage -> {
             sentMessage.addReaction("\u2705").queue();
             sentMessage.addReaction("\u274C").queue();
@@ -144,7 +137,7 @@ public class VoteCommand implements CommandExecutor {
                     .aVoteData()
                     .withMessageId(sentMessage.getIdLong())
                     .withRole(role.getRoleName())
-                    .withUserID(finalMember.getUser().getIdLong())
+                    .withUserID(member.getUser().getIdLong())
                     .isAccepted(false)
                     .build());
 
@@ -162,7 +155,7 @@ public class VoteCommand implements CommandExecutor {
 
                 EmbedBuilder embedBuilder = new EmbedBuilder()
                         .setColor(role.getColor())
-                        .setAuthor(finalMember.getUser().getAsTag(), finalMember.getUser().getAvatarUrl(), finalMember.getUser().getAvatarUrl())
+                        .setAuthor(member.getUser().getAsTag(), member.getUser().getAvatarUrl(), member.getUser().getAvatarUrl())
                         .setTitle("Vote " + role.getRoleName())
                         .addField("Présentation :", presentation, false)
                         .addField("Oui :", formatVoters(jda, voteYes), true)
@@ -177,7 +170,7 @@ public class VoteCommand implements CommandExecutor {
                 if (accepted) {
                     net.dv8tion.jda.api.entities.Role voteRole = message.getGuild().getRoleById(role.getRoleId());
                     if(voteRole != null)
-                        message.getGuild().addRoleToMember(finalMember, voteRole).queue();
+                        message.getGuild().addRoleToMember(member, voteRole).queue();
                 }
 
                 sentMessage2.editMessage(embedBuilder.build()).queue();

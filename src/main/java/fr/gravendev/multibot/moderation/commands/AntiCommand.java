@@ -10,13 +10,15 @@ import fr.gravendev.multibot.database.data.AntiRoleData;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Configuration;
-import fr.gravendev.multibot.utils.GuildUtils;
+import fr.gravendev.multibot.utils.UserSearchUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -26,8 +28,8 @@ import java.sql.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class AntiCommand implements CommandExecutor {
 
@@ -46,7 +48,7 @@ public class AntiCommand implements CommandExecutor {
 
     @Override
     public String getDescription() {
-        return "Permet de mettre un role anti- (meme, repost...) à une personne pour une durée de 6 mois.";
+        return "Permet de mettre un rôle anti- (meme, repost...) à une personne pour une durée de 6 mois.";
     }
 
     @Override
@@ -66,48 +68,53 @@ public class AntiCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-
-        List<Member> mentionedMembers = message.getMentionedMembers();
-
-        if (args.length < 3 || mentionedMembers.size() == 0 || !"repost review meme".contains(args[0])) {
-            message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "<repost,review,meme> @membre <raison>")).queue();
+        if (args.length < 3 || !"repost review meme".contains(args[0])) {
+            MessageEmbed embed = Utils.errorArguments(getCommand(), "<repost,review,meme> @membre <raison>");
+            message.getChannel().sendMessage(embed).queue();
             return;
         }
 
-        if (GuildUtils.hasRole(mentionedMembers.get(0), "anti-" + args[0])) {
-            message.getChannel().sendMessage("Ce membre possède déjà le rôle anti-" + args[1]).queue();
-            return;
-        }
-
-        Member member = mentionedMembers.get(0);
         Guild guild = message.getGuild();
+        Optional<Member> opMember = UserSearchUtils.searchMember(guild, args[1]);
+
+        if (!opMember.isPresent()) {
+            UserSearchUtils.sendUserNotFound(message.getChannel());
+            return;
+        }
+
+        Member targetMember = opMember.get();
+
         Role role = guild.getRoleById(Configuration.getConfigByName("anti_" + args[0]).getValue());
         if (role == null) {
             return;
         }
 
-        guild.addRoleToMember(member, role).queue(unused -> {
+        if (targetMember.getRoles().contains(role)) {
+            message.getChannel().sendMessage("Ce membre possède déjà le rôle anti-" + args[0]).queue();
+            return;
+        }
 
-            saveInDatabase(args[0], member);
+        guild.addRoleToMember(targetMember, role).queue(unused -> {
+
+            saveInDatabase(args[0], targetMember);
+
+            message.getChannel().sendMessage("Le rôle anti-" + args[0] + " a bien été attribué.").queue();
+
+            String reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+            warn(targetMember, message.getChannel(), reason);
 
             TextChannel logsTextChannel = guild.getTextChannelById(Configuration.SANCTIONS.getValue());
             if (logsTextChannel == null) {
                 return;
             }
 
-            message.getChannel().sendMessage("Le rôle anti-" + args[0] + " a bien été attribué.").queue();
-
             logsTextChannel.sendMessage(new EmbedBuilder()
                     .setColor(Color.ORANGE)
-                    .setTitle("[ANTI-" + args[0].toUpperCase() + "] " + member.getUser().getAsTag())
-                    .addField("Utilisateur :", member.getAsMention(), true)
+                    .setTitle("[ANTI-" + args[0].toUpperCase() + "] " + targetMember.getUser().getAsTag())
+                    .addField("Utilisateur :", targetMember.getAsMention(), true)
                     .addField("Modérateur :", message.getAuthor().getAsMention(), true)
                     .addField("Fin :", Utils.getDateFormat().format(Date.from(Instant.now().plus(31, ChronoUnit.DAYS))), true)
                     .build()).queue();
-
-            String reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-            warn(message, reason);
-
         });
 
     }
@@ -123,9 +130,8 @@ public class AntiCommand implements CommandExecutor {
         antiRolesDAO.save(antiRoleData);
     }
 
-    private void warn(Message message, String reason) {
-        Member member = message.getMentionedMembers().get(0);
-        Guild guild = message.getGuild();
+    private void warn(Member member, MessageChannel channel, String reason) {
+        Guild guild = member.getGuild();
 
         InfractionData data = new InfractionData(member.getId(), member.getId(), InfractionType.WARN, reason, new java.util.Date(), null);
 
@@ -135,7 +141,7 @@ public class AntiCommand implements CommandExecutor {
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.RED)
                 .setAuthor("[WARN] " + member.getUser().getAsTag(), member.getUser().getAvatarUrl())
                 .addField("Utilisateur:", member.getAsMention(), true)
-                .addField("Modérateur:", message.getJDA().getSelfUser().getAsMention(), true)
+                .addField("Modérateur:", guild.getJDA().getSelfUser().getAsMention(), true)
                 .addField("Raison:", reason, true);
 
         TextChannel logsChannel = guild.getTextChannelById(logs);
@@ -143,7 +149,7 @@ public class AntiCommand implements CommandExecutor {
             logsChannel.sendMessage(embedBuilder.build()).queue();
         }
 
-        message.getChannel().sendMessage(Utils.getWarnEmbed(member.getUser(), reason)).queue();
+        channel.sendMessage(Utils.getWarnEmbed(member.getUser(), reason)).queue();
     }
 
 }

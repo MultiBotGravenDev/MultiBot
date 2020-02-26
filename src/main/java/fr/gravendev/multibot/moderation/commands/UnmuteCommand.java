@@ -8,6 +8,7 @@ import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
 import fr.gravendev.multibot.utils.Configuration;
 import fr.gravendev.multibot.utils.GuildUtils;
+import fr.gravendev.multibot.utils.UserSearchUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -19,7 +20,7 @@ import net.dv8tion.jda.api.entities.Role;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
+import java.util.Optional;
 
 public class UnmuteCommand implements CommandExecutor {
 
@@ -51,16 +52,23 @@ public class UnmuteCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-        List<Member> mentionedMembers = message.getMentionedMembers();
         MessageChannel messageChannel = message.getChannel();
         Guild guild = message.getGuild();
 
-        if (mentionedMembers.size() == 0) {
+        if (args.length == 0) {
             message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "@membre")).queue();
             return;
         }
+        
+        Optional<Member> opMember = UserSearchUtils.searchMember(guild, args[0]);
 
-        Member member = mentionedMembers.get(0);
+        if (!opMember.isPresent()) {
+            UserSearchUtils.sendUserNotFound(message.getChannel());
+            return;
+        }
+
+        Member member = opMember.get();
+        
         if (!GuildUtils.hasRole(member, "Muted")) {
             messageChannel.sendMessage(Utils.buildEmbed(Color.RED, "Ce membre n'est pas mute")).queue();
             return;

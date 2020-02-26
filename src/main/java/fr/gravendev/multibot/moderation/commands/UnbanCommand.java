@@ -6,8 +6,10 @@ import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
+import fr.gravendev.multibot.utils.UserSearchUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -15,12 +17,11 @@ import net.dv8tion.jda.api.entities.User;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
+import java.util.OptionalLong;
 
 public class UnbanCommand implements CommandExecutor {
 
-    private static final Pattern mentionUserPattern = Pattern.compile("<@!?([0-9]{8,})>");
     private final InfractionDAO infractionDAO;
 
     public UnbanCommand(DAOManager daoManager) {
@@ -49,23 +50,35 @@ public class UnbanCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-
-        if (args.length == 0 || extractId(args[0]) == null) {
+        if (args.length == 0) {
             message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "@utilisateur")).queue();
             return;
         }
 
-        String id = extractId(args[0]);
+        OptionalLong opUserId = UserSearchUtils.searchId(args[0]);
 
-        message.getGuild().retrieveBanList().queue((banList) -> {
-            if (banList.stream().noneMatch(ban -> ban.getUser().getId().equals(id))) {
-                message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Cet utilisateur n'est pas bannis")).queue();
+        if (!opUserId.isPresent()) {
+            UserSearchUtils.sendUserNotFound(message.getChannel());
+            return;
+        }
+
+        long id = opUserId.getAsLong();
+
+        message.getGuild().retrieveBanList().queue(banList -> {
+            Optional<Guild.Ban> opBan = banList.stream()
+                    .filter(ban -> ban.getUser().getIdLong() == id)
+                    .findAny();
+
+            if (!opBan.isPresent()) {
+                message.getChannel().sendMessage(Utils.buildEmbed(Color.RED, "Cet utilisateur n'est pas banni !")).queue();
                 return;
             }
 
+            User user = opBan.get().getUser();
+            
             InfractionData data;
             try {
-                data = infractionDAO.getLast(id, InfractionType.BAN);
+                data = infractionDAO.getLast(user.getId(), InfractionType.BAN);
             } catch (SQLException e) {
                 e.printStackTrace();
                 return;
@@ -77,26 +90,11 @@ public class UnbanCommand implements CommandExecutor {
                 infractionDAO.save(data);
             }
 
-            message.getGuild().unban(id).queue();
-
-            User user = message.getJDA().getUserCache().getElementById(id);
-
-            message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, (user != null ? user.getName() : id) + " vient d'être unban")).queue();
-
-            if(user == null) {
-                return;
-            }
+            message.getGuild().unban(user).queue();
+            message.getChannel().sendMessage(Utils.buildEmbed(Color.DARK_GRAY, user.getName() + " vient d'être unban")).queue();
 
             user.openPrivateChannel().queue(privateChannel ->  privateChannel.sendMessage("Vous avez été débanni du discord GravenCommunity !").queue());
         });
-    }
-
-    private static String extractId(String id) {
-        Matcher matcher = mentionUserPattern.matcher(id);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return null;
     }
 
 }

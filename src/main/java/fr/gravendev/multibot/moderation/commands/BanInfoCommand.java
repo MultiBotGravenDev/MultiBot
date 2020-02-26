@@ -7,6 +7,7 @@ import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.InfractionDAO;
 import fr.gravendev.multibot.database.data.InfractionData;
 import fr.gravendev.multibot.moderation.InfractionType;
+import fr.gravendev.multibot.utils.UserSearchUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -15,16 +16,16 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
+import java.util.OptionalLong;
 
 public class BanInfoCommand implements CommandExecutor {
 
-    private static final Pattern mentionUserPattern = Pattern.compile("<@!?([0-9]{8,})>");
     private final InfractionDAO infractionDAO;
 
     public BanInfoCommand(DAOManager daoManager) {
@@ -53,49 +54,57 @@ public class BanInfoCommand implements CommandExecutor {
 
     @Override
     public void execute(Message message, String[] args) {
-        if (args.length == 0 || extractId(args[0]) == null) {
+        if (args.length == 0) {
             message.getChannel().sendMessage(Utils.errorArguments(getCommand(), "@utilisateur")).queue();
             return;
         }
 
-        String id = extractId(args[0]);
+        OptionalLong opUserId = UserSearchUtils.searchId(args[0]);
+        
+        if (!opUserId.isPresent()) {
+            UserSearchUtils.sendUserNotFound(message.getChannel());
+            return;
+        }
+        
+        long id = opUserId.getAsLong();
+        Guild guild = message.getGuild();
 
-        message.getJDA().retrieveUserById(id).queue(user -> {
-            Guild guild = message.getGuild();
+        guild.retrieveBanList().queue(banList -> {
+            MessageEmbed embed;
 
-            guild.retrieveBanList().queue((banList) -> {
+            Optional<Guild.Ban> opBan = banList.stream()
+                    .filter(ban -> ban.getUser().getIdLong() == id)
+                    .findAny();
+            
+            if (opBan.isPresent()) {
+                User user = opBan.get().getUser();
+                
+                InfractionData data;
+                try {
+                    data = infractionDAO.getLast(user.getId(), InfractionType.BAN);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return;
+                }
 
-                MessageEmbed embed;
+                if (data != null) {
+                    Date dateEnd = data.getEnd();
+                    String end = dateEnd == null ? "Jamais" : Utils.getDateFormat().format(dateEnd);
 
-                if (banList.stream().anyMatch(ban -> ban.getUser().getId().equals(user.getId()))) {
+                    embed = new EmbedBuilder().setColor(Color.RED)
+                            .setTitle("Informations de ban " + user.getName())
+                            .addField("Raison:", data.getReason(), false)
+                            .addField("Date de fin:", end, false)
+                            .addField("Par:", "<@" + data.getPunisherId() + ">", false)
+                            .addField("Le:", Utils.getDateFormat().format(data.getStart()), false).build();
+                } else {
+                    embed = Utils.buildEmbed(Color.RED, "Impossible de trouver les informations de bannissement");
+                }
+            } else {
+                embed = Utils.buildEmbed(Color.RED, "Cet utilisateur n'est pas banni !");
+            }
 
-                    InfractionData data;
-                    try {
-                        data = infractionDAO.getLast(id, InfractionType.BAN);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        return;
-                    }
-
-                    if (data != null) {
-
-                        Date dateEnd = data.getEnd();
-                        String end = dateEnd == null ? "Jamais" : Utils.getDateFormat().format(dateEnd);
-
-                        embed = new EmbedBuilder().setColor(Color.RED)
-                                .setTitle("Informations de ban " + user.getName())
-                                .addField("Raison:", data.getReason(), false)
-                                .addField("Date de fin:", end, false)
-                                .addField("Par:", "<@" + data.getPunisherId() + ">", false)
-                                .addField("Le:", Utils.getDateFormat().format(data.getStart()), false).build();
-
-                    } else
-                        embed = Utils.buildEmbed(Color.RED, "Impossible de trouver les informations de bannissement");
-                } else
-                    embed = Utils.buildEmbed(Color.RED, "Cet utilisateur n'est pas bannis !");
-
-                message.getChannel().sendMessage(embed).queue();
-            });
+            message.getChannel().sendMessage(embed).queue();
         });
     }
 
@@ -107,14 +116,6 @@ public class BanInfoCommand implements CommandExecutor {
     @Override
     public boolean isAuthorizedChannel(MessageChannel channel) {
         return true;
-    }
-
-    private static String extractId(String id) {
-        Matcher matcher = mentionUserPattern.matcher(id);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return null;
     }
 
 }

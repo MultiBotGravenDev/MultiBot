@@ -6,6 +6,7 @@ import fr.gravendev.multibot.commands.commands.CommandExecutor;
 import fr.gravendev.multibot.database.dao.DAOManager;
 import fr.gravendev.multibot.database.dao.ExperienceDAO;
 import fr.gravendev.multibot.database.data.ExperienceData;
+import fr.gravendev.multibot.utils.UserSearchUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
@@ -52,9 +53,23 @@ public class RankCommand implements CommandExecutor {
     public void execute(Message message, String[] args) {
         try {
             Member member = message.getMember();
-            List<Member> mentionedMembers = message.getMentionedMembers();
-            if (mentionedMembers.size() > 0)
-                member = mentionedMembers.get(0);
+
+            if (args.length > 0) {
+                Optional<Member> opMember = UserSearchUtils.searchMember(
+                        message.getGuild(),
+                        args[0],
+                        UserSearchUtils.SearchMode.SENSITIVE
+                );
+
+                if (opMember.isPresent()) {
+                    member = opMember.get();
+                }
+                else {
+                    UserSearchUtils.sendUserNotFound(message.getChannel());
+                    return;
+                }
+            }
+            
             User user = member.getUser();
 
             if (user.isBot()) return;

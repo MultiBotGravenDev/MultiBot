@@ -1,6 +1,7 @@
 package fr.gravendev.multibot.commands.commands;
 
 import fr.gravendev.multibot.commands.ChannelType;
+import fr.gravendev.multibot.utils.UserSearchUtils;
 import fr.gravendev.multibot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
@@ -8,6 +9,7 @@ import net.dv8tion.jda.api.entities.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class UserinfoCommand implements CommandExecutor {
@@ -35,10 +37,21 @@ public class UserinfoCommand implements CommandExecutor {
     @Override
     public void execute(Message message, String[] args) {
         Member member = message.getMember();
-        List<Member> mentionedMembers = message.getMentionedMembers();
 
-        if (mentionedMembers.size() > 0) {
-            member = mentionedMembers.get(0);
+        if (args.length > 0) {
+            Optional<Member> opMember = UserSearchUtils.searchMember(
+                    message.getGuild(),
+                    args[0],
+                    UserSearchUtils.SearchMode.SENSITIVE
+            );
+            
+            if (opMember.isPresent()) {
+                member = opMember.get();
+            } 
+            else {
+                UserSearchUtils.sendUserNotFound(message.getChannel());
+                return;
+            }
         }
 
         User user = member.getUser();
